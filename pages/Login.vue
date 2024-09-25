@@ -1,7 +1,5 @@
 <template>
-   <Navbar/>
   <div class="flex items-center justify-center min-h-screen bg-blue-100">
-   
     <div class="max-w-sm w-full p-8 bg-white shadow-lg rounded-lg">
       <h1 class="text-3xl font-bold text-center text-gray-700 mb-8">
         Login Form
@@ -31,62 +29,59 @@
             required
           />
         </div>
-     
-        <div class="flex justify-center">
-          <button
-            type="submit"
-            class="px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            Login
-          </button>
-        </div>
-        
-        <div>
-          not Registered?  <nuxt-link to="Registration">create an account</nuxt-link>
-        </div>
 
-        <LoginFormValidator
-          :email="email"
-          :password="password"
-          
-        />
+        <Button name="Submit" />
       </form>
+
+      <div class="flex items-center justify-center">
+        <nuxt-link
+          to="ForgetPassword"
+          class="text-blue-500 underline hover:text-blue-700 capitalize py-4"
+          >Forget Password?</nuxt-link
+        >
+      </div>
+      <div class="flex items-center justify-center mb-2cle">
+        not Registered?
+        <nuxt-link
+          to="Registration"
+          class="text-blue-500 underline hover:text-blue-700 capitalize"
+          >create an account</nuxt-link
+        >
+      </div>
+
+      <LoginFormValidator :email="email" :password="password" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-const router = useRouter()
+definePageMeta({
+  layout: "custom",
+});
+import { useCustomFetch } from "~/composable/useFetchOptions";
+const router = useRouter();
 const email = ref("");
 const password = ref("");
- 
+import Button from "~/components/Button.vue";
 
 const handleSubmit = async () => {
- 
   try {
-    const response = await fetch("http://localhost:8080/login", {
+    const response = await useCustomFetch("/login", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({
         email: email.value,
         password: password.value,
       }),
     });
 
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.text();
-    const token = data;
+    // const data = await response;
+    const token = response;
     localStorage.setItem("SavedToken", token);
-    console.log("API Response:", data);
+
     router.push("/Dashboard");
   } catch (err) {
     console.log(err);
+    alert(err);
   }
 };
 </script>

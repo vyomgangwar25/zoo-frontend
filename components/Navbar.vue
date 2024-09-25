@@ -1,29 +1,28 @@
 <template>
-  <nav class="bg-gray-800">
+  <nav class="bg-gray-600">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <div class="flex items-center">
-          <a href="/" class="text-white text-3xl font-bold"> ZOO </a>
+          <a href="/" class="text-white text-4xl font-bold mr-3"> ZOO </a>
         </div>
         <div class="hidden md:block">
-          <div class="ml-10 flex items-baseline space-x-4">
+          <div class="ml-10 flex items-baseline space-x-6">
             <NuxtLink
               to="/"
-              class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Home
+              class="border border-white text-white bg-transparent hover:bg-white hover:text-black font-bold py-2 px-4 rounded-md"
+              >Home
             </NuxtLink>
             <NuxtLink
-              to="/about"
-              class="text-gray-300 hover:text-white px-3 mx-3 py-2 rounded-md text-sm font-medium"
+              to="/login"
+              class="border border-white text-white bg-transparent hover:bg-white hover:text-black font-bold py-2 px-4 rounded-md"
             >
-              About
+              Login
             </NuxtLink>
             <NuxtLink
-              to="/contact"
-              class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              to="/registration"
+              class="border border-white text-white bg-transparent hover:bg-white hover:text-black font-bold py-2 px-4 rounded-md"
             >
-              Contact
+              Signup
             </NuxtLink>
           </div>
         </div>
@@ -31,7 +30,3 @@
     </div>
   </nav>
 </template>
-
- 
-
- 
