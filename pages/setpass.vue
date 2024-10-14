@@ -1,28 +1,25 @@
 <script lang="ts" setup>
-definePageMeta({
-  layout: "custom",
-});
 import { ref } from "vue";
 import { useRoute } from "vue-router";
+import { useCustomFetch } from "~/composable/useFetchOptions";
 const router = useRouter();
 const route = useRoute();
-const newPassword = ref("");
 const token = route.query.token;
-console.log(token);
+
+const newPassword = ref("");
+//console.log(token);
 const setPassword = async () => {
   try {
-    const response = await fetch("http://localhost:8080/setnewpassword", {
+    const response = await useCustomFetch("/setnewpassword", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+
       body: JSON.stringify({
         newPassword: newPassword.value,
       }),
     });
-    const data = await response.text();
-    console.log(data);
+    alert(response);
+
+    router.push("/login");
   } catch (err) {
     console.log("error in seting new password -->", err);
   }
@@ -43,8 +40,6 @@ const setPassword = async () => {
               class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               type="password"
               v-model="newPassword"
-              name=""
-              id=""
               placeholder="Enter new Password"
             />
           </div>

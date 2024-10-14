@@ -4,16 +4,19 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev  ",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
     "@nuxt/icon": "^1.5.1",
+    "@pinia/nuxt": "^0.5.5",
     "@vee-validate/rules": "^4.13.2",
     "jwt-decode": "^4.0.0",
     "nuxt": "^3.13.0",
+    "pinia": "^2.2.4",
+    "v-pagination-3": "^0.1.7",
     "vee-validate": "^4.13.2",
     "vue": "latest",
     "vue-router": "latest",

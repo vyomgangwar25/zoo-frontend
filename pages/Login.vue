@@ -6,27 +6,28 @@
       </h1>
       <form class="space-y-6" @submit.prevent="handleSubmit">
         <div class="flex flex-col">
-          <label for="name" class="block text-sm font-medium text-gray-700"
+          <label for="email" class="block text-sm font-medium text-gray-700"
             >Email</label
           >
-          <input
-            v-model="email"
+          <CustomInput
             type="email"
-            class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            v-model="email"
+            :isvalid="isEmailValid"
             placeholder="Enter your email"
-            required
+            :regex="/^[^\s@]+@[^\s@]+\.[^\s@]+$/"
+            errorMessage="Please enter a valid email address."
           />
         </div>
         <div class="flex flex-col">
           <label for="password" class="text-gray-700 font-medium mb-2"
             >Password</label
           >
-          <input
-            v-model="password"
+          <CustomInput
             type="password"
-            class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            v-model="password"
             placeholder="Enter your password"
-            required
+            :regex="/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,16}$/"
+            errorMessage="Please enter a valid password."
           />
         </div>
 
@@ -40,7 +41,7 @@
           >Forget Password?</nuxt-link
         >
       </div>
-      <div class="flex items-center justify-center mb-2cle">
+      <div class="flex items-center justify-center mb-2">
         not Registered?
         <nuxt-link
           to="Registration"
@@ -48,21 +49,25 @@
           >create an account</nuxt-link
         >
       </div>
-
-      <LoginFormValidator :email="email" :password="password" />
     </div>
   </div>
 </template>
 
 <script setup>
 definePageMeta({
-  layout: "custom",
+  middleware: "auth",
 });
+import { ref } from "vue";
+import { useUserRoleStore } from "~/store/Role";
+import { useRouter } from "vue-router";
 import { useCustomFetch } from "~/composable/useFetchOptions";
+import Button from "~/components/Button.vue";
+import CustomInput from "~/components/CustomInput.vue";
 const router = useRouter();
 const email = ref("");
 const password = ref("");
-import Button from "~/components/Button.vue";
+const isEmailValid = ref(false);
+const userRole = useUserRoleStore();
 
 const handleSubmit = async () => {
   try {
@@ -73,15 +78,17 @@ const handleSubmit = async () => {
         password: password.value,
       }),
     });
-
-    // const data = await response;
-    const token = response;
+    console.log(response);
+    const token = response.token;
+    userRole.setRole(response.role);
+    const test = useCookie("SavedToken");
+    test.value = token;
     localStorage.setItem("SavedToken", token);
-
     router.push("/Dashboard");
   } catch (err) {
-    console.log(err);
-    alert(err);
+    alert(err.message || "An error occurred during login.");
   }
 };
 </script>
+
+<style scoped></style>

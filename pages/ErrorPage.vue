@@ -23,4 +23,8 @@
       </button>
     </div>
   </div>
+  <Icon
+    name="heroicons:eye"
+    class="text-4xl cursor-pointer hover:text-red-700"
+  />
 </template>

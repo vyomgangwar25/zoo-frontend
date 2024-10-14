@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Navbar />
     <div class="flex items-center justify-center min-h-screen bg-blue-100">
       <div class="max-w-md w-full p-8 bg-white shadow-lg rounded-lg">
         <h1 class="text-3xl font-bold text-center text-gray-700 mb-8">
@@ -14,12 +13,12 @@
             >
               Enter your email
             </label>
-            <input
-              v-model="email"
+            <CustomInput
               type="email"
-              class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              v-model="email"
               placeholder="Enter your email"
-              required
+              :regex="/^[^\s@]+@[^\s@]+\.[^\s@]+$/"
+              errorMessage="Please enter a valid email address."
             />
           </div>
 
@@ -33,13 +32,13 @@
 <script setup>
 import { ref } from "vue";
 import Button from "~/components/Button.vue";
-import Navbar from "~/components/Navbar.vue";
 import { useCustomFetch } from "~/composable/useFetchOptions";
+
 const email = ref("");
 
 const handleResetPassword = async () => {
   try {
-    const response = await useCustomFetch("/forget_password", {
+    const response = await useCustomFetch("/forgetpassword", {
       method: "POST",
 
       body: JSON.stringify({

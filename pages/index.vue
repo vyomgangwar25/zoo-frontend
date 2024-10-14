@@ -143,11 +143,7 @@
   </section>
 </template>
 
-<script lang="ts" setup>
-definePageMeta({
-  layout: "custom",
-});
-</script>
+<script lang="ts" setup></script>
 
 <style scoped>
 button {

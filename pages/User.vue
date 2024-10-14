@@ -1,4 +1,13 @@
 <template>
+  <!-- <Navbar
+    title="Zoo"
+    :links="[
+      { text: 'Home', href: '/' },
+      { text: 'Login', href: '/login' },
+      { text: 'Signup', href: '/registration' },
+      { text: 'Dashboard', href: '/Dashboard' },
+    ]"
+  /> -->
   <div class="container">
     <div class="header mb-4">
       List of users that are stored in the database:
@@ -34,21 +43,52 @@
         </li>
       </ul>
     </div>
+    <div class="pagination-controls">
+      <button class="btn" @click="DecreaseButton">Previous</button>
+      <button
+        v-for="number in totalPages"
+        :key="number"
+        @click="setSelectedNumber(number)"
+        class="btn mx-2"
+      >
+        {{ number }}
+      </button>
+      <button class="btn" @click="IncreaseButton">next</button>
+    </div>
   </div>
 </template>
 
 <script setup>
-//  definePageMeta({
-//   layout: 'custom'
-// })
 import { ref, onMounted } from "vue";
+definePageMeta({ layout: "custom2" });
 
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import Shimmer from "vue3-loading-shimmer";
 import "~/assets/css/user.css";
-const router = useRouter();
 
+const router = useRouter();
+const pageno = ref(0);
+const totalPages = ref(0);
 const items = ref([]);
+const pagesize = 3;
+
+const setSelectedNumber = (number) => {
+  pageno.value = number - 1;
+  console.log(`Selected Page: ${pageno.value}`);
+  fetchUser();
+};
+const IncreaseButton = () => {
+  if (pageno.value < totalPages.value - 1) {
+    pageno.value = pageno.value + 1;
+  }
+  fetchUser();
+};
+const DecreaseButton = () => {
+  if (pageno.value > 0) {
+    pageno.value = pageno.value - 1;
+    fetchUser();
+  }
+};
 
 const fetchUser = async () => {
   const token = localStorage.getItem("SavedToken");
@@ -60,14 +100,21 @@ const fetchUser = async () => {
   }
 
   try {
-    const response = await useCustomFetch("/extractuser", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("SavedToken")}`,
-      },
-    });
+    const response = await useCustomFetch(
+      `/extractuser?page=${pageno.value}&pagesize=${pagesize}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("SavedToken")}`,
+        },
+      }
+    );
+    //console.log(response);
+    items.value = response.users;
+    //console.log(response.totalUsers);
 
-    items.value = response;
+    totalPages.value = Math.ceil(response.totalUsers / pagesize);
+    //console.log(response.totalUsers.value);
   } catch (err) {
     console.log("Error fetching users:", err);
   }
@@ -91,6 +138,11 @@ const deleteUser = async (userId) => {
       //router.push("/login")
     } else {
       items.value = items.value.filter((item) => item.id !== userId);
+      if (items.value.length === 0 && pageno.value > 0) {
+        pageno.value--;
+        fetchUser();
+      }
+
       alert("User delete successfully!!");
     }
   } catch (err) {
@@ -102,3 +154,4 @@ onMounted(() => {
   fetchUser();
 });
 </script>
+<style scoped></style>

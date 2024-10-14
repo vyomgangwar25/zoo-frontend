@@ -9,12 +9,12 @@
           <label for="name" class="block text-sm font-medium text-gray-700"
             >Name</label
           >
-          <input
-            v-model="name"
+          <CustomInput
             type="text"
-            id="name"
-            class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your name"
+            v-model="name"
+            :regex="/^.+$/"
+            errorMessage="Please enter name"
           />
         </div>
 
@@ -22,12 +22,12 @@
           <label for="email" class="block text-sm font-medium text-gray-700"
             >Email</label
           >
-          <input
+          <CustomInput
             v-model="email"
             type="email"
-            id="email"
-            class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your email"
+            :regex="/^[^\s@]+@[^\s@]+\.[^\s@]+$/"
+            errorMessage="Please enter a valid email address."
           />
         </div>
 
@@ -35,12 +35,12 @@
           <label for="password" class="block text-sm font-medium text-gray-700"
             >Password</label
           >
-          <input
+          <CustomInput
             v-model="password"
             type="password"
-            id="password"
-            class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your password"
+            :regex="/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,16}$/"
+            errorMessage="Please enter a valid password."
           />
         </div>
 
@@ -68,24 +68,14 @@
             >Sign in</nuxt-link
           >
         </div>
-
-        <FormValidator
-          :name="name"
-          :email="email"
-          :password="password"
-          :role="role"
-        />
       </form>
     </div>
   </div>
 </template>
 
 <script setup>
-definePageMeta({
-  layout: "custom",
-});
 import { ref } from "vue";
-import FormValidator from "~/components/RegistrationFormValidator.vue";
+
 import Button from "~/components/Button.vue";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 
@@ -93,8 +83,54 @@ const name = ref("");
 const email = ref("");
 const password = ref("");
 const role = ref("user");
+const errors = ref({
+  name: "",
+  email: "",
+  password: "",
+});
+const nameError = computed(() => {
+  if (!name.value) {
+    return "Please enter your name";
+  }
+});
+const emailError = computed(() => {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email.value) ? "" : "Please enter a valid email address.";
+});
+
+const passwordError = computed(() => {
+  return password.value.length >= 6
+    ? ""
+    : "Password must be at least 6 characters long.";
+});
+const nameValidate = () => {
+  if (!name.value) {
+    errors.value.name = "name is required";
+  }
+};
+const emailValidate = () => {
+  errors.value.email = "";
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email.value) {
+    errors.value.email = "Email is required.";
+  } else if (!emailPattern.test(email.value)) {
+    errors.value.email = "Invalid email format.";
+  }
+};
+const passwordValidate = () => {
+  errors.value.password = "";
+  if (errors.value.password) {
+    errors.value.password = "password is required";
+  } else if (password.value.length < 6) {
+    errors.value.password = "Password must be at least 6 characters";
+  }
+};
 
 const handleSubmit = async () => {
+  if (!name.value) {
+    alert("enter name");
+    return;
+  }
   try {
     const response = await useCustomFetch("/registration", {
       method: "POST",
@@ -106,10 +142,11 @@ const handleSubmit = async () => {
         role: role.value,
       }),
     });
-    console.log(response);
-    alert("user registered successfully");
+
+    alert(response);
   } catch (err) {
-    console.error("Error:", err);
+    console.log(err);
+    alert(err.message);
   }
 };
 </script>

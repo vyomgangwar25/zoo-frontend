@@ -1,34 +1,50 @@
 <script lang="ts" setup>
-import { Form, Field, ErrorMessage } from "vee-validate";
-import * as yup from "yup";
-import Button from '~/components/Button.vue';
+import { defineRule, ErrorMessage, Field, Form } from "vee-validate";
+import { required, email, min } from "@vee-validate/rules";
+defineRule("required", required);
+defineRule("email", email);
+defineRule("min", min);
 
-// Define the validation schema using Yup
-const schema = yup.object({
-  name: yup.string().required("Name is required"),
-  password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
+function onSubmit() {
+  alert("form is submitted");
+}
+definePageMeta({
+  layout: false,
 });
+
+const userEmail = ref("aks@gmail.com");
 </script>
 
 <template>
-    <Form :validation-schema="schema" class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      
-        <div class="flex flex-col mb-4">
-            <label for="name" class="mb-2 text-sm font-semibold text-gray-700">Name</label>
-            <Field name="name" type="text" id="name" class="p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500" />
-            <!-- Error message for name field -->
-            <ErrorMessage name="name" class="text-red-500 text-sm" />
-        </div>
+  <div class="test">
+    <Form @submit="onSubmit">
+      <br /><br />
+      <Field
+        name="email"
+        v-model="userEmail"
+        rules="required|email"
+        v-slot="{ field, errorMessage }"
+        class="border"
+      >
+        <CustomInput
+          type="email"
+          v-bind="field"
+          placeholder="Enter your email"
+          :errorMessage="errorMessage"
+        />
+      </Field>
 
-       
-        <div class="flex flex-col mb-4">
-            <label for="password" class="mb-2 text-sm font-semibold text-gray-700">Password</label>
-            <Field name="password" type="password" id="password" class="p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500" />
-             
-            <ErrorMessage name="password" class="text-red-500 text-sm" />
-        </div>
-
-    
-        <Button name="submit" />
+      <br /><br />
+      <button>Sign up</button>
     </Form>
+  </div>
 </template>
+
+<style scoped>
+.test {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+  height: 100vh; /* Full height of the viewport */
+}
+</style>
