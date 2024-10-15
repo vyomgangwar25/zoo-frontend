@@ -1,4 +1,6 @@
 <script setup>
+import { useRoleStore } from "~/store/useRoleStore";
+const roleStore = useRoleStore();
 const isModalOpen = ref(false);
 const zooid = ref("");
 const name = ref("");
@@ -173,6 +175,7 @@ const animalRegister = (id) => {
           />
 
           <CustomIcon
+            v-if="roleStore.role === 'admin'"
             @clicked="deleteZoo(item.id)"
             name="heroicons:x-mark"
             iconcolour=" text-red-700"
@@ -244,7 +247,7 @@ const animalRegister = (id) => {
     </div>
 
     <div
-      v-if="items.length != 0"
+      v-if="items.length !== 0"
       class="pagination-controls flex justify-center space-x-4 my-4"
     >
       <button

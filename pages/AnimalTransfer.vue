@@ -48,7 +48,7 @@ const zooname = ref("");
 const zoolocation = ref("");
 const dropdowndata = async () => {
   try {
-    const response = await useCustomFetch(`getdropdowndata/${zooid.value} `, {
+    const response = await useCustomFetch(`/getdropdowndata`, {
       method: "GET",
       query: {
         animalid: animalId.value,

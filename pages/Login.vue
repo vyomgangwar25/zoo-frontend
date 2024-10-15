@@ -58,7 +58,7 @@ definePageMeta({
   middleware: "auth",
 });
 import { ref } from "vue";
-import { useUserRoleStore } from "~/store/Role";
+import { useRoleStore } from "~/store/useRoleStore";
 import { useRouter } from "vue-router";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import Button from "~/components/Button.vue";
@@ -67,7 +67,7 @@ const router = useRouter();
 const email = ref("");
 const password = ref("");
 const isEmailValid = ref(false);
-const userRole = useUserRoleStore();
+const roleStore = useRoleStore();
 
 const handleSubmit = async () => {
   try {
@@ -80,10 +80,12 @@ const handleSubmit = async () => {
     });
     console.log(response);
     const token = response.token;
-    userRole.setRole(response.role);
+    roleStore.setState(response.role, response.email, response.name);
+
     const test = useCookie("SavedToken");
     test.value = token;
     localStorage.setItem("SavedToken", token);
+
     router.push("/Dashboard");
   } catch (err) {
     alert(err.message || "An error occurred during login.");

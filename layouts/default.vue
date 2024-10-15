@@ -1,13 +1,14 @@
 <script setup>
+import { useRoleStore } from "~/store/useRoleStore";
+import { useCustomFetch } from "~/composable/useFetchOptions";
+const roleStore = useRoleStore(); //access the store
+
 const token = ref("");
 const showDropdown = ref(false);
 const router = useRouter();
-import { useUserRoleStore } from "~/store/Role";
-const userRole = useUserRoleStore();
-console.log("hello   ", userRole.role);
+
 const toggleDropdown = () => {
   showDropdown.value = !showDropdown.value;
-  console.log(showDropdown.value);
 };
 if (import.meta.client) {
   token.value = localStorage.getItem("SavedToken");
@@ -17,8 +18,27 @@ const handleLogout = () => {
   const cookie = useCookie("SavedToken");
   cookie.value = "";
   localStorage.removeItem("SavedToken");
+  roleStore.setState("", "", "");
   router.push("/login");
 };
+const dashboardApi = async () => {
+  console.log(localStorage.getItem("SavedToken"));
+  try {
+    const response = await useCustomFetch("/validate_token", {
+      method: "GET",
+    });
+
+    roleStore.setState(response.role, response.userEmail, response.name);
+  } catch (err) {
+    alert(err);
+    router.push("/login");
+  }
+};
+
+onBeforeMount(() => {
+  dashboardApi();
+  console.log(roleStore.role);
+});
 </script>
 
 <template>
@@ -36,7 +56,7 @@ const handleLogout = () => {
               >Home</nuxt-link
             >
           </li>
-          <template v-if="!token">
+          <template v-if="roleStore.role === '' && !token">
             <li>
               <nuxt-link
                 class="border border-white text-white bg-transparent hover:bg-white hover:text-black font-bold py-2 px-4 rounded-md"

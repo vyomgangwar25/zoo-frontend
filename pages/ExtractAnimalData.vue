@@ -1,11 +1,11 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import { useRoleStore } from "~/store/useRoleStore";
 import { useCustomFetch } from "~/composable/useFetchOptions";
+const roleStore = useRoleStore();
 
 const AnimalId = ref("");
-const name = ref("");
-const gender = ref("");
 const isModalOpen = ref(false);
 
 function openModal(animalId) {
@@ -14,15 +14,10 @@ function openModal(animalId) {
 }
 
 const updateAnimalData = async () => {
-  const data = {
-    name: name.value,
-    gender: gender.value,
-  };
-
   try {
     const response = await useCustomFetch(`/updateanimal/${AnimalId.value}`, {
       method: "PUT",
-      body: JSON.stringify(data),
+      body: JSON.stringify(formData.value),
     });
 
     alert(response);
@@ -32,6 +27,28 @@ const updateAnimalData = async () => {
   }
   isModalOpen.value = false;
 };
+
+const formFields = [
+  {
+    label: "name",
+    type: "text",
+    placeholder: "Name",
+    errorMessage: "Name not valid",
+    regex: "/^.+$/",
+  },
+  {
+    label: "gender",
+    type: "text",
+    placeholder: "Gender",
+    errorMessage: "Gender not valid",
+    regex: "/^.+$/",
+  },
+];
+
+const formData = ref({
+  name: "",
+  gender: "",
+});
 
 //delete modal
 const isactive = ref(false);
@@ -123,17 +140,18 @@ onMounted(() => {
         consequatur, quas aperiam nesciunt?
       </p>
     </div>
-    <div class="flex justify-between">
-      <div class="header text-2xl font-bold mb-6 mt-9">
+
+    <div
+      :class="
+        items.length == 0
+          ? 'flex items-center justify-center'
+          : 'flex items-center justify-between'
+      "
+    >
+      <div v-if="items.length !== 0" class="header text-2xl font-bold">
         <h1>List of Animals in the Zoo</h1>
       </div>
-      <div
-        :class="
-          items.length === 0
-            ? 'flex justify-center mb-4'
-            : 'flex justify-end mb-4 '
-        "
-      >
+      <div>
         <button
           @click="
             navigateTo({
@@ -148,7 +166,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <div>
+    <div class="p-6 bg-gray-200 rounded-lg mt-5">
       <div v-if="items.length == 0"></div>
       <ul class="space-y-4" v-else>
         <li
@@ -157,7 +175,6 @@ onMounted(() => {
           class="bg-white shadow-lg rounded-lg p-6 flex justify-between items-center"
         >
           <div class="flex-grow">
-            <div>id:{{ animal.animal_id }}</div>
             <div class="text-lg font-semibold">Name: {{ animal.name }}</div>
             <div class="text-gray-500">
               <span class="font-medium">Gender: {{ animal.gender }}</span>
@@ -166,21 +183,26 @@ onMounted(() => {
               <span class="font-medium">DOB: {{ animal.dob }}</span>
             </div>
           </div>
-          <Icon
-            name="heroicons:trash"
-            class="text-4xl cursor-pointer hover:text-red-700 mr-2"
-            @click="modalopen2(animal.animal_id)"
-          />
-          <button
-            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-4"
-            @click="openModal(animal.animal_id)"
-          >
-            Update
-          </button>
 
-          <button
-            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            @click="
+          <CustomIcon
+            v-if="roleStore.role === 'admin'"
+            @clicked="modalopen2(animal.animal_id)"
+            name="heroicons:trash"
+            iconcolour=" text-blue-700"
+            iconbg=" bg-gray-100"
+            iconhover=" hover:bg-blue-500 hover:text-white ml-2"
+          />
+
+          <CustomIcon
+            @clicked="openModal(animal.animal_id)"
+            name="heroicons:arrow-path"
+            iconcolour=" text-blue-700"
+            iconbg=" bg-gray-100"
+            iconhover=" hover:bg-blue-500 hover:text-white ml-2"
+          />
+
+          <CustomIcon
+            @clicked="
               navigateTo({
                 path: '/AnimalTransfer',
                 query: {
@@ -189,9 +211,11 @@ onMounted(() => {
                 },
               })
             "
-          >
-            Transfer Animal
-          </button>
+            name="heroicons:arrow-right-on-rectangle-20-solid"
+            iconcolour=" text-blue-700"
+            iconbg=" bg-gray-100"
+            iconhover=" hover:bg-blue-500 hover:text-white ml-2"
+          />
         </li>
       </ul>
     </div>
@@ -214,82 +238,30 @@ onMounted(() => {
       </button>
     </div>
   </div>
-
   <!------------------------------------------------------------ Modal  ------------------------------------------------------>
-  <div
-    v-if="isModalOpen"
-    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+
+  <DeleteModalVue
+    :isactive="isModalOpen"
+    @success="updateAnimalData"
+    @close="(event) => (isModalOpen = event)"
+    :modalType="'form'"
+    :formField="formFields"
+    :formData="formData"
   >
-    <div class="bg-white p-6 rounded-lg w-96">
-      <div class="flex justify-between items-center pb-4 border-b">
-        <h3 class="text-lg font-semibold">Update Animal Data</h3>
-        <button
-          @click="isModalOpen = false"
-          class="text-gray-500 hover:text-gray-700"
-        >
-          Close
-        </button>
-      </div>
-      <div class="py-4">
-        <div class="flex flex-col">
-          <label for="name" class="block text-sm font-medium text-gray-700"
-            >Name</label
-          >
-          <CustomInput
-            type="text"
-            v-model="name"
-            placeholder="Enter name"
-            :regex="/^.+$/"
-            errorMessage="Please enter a name."
-          />
-        </div>
-        <div class="flex flex-col">
-          <label for="gender" class="text-gray-700 font-medium mb-2"
-            >Gender</label
-          >
-          <CustomInput
-            type="text"
-            v-model="gender"
-            placeholder="Enter gender"
-            :regex="/^.+$/"
-            errorMessage="Please enter gender."
-          />
-        </div>
-      </div>
-      <div class="flex justify-end pt-4">
-        <button
-          @click="updateAnimalData"
-          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          updated
-        </button>
-      </div>
-    </div>
-  </div>
+    <template #form-modal-content-heading> Update Animal Data </template>
+    <template #form-success-button> Update </template>
+  </DeleteModalVue>
 
   <!--------------------------------------------DELETE MODAL-------------------------->
-  <div
-    v-if="isactive"
-    class="fixed inset-0 z-10 flex items-center justify-center bg-gray-500 bg-opacity-75"
+
+  <DeleteModalVue
+    :isactive="isactive"
+    @success="Okmodal"
+    @close="closeModal2"
+    :modalType="'delete'"
   >
-    <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
-      <p class="text-sm text-gray-500 mb-4">
-        Are you sure you want to remove this item?
-      </p>
-      <div class="flex justify-end space-x-2">
-        <button
-          @click="Okmodal"
-          class="px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-500"
-        >
-          Ok
-        </button>
-        <button
-          @click="closeModal2"
-          class="px-4 py-2 bg-gray-100 text-gray-900 text-sm rounded hover:bg-gray-200"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
+    <template #delete-modal-content-heading>
+      Are you sure you want to delete this animal: 123
+    </template>
+  </DeleteModalVue>
 </template>

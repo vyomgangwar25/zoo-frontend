@@ -45,9 +45,11 @@
     <main class="flex-1 p-6">
       <div class="bg-white p-6 rounded-lg shadow-md">
         <h1 class="text-2xl font-bold mb-4">
-          Welcome to the Dashboard{{ " " + name }}
+          Welcome to the Dashboard{{ " " + roleStore.name }}
         </h1>
-        <h1 class="text-2xl font-bold mb-4">Email id is{{ " " + email }}</h1>
+        <h1 class="text-2xl font-bold mb-4">
+          Email id is{{ " " + roleStore.email }}
+        </h1>
       </div>
       <div class="flex justify-center"></div>
     </main>
@@ -56,32 +58,12 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-
+import { useRoleStore } from "~/store/useRoleStore";
 import { useCustomFetch } from "~/composable/useFetchOptions";
+const roleStore = useRoleStore();
 const router = useRouter();
 const name = ref("");
 const email = ref("");
-const removeToken = async () => {
-  console.log(localStorage.getItem("SavedToken"));
-  try {
-    const response = await useCustomFetch("/validate_token", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("SavedToken")}`,
-      },
-    });
-    console.log(response);
-    name.value = response.name;
-    email.value = response.userEmail;
-  } catch (err) {
-    alert(err);
-    router.push("/login");
-  }
-};
-
-onMounted(() => {
-  removeToken();
-});
 
 const logout = () => {
   localStorage.removeItem("SavedToken");
