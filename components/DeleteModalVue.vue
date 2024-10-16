@@ -7,6 +7,28 @@
       <p v-if="modalType == 'delete'" class="text-sm text-gray-500 mb-4">
         <slot name="delete-modal-content-heading" />
       </p>
+      <!-----------------------modaltype="transfer"----------------------->
+      <div v-if="modalType == 'transfer'" class="text-sm text-gray-500 mb-4">
+        <slot name="delete-modal-content-heading" />
+
+        <div class="mb-4">
+          <select
+            id="zooSelect"
+            v-model="selectedZooId"
+            class="block w-64 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
+          >
+            <option disabled value="">Select Zoo</option>
+            <option
+              v-for="(item, index) in zoolist"
+              :key="index"
+              :value="item.id"
+            >
+              {{ item.name }}
+              {{ item.id }}
+            </option>
+          </select>
+        </div>
+      </div>
 
       <div
         v-if="modalType == 'form'"
@@ -41,6 +63,13 @@
 
       <div class="flex justify-end space-x-2">
         <button
+          v-if="modalType == 'transfer'"
+          @click="emitTransfer"
+          class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-500"
+        >
+          Transfer
+        </button>
+        <button
           v-if="modalType == 'delete'"
           @click="emits('success')"
           class="px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-500"
@@ -48,7 +77,7 @@
           Ok
         </button>
         <button
-          v-if="modalType == 'delete'"
+          v-if="modalType == 'delete' || 'transfer'"
           @click="emits('close')"
           class="px-4 py-2 bg-gray-100 text-gray-900 text-sm rounded hover:bg-gray-200"
         >
@@ -66,9 +95,16 @@
   </div>
 </template>
 <script lang="ts" setup>
+const selectedZooId = ref(0);
 const props = defineProps<{
   isactive: boolean;
-  modalType: "form" | "delete";
+  modalType: "form" | "delete" | "transfer";
+  zoolist?: [
+    {
+      id: BigInteger;
+      name: string;
+    }
+  ];
   formField?: [
     {
       label: string;
@@ -84,5 +120,12 @@ const props = defineProps<{
     [x: string]: string;
   };
 }>();
+const emitTransfer = () => {
+  if (selectedZooId.value) {
+    emits("success", selectedZooId.value);
+  } else {
+    alert("Please select a zoo before transferring.");
+  }
+};
 const emits = defineEmits(["success", "close"]);
 </script>

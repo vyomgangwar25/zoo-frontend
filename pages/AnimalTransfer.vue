@@ -46,24 +46,24 @@ const animalname = ref("");
 const animalgender = ref("");
 const zooname = ref("");
 const zoolocation = ref("");
-const dropdowndata = async () => {
-  try {
-    const response = await useCustomFetch(`/getdropdowndata`, {
-      method: "GET",
-      query: {
-        animalid: animalId.value,
-      },
-    });
-    console.log(response);
-    items.value = response.filteredZoos;
-    animalname.value = response.animaldata.name;
-    animalgender.value = response.animaldata.gender;
-    zooname.value = response.animaldata.zoo.name;
-    zoolocation.value = response.animaldata.zoo.location;
-  } catch (err) {
-    console.error(err);
-  }
-};
+// const dropdowndata = async () => {
+//   try {
+//     const response = await useCustomFetch(`/getdropdowndata`, {
+//       method: "GET",
+//       query: {
+//         animalid: animalId.value,
+//       },
+//     });
+//     console.log(response);
+//     items.value = response.filteredZoos;
+//     animalname.value = response.animaldata.name;
+//     animalgender.value = response.animaldata.gender;
+//     zooname.value = response.animaldata.zoo.name;
+//     zoolocation.value = response.animaldata.zoo.location;
+//   } catch (err) {
+//     console.error(err);
+//   }
+// };
 
 // Transfer animal on button click
 const transferAnimal = async () => {

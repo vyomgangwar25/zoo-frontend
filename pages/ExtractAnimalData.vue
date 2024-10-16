@@ -3,10 +3,14 @@ import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useRoleStore } from "~/store/useRoleStore";
 import { useCustomFetch } from "~/composable/useFetchOptions";
+import DeleteModalVue from "~/components/DeleteModalVue.vue";
+
 const roleStore = useRoleStore();
+const route = useRoute();
 
 const AnimalId = ref("");
 const isModalOpen = ref(false);
+const isTransferModalOpen = ref(false);
 
 function openModal(animalId) {
   isModalOpen.value = true;
@@ -50,12 +54,54 @@ const formData = ref({
   gender: "",
 });
 
+const handleSubmit = async () => {
+  try {
+    const response = await useCustomFetch("/animalregistration", {
+      method: "POST",
+      body: JSON.stringify(formData2.value),
+    });
+    alert(response);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const formFields2 = [
+  {
+    label: "name",
+    type: "text",
+    placeholder: "Enter name of animal",
+    errorMessage: "Name not valid",
+    regex: "/^.+$/",
+  },
+  {
+    label: "gender",
+    type: "text",
+    placeholder: "Enter gender",
+    errorMessage: "Enter gender",
+    regex: "/^.+$/",
+  },
+  {
+    label: "dob",
+    type: "date",
+    placeholder: "Enter dob",
+    errorMessage: "please enter dob",
+    regex: "/^.+$/",
+  },
+];
+const formData2 = ref({
+  name: "",
+  gender: "",
+  dob: "",
+  zooid: +route.query.zooId,
+});
+
 //delete modal
 const isactive = ref(false);
 const animalIdOk = ref();
+
 const modalopen2 = (animalId) => {
   animalIdOk.value = animalId;
-  console.log(animalIdOk.value);
   isactive.value = true;
 };
 const Okmodal = async () => {
@@ -81,14 +127,60 @@ const closeModal2 = () => {
   isactive.value = false;
 };
 
+//transfer animal state
+const isTransferModelOpen = ref(false);
+const TransferAnimalId = ref("");
+const selectedZooId = ref(0);
+
+//dropdown api
+const zooList = ref([]);
+const transferModalOpen = async (zooid, trasnferAnimalId) => {
+  isTransferModelOpen.value = true;
+  TransferAnimalId.value = trasnferAnimalId;
+  try {
+    const response = await useCustomFetch(`/getdropdowndata`, {
+      method: "GET",
+      query: {
+        zooId: zooid,
+      },
+    });
+    console.log(response);
+    zooList.value = response.filteredZoos;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+// close transfer modal
+
+const closeTransferModal = () => {
+  isTransferModelOpen.value = false;
+};
+//transfer api
+const transferAnimal = async (id) => {
+  try {
+    const response = await useCustomFetch(`/transferanimal`, {
+      method: "PUT",
+      query: {
+        animalid: TransferAnimalId.value,
+        zooid: id,
+      },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("SavedToken")}`,
+      },
+    });
+    alert(response);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 const totalPages = ref(0);
 const items = ref([]);
 const pagesize = 3;
 const pageno = ref(0);
 const zooid = ref("");
 const zooname = ref("");
-
-const route = useRoute();
 
 const decreaseButton = () => {
   if (pageno.value > 0) {
@@ -154,16 +246,31 @@ onMounted(() => {
       <div>
         <button
           @click="
-            navigateTo({
-              path: '/AnimalRegistration',
-              query: { zooId: route.query.zooId },
-            })
+            () => {
+              isTransferModalOpen = true;
+            }
           "
           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-4"
         >
           Add Animal
         </button>
       </div>
+
+      <!---------------------------------------------------ADD Animal Modal------------------------------------->
+
+      <DeleteModalVue
+        :isactive="isTransferModalOpen"
+        @success="handleSubmit"
+        @close="(event) => (isTransferModalOpen = event)"
+        :modalType="'form'"
+        :formField="formFields2"
+        :formData="formData2"
+      >
+        <template #form-modal-content-heading>
+          Animal Registraction form
+        </template>
+        <template #form-success-button> Submit</template>
+      </DeleteModalVue>
     </div>
 
     <div class="p-6 bg-gray-200 rounded-lg mt-5">
@@ -202,15 +309,7 @@ onMounted(() => {
           />
 
           <CustomIcon
-            @clicked="
-              navigateTo({
-                path: '/AnimalTransfer',
-                query: {
-                  animalId: animal.animal_id,
-                  zooId: animal.zoo_id,
-                },
-              })
-            "
+            @clicked="transferModalOpen(route.query.zooId, animal.animal_id)"
             name="heroicons:arrow-right-on-rectangle-20-solid"
             iconcolour=" text-blue-700"
             iconbg=" bg-gray-100"
@@ -238,7 +337,7 @@ onMounted(() => {
       </button>
     </div>
   </div>
-  <!------------------------------------------------------------ Modal  ------------------------------------------------------>
+  <!------------------------------------------------------------Update  Modal  ------------------------------------------------------>
 
   <DeleteModalVue
     :isactive="isModalOpen"
@@ -252,7 +351,7 @@ onMounted(() => {
     <template #form-success-button> Update </template>
   </DeleteModalVue>
 
-  <!--------------------------------------------DELETE MODAL-------------------------->
+  <!----------------------------------------------------------DELETE MODAL------------------------------------------------------------>
 
   <DeleteModalVue
     :isactive="isactive"
@@ -261,7 +360,22 @@ onMounted(() => {
     :modalType="'delete'"
   >
     <template #delete-modal-content-heading>
-      Are you sure you want to delete this animal: 123
+      Are you sure you want to delete this animal
     </template>
+  </DeleteModalVue>
+
+  <!-----------------------------------------------------------------Transfer Modal------------------------------------------------------>
+
+  <DeleteModalVue
+    :isactive="isTransferModelOpen"
+    @success="
+      (selectedZooId) => {
+        transferAnimal(selectedZooId);
+      }
+    "
+    @close="closeTransferModal"
+    :modalType="'transfer'"
+    :zoolist="zooList"
+  >
   </DeleteModalVue>
 </template>

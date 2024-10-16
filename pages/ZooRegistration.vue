@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<!-- <script lang="ts" setup>
 import { ref } from "vue";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 
@@ -83,4 +83,7 @@ const handleSubmit = async () => {
       </form>
     </div>
   </div>
+</template> -->
+<template>
+  <div></div>
 </template>

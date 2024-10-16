@@ -1,11 +1,41 @@
 <script setup>
 import { useRoleStore } from "~/store/useRoleStore";
+import { useCustomFetch } from "~/composable/useFetchOptions";
+import DeleteModalVue from "~/components/DeleteModalVue.vue";
 const roleStore = useRoleStore();
+const router = useRouter();
 const isModalOpen = ref(false);
 const zooid = ref("");
-const name = ref("");
-const location = ref("");
-const size = ref("");
+
+const formFields = [
+  {
+    label: "name",
+    type: "text",
+    placeholder: "Enter Name",
+    errorMessage: "Name not valid",
+    regex: "/^.+$/",
+  },
+  {
+    label: "location",
+    type: "text",
+    placeholder: "Enter Location",
+    errorMessage: "Location not valid",
+    regex: "/^.+$/",
+  },
+  {
+    label: "size",
+    type: "text",
+    placeholder: "Enter size",
+    errorMessage: "Size not valid",
+    regex: "/^.+$/",
+  },
+];
+
+const formData = ref({
+  name: "",
+  location: "",
+  size: "",
+});
 
 const openModal = (id) => {
   isModalOpen.value = true;
@@ -14,15 +44,10 @@ const openModal = (id) => {
 };
 
 const updateZooData = async () => {
-  const data = {
-    name: name.value,
-    location: location.value,
-    size: size.value,
-  };
   try {
     const response = await useCustomFetch(`/updatezoo/${zooid.value}`, {
       method: "PUT",
-      body: data,
+      body: formData.value,
     });
     alert(response);
     fetchzoodata();
@@ -32,8 +57,50 @@ const updateZooData = async () => {
   isModalOpen.value = false;
 };
 
-const router = useRouter();
-import { useCustomFetch } from "~/composable/useFetchOptions";
+const isZooRegistrationModal = ref(false);
+const formFields2 = [
+  {
+    label: "name",
+    type: "text",
+    placeholder: "Enter Name",
+    errorMessage: "Name not valid",
+    regex: "/^.+$/",
+  },
+  {
+    label: "location",
+    type: "text",
+    placeholder: "Enter Location",
+    errorMessage: "Location not valid",
+    regex: "/^.+$/",
+  },
+  {
+    label: "size",
+    type: "text",
+    placeholder: "Enter size",
+    errorMessage: "Size not valid",
+    regex: "/^.+$/",
+  },
+];
+
+const formData2 = ref({
+  name: "",
+  location: "",
+  size: "",
+});
+
+const zooRegistraction = async () => {
+  try {
+    const response = await useCustomFetch("/zoo", {
+      method: "POST",
+      body: JSON.stringify(formData2.value),
+    });
+    alert("zoo registration done!! ");
+  } catch (err) {
+    console.log(err);
+  }
+  isZooRegistrationModal.value = false;
+};
+
 const totalPages = ref(0);
 const items = ref([]);
 const pagesize = 3;
@@ -92,7 +159,6 @@ const deleteZoo = async (id) => {
 
 //view animal api
 const viewAnimal = (id) => {
-  console.log("clicked id is--->", { id });
   router.push({
     path: "/ExtractAnimalData",
     query: { zooId: id },
@@ -121,11 +187,28 @@ const animalRegister = (id) => {
       "
     >
       <button
-        @click="navigateTo('/ZooRegistration')"
+        @click="
+          () => {
+            isZooRegistrationModal = true;
+          }
+        "
         class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
       >
         Add Zoo
       </button>
+
+      <!--------------------------------------AddZooModal----------------------------------------------------------------->
+      <DeleteModalVue
+        :isactive="isZooRegistrationModal"
+        @success="zooRegistraction"
+        @close="(event) => (isZooRegistrationModal = event)"
+        :modalType="'form'"
+        :formField="formFields2"
+        :formData="formData2"
+      >
+        <template #form-modal-content-heading> Add Zoo </template>
+        <template #form-success-button> Add </template>
+      </DeleteModalVue>
     </div>
 
     <div class="p-6 bg-gray-200 rounded-lg">
@@ -151,13 +234,13 @@ const animalRegister = (id) => {
             </div>
           </div>
 
-          <CustomIcon
+          <!-- <CustomIcon
             @clicked="animalRegister(item.id)"
             name="heroicons:plus"
             iconcolour=" text-green-700"
             iconbg=" bg-gray-100"
             iconhover=" hover:bg-gray-500 hover:text-white ml-2"
-          />
+          /> -->
           <CustomIcon
             @clicked="openModal(item.id)"
             name="heroicons:arrow-path"
@@ -186,65 +269,19 @@ const animalRegister = (id) => {
       </ul>
     </div>
 
-    <!---------------------modal--------------------------------->
-    <div
-      v-if="isModalOpen"
-      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+    <!---------------------Update modal--------------------------------->
+
+    <DeleteModalVue
+      :isactive="isModalOpen"
+      @success="updateZooData"
+      @close="(event) => (isModalOpen = event)"
+      :modalType="'form'"
+      :formField="formFields"
+      :formData="formData"
     >
-      <div class="bg-white p-6 rounded-lg w-96">
-        <div class="flex justify-between items-center pb-4 border-b">
-          <h3 class="text-lg font-semibold">Update Zoo Data</h3>
-          <button
-            @click="isModalOpen = false"
-            class="text-gray-500 hover:text-gray-700"
-          >
-            Close
-          </button>
-        </div>
-        <div class="py-4">
-          <div class="flex flex-col">
-            <label for="" class="block text-sm font-medium text-gray-700"
-              >Name</label
-            >
-            <CustomInput
-              type="text"
-              v-model="name"
-              placeholder="Enter name"
-              :regex="/^.+$/"
-              errorMessage="Please enter a name."
-            />
-          </div>
-          <div>
-            <label for="">Location</label>
-            <CustomInput
-              type="text"
-              v-model="location"
-              placeholder="Enter location"
-              :regex="/^.+$/"
-              errorMessage="Please enter a location."
-            />
-          </div>
-          <div>
-            <label for="">Size</label>
-            <CustomInput
-              type="text"
-              v-model="size"
-              placeholder="Enter size "
-              :regex="/^.+$/"
-              errorMessage="Please enter size."
-            />
-          </div>
-        </div>
-        <div class="flex justify-end pt-4">
-          <button
-            @click="updateZooData"
-            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            updated
-          </button>
-        </div>
-      </div>
-    </div>
+      <template #form-modal-content-heading> Update Zoo Data </template>
+      <template #form-success-button> Update </template>
+    </DeleteModalVue>
 
     <div
       v-if="items.length !== 0"
