@@ -1,5 +1,6 @@
 <template>
   <div class="flex items-center justify-center min-h-screen bg-blue-100 p-4">
+    <AlertPopup :label="toastMessage" :isVisible="isToastVisible" @close="closeToast" />
     <div class="max-w-md w-full p-8 bg-white shadow-lg rounded-lg">
       <h1 class="text-3xl font-bold text-center text-gray-700 mb-8">
         Registration Form
@@ -13,8 +14,6 @@
             type="text"
             placeholder="Enter your name"
             v-model="name"
-            :regex="/^.+$/"
-            errorMessage="Please enter name"
           />
         </div>
 
@@ -26,8 +25,6 @@
             v-model="email"
             type="email"
             placeholder="Enter your email"
-            :regex="/^[^\s@]+@[^\s@]+\.[^\s@]+$/"
-            errorMessage="Please enter a valid email address."
           />
         </div>
 
@@ -39,8 +36,6 @@
             v-model="password"
             type="password"
             placeholder="Enter your password"
-            :regex="/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,16}$/"
-            errorMessage="Please enter a valid password."
           />
         </div>
 
@@ -73,64 +68,27 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+definePageMeta({
+  middleware: "auth",
+});
 import { ref } from "vue";
 
 import Button from "~/components/Button.vue";
 import { useCustomFetch } from "~/composable/useFetchOptions";
-
-const name = ref("");
-const email = ref("");
+import AlertPopup from "~/components/AlertPopup.vue";
+const name : Ref<string> = ref("");
+const email :Ref<string>= ref("");
 const password = ref("");
-const role = ref("user");
-const errors = ref({
-  name: "",
-  email: "",
-  password: "",
-});
-const nameError = computed(() => {
-  if (!name.value) {
-    return "Please enter your name";
-  }
-});
-const emailError = computed(() => {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return re.test(email.value) ? "" : "Please enter a valid email address.";
-});
+const role :Ref<string>= ref("user");
+const toastMessage :Ref<string>= ref('');
+const isToastVisible = ref(false);
 
-const passwordError = computed(() => {
-  return password.value.length >= 6
-    ? ""
-    : "Password must be at least 6 characters long.";
-});
-const nameValidate = () => {
-  if (!name.value) {
-    errors.value.name = "name is required";
-  }
-};
-const emailValidate = () => {
-  errors.value.email = "";
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!email.value) {
-    errors.value.email = "Email is required.";
-  } else if (!emailPattern.test(email.value)) {
-    errors.value.email = "Invalid email format.";
-  }
-};
-const passwordValidate = () => {
-  errors.value.password = "";
-  if (errors.value.password) {
-    errors.value.password = "password is required";
-  } else if (password.value.length < 6) {
-    errors.value.password = "Password must be at least 6 characters";
-  }
-};
+const closeToast=()=>{
+  isToastVisible.value=false
+}
 
 const handleSubmit = async () => {
-  if (!name.value) {
-    alert("enter name");
-    return;
-  }
   try {
     const response = await useCustomFetch("/registration", {
       method: "POST",
@@ -142,11 +100,14 @@ const handleSubmit = async () => {
         role: role.value,
       }),
     });
+   toastMessage.value = response as string;
+    isToastVisible.value = true;
+   
 
-    alert(response);
-  } catch (err) {
-    console.log(err);
-    alert(err.message);
+  
+  } catch (err: any) {
+    toastMessage.value = err.response._data;
+    isToastVisible.value = true;
   }
 };
 </script>

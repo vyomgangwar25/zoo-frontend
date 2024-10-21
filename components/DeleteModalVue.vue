@@ -1,3 +1,47 @@
+
+<script lang="ts" setup>
+
+import type { LocationQueryValue } from 'vue-router';
+
+const selectedZooId : Ref<number> = ref(0);
+const props= defineProps<{
+  isactive: boolean;
+  modalType: "form" | "delete" | "transfer";
+  
+  zoolist?: Array<
+    {
+      id: BigInteger;
+      name: string;
+    }
+  >;
+
+  formField?: Array<
+    {
+      label: string;
+      type: string;
+      placeholder: string;
+      errorMessage: string;
+      regex: string;
+    }
+  >;
+  formData?: {
+    name: string;
+    gender: string;
+    [x: string]: string;
+  };
+}>();
+/**
+ * This is transfer id 
+ */
+const emitTransfer = () => {
+  if (selectedZooId.value) {
+    emits("success", selectedZooId.value);
+  } else {
+    alert("Please select a zoo before transferring.");
+  }
+};
+const emits = defineEmits(["success", "close"]);
+</script>
 <template>
   <div
     v-if="isactive"
@@ -14,17 +58,18 @@
         <div class="mb-4">
           <select
             id="zooSelect"
-            v-model="selectedZooId"
+            v-model="selectedZooId" 
             class="block w-64 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
           >
-            <option disabled value="">Select Zoo</option>
+          <option disabled value="0" >Select Zoo</option>
+             
             <option
               v-for="(item, index) in zoolist"
               :key="index"
               :value="item.id"
             >
               {{ item.name }}
-              {{ item.id }}
+              
             </option>
           </select>
         </div>
@@ -54,7 +99,7 @@
           >
           <CustomInput
             :type="field.type"
-            v-model="formData[`${field.label}`]"
+            v-model="props.formData![field.label]"
             :placeholder="field.placeholder"
             :regex="field.regex"
           />
@@ -94,38 +139,3 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup>
-const selectedZooId = ref(0);
-const props = defineProps<{
-  isactive: boolean;
-  modalType: "form" | "delete" | "transfer";
-  zoolist?: [
-    {
-      id: BigInteger;
-      name: string;
-    }
-  ];
-  formField?: [
-    {
-      label: string;
-      type: string;
-      placeholder: string;
-      errorMessage: string;
-      regex: string;
-    }
-  ];
-  formData: {
-    name: string;
-    gender: string;
-    [x: string]: string;
-  };
-}>();
-const emitTransfer = () => {
-  if (selectedZooId.value) {
-    emits("success", selectedZooId.value);
-  } else {
-    alert("Please select a zoo before transferring.");
-  }
-};
-const emits = defineEmits(["success", "close"]);
-</script>

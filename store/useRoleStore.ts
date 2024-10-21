@@ -6,7 +6,8 @@ export const useRoleStore = defineStore('role', {
     state: () => ({
          role:'',
          email:'',
-         name:''
+         name:'',
+         showDropDown:false
       }),
   
   
@@ -16,6 +17,15 @@ export const useRoleStore = defineStore('role', {
         this.email= newEmail;
         this.name=newName
       },
+      toggleDropDown()
+      {
+        this.showDropDown=!this.showDropDown
+      },
+      
+      closeDropDown()
+       {
+        this.showDropDown=false;
+       }
        
     },
   });

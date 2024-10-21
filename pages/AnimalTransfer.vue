@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-6">Animal Transfer</h1>
     <h2 class="text-lg font-semibold mb-2">Zoo name: {{ zooname }}</h2>
@@ -90,4 +90,7 @@ onMounted(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped></style> -->
+<template>
+  <div></div>
+</template>

@@ -17,8 +17,6 @@
               type="email"
               v-model="email"
               placeholder="Enter your email"
-              :regex="/^[^\s@]+@[^\s@]+\.[^\s@]+$/"
-              errorMessage="Please enter a valid email address."
             />
           </div>
 
@@ -29,12 +27,12 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref } from "vue";
 import Button from "~/components/Button.vue";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 
-const email = ref("");
+const email   = ref("");
 
 const handleResetPassword = async () => {
   try {

@@ -6,10 +6,12 @@ const roleStore = useRoleStore(); //access the store
 const token = ref("");
 const showDropdown = ref(false);
 const router = useRouter();
-
-const toggleDropdown = () => {
-  showDropdown.value = !showDropdown.value;
+ 
+const toggleDropdown = () => {  
+  roleStore.toggleDropDown(); 
 };
+ 
+
 if (import.meta.client) {
   token.value = localStorage.getItem("SavedToken");
 }
@@ -20,9 +22,10 @@ const handleLogout = () => {
   localStorage.removeItem("SavedToken");
   roleStore.setState("", "", "");
   router.push("/login");
+  roleStore.closeDropDown()
 };
 const dashboardApi = async () => {
-  console.log(localStorage.getItem("SavedToken"));
+ 
   try {
     const response = await useCustomFetch("/validate_token", {
       method: "GET",
@@ -35,9 +38,12 @@ const dashboardApi = async () => {
   }
 };
 
+
 onBeforeMount(() => {
+  if(token.value)
+{
   dashboardApi();
-  console.log(roleStore.role);
+}
 });
 </script>
 
@@ -83,7 +89,7 @@ onBeforeMount(() => {
             <li>
               <nuxt-link
                 class="border border-white text-white bg-transparent hover:bg-white hover:text-black font-bold py-2 px-4 rounded"
-                to="/ExtractZooData"
+                to="/zoo/ExtractZooData"
               >
                 Zoo Data
               </nuxt-link>
@@ -96,7 +102,8 @@ onBeforeMount(() => {
                 @click="toggleDropdown"
               />
               <div
-                v-if="showDropdown"
+                v-if="roleStore.showDropDown "
+                
                 class="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg"
               >
                 <ul class="py-1">

@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, type Router } from "vue-router";
 import { useCustomFetch } from "~/composable/useFetchOptions";
-const router = useRouter();
+const router : Router = useRouter();
+ 
 const route = useRoute();
 const token = route.query.token;
 
 const newPassword = ref("");
-//console.log(token);
+ 
 const setPassword = async () => {
   try {
     const response = await useCustomFetch("/setnewpassword", {
@@ -18,7 +19,6 @@ const setPassword = async () => {
       }),
     });
     alert(response);
-
     router.push("/login");
   } catch (err) {
     console.log("error in seting new password -->", err);

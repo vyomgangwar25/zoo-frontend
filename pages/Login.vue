@@ -1,6 +1,8 @@
 <template>
   <div class="flex items-center justify-center min-h-screen bg-blue-100">
+    <AlertPopup :label="toastMessage" :isVisible="isToastVisible" @close="closeToast" />
     <div class="max-w-sm w-full p-8 bg-white shadow-lg rounded-lg">
+     
       <h1 class="text-3xl font-bold text-center text-gray-700 mb-8">
         Login Form
       </h1>
@@ -12,10 +14,7 @@
           <CustomInput
             type="email"
             v-model="email"
-            :isvalid="isEmailValid"
             placeholder="Enter your email"
-            :regex="/^[^\s@]+@[^\s@]+\.[^\s@]+$/"
-            errorMessage="Please enter a valid email address."
           />
         </div>
         <div class="flex flex-col">
@@ -26,59 +25,69 @@
             type="password"
             v-model="password"
             placeholder="Enter your password"
-            :regex="/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).{8,16}$/"
-            errorMessage="Please enter a valid password."
           />
         </div>
 
         <Button name="Submit" />
       </form>
+   
 
       <div class="flex items-center justify-center">
-        <nuxt-link
-          to="ForgetPassword"
+        <NuxtLink
+          to="/ForgetPassword"
           class="text-blue-500 underline hover:text-blue-700 capitalize py-4"
-          >Forget Password?</nuxt-link
+          >Forget Password?</NuxtLink
         >
       </div>
       <div class="flex items-center justify-center mb-2">
         not Registered?
-        <nuxt-link
-          to="Registration"
+        <NuxtLink
+          to="/registration"
           class="text-blue-500 underline hover:text-blue-700 capitalize"
-          >create an account</nuxt-link
         >
+          Create an account
+        </NuxtLink>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 definePageMeta({
   middleware: "auth",
 });
+
 import { ref } from "vue";
 import { useRoleStore } from "~/store/useRoleStore";
-import { useRouter } from "vue-router";
+import { useRouter, type Router } from "vue-router";
 import { useCustomFetch } from "~/composable/useFetchOptions";
+import AlertPopup from "~/components/AlertPopup.vue";
 import Button from "~/components/Button.vue";
 import CustomInput from "~/components/CustomInput.vue";
-const router = useRouter();
-const email = ref("");
+ 
+const router: Router = useRouter();
+const email: Ref<string> = ref("");
 const password = ref("");
-const isEmailValid = ref(false);
+const toastMessage :Ref<string> = ref('');
+const isToastVisible = ref(false);
+
 const roleStore = useRoleStore();
+
+const closeToast=()=>{
+  isToastVisible.value=false
+}
 
 const handleSubmit = async () => {
   try {
-    const response = await useCustomFetch("/login", {
+    const response: any = await useCustomFetch("/login", {
       method: "POST",
       body: JSON.stringify({
         email: email.value,
         password: password.value,
       }),
     });
-    console.log(response);
+
+    //console.log(response);
     const token = response.token;
     roleStore.setState(response.role, response.email, response.name);
 
@@ -87,8 +96,10 @@ const handleSubmit = async () => {
     localStorage.setItem("SavedToken", token);
 
     router.push("/Dashboard");
-  } catch (err) {
-    alert(err.message || "An error occurred during login.");
+  } catch (err: any) {
+    toastMessage.value = err.response._data;
+    isToastVisible.value = true;
+  
   }
 };
 </script>

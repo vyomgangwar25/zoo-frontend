@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<!-- <script lang="ts" setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -84,4 +84,7 @@ const navigateTo = (path: string) => {
     </div>
   </nav>
   <slot />
+</template> -->
+<template>
+  
 </template>
