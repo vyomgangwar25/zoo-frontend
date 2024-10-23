@@ -2,31 +2,45 @@
 import { ref } from "vue";
 import { useRoute, type Router } from "vue-router";
 import { useCustomFetch } from "~/composable/useFetchOptions";
+import AlertPopup from "~/components/AlertPopup.vue";
 const router : Router = useRouter();
  
 const route = useRoute();
 const token = route.query.token;
 
 const newPassword = ref("");
+const toastMessage :Ref<string> = ref('');
+const isToastVisible = ref(false);
+const closeToast=()=>{
+  isToastVisible.value=false
+}
  
 const setPassword = async () => {
+  if(!newPassword.value)
+{
+  toastMessage.value="please enter password";
+  isToastVisible.value = true;
+  return;
+}
   try {
-    const response = await useCustomFetch("/setnewpassword", {
+    const response :any= await useCustomFetch("/setnewpassword", {
       method: "POST",
 
       body: JSON.stringify({
         newPassword: newPassword.value,
       }),
     });
-    alert(response);
+ 
     router.push("/login");
-  } catch (err) {
-    console.log("error in seting new password -->", err);
+  } catch (err:any) {
+    toastMessage.value = err.response._data;
+    isToastVisible.value = true;
   }
 };
 </script>
 
 <template>
+     <AlertPopup :label="toastMessage" :isVisible="isToastVisible" @close="closeToast" />
   <div>
     <div class="flex items-center justify-center min-h-screen bg-blue-100">
       <div class="max-w-md w-full p-8 bg-white shadow-lg rounded-lg">

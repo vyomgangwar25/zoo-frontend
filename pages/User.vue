@@ -1,13 +1,5 @@
 <template>
-  <!-- <Navbar
-    title="Zoo"
-    :links="[
-      { text: 'Home', href: '/' },
-      { text: 'Login', href: '/login' },
-      { text: 'Signup', href: '/registration' },
-      { text: 'Dashboard', href: '/Dashboard' },
-    ]"
-  /> -->
+ 
   <div class="container">
     <div class="header mb-4">
       List of users that are stored in the database:

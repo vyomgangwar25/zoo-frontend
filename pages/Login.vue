@@ -91,7 +91,9 @@ const handleSubmit = async () => {
     const token = response.token;
     roleStore.setState(response.role, response.email, response.name);
 
-    const test = useCookie("SavedToken");
+    const test = useCookie("SavedToken", {
+      maxAge : 7200
+    });
     test.value = token;
     localStorage.setItem("SavedToken", token);
 

@@ -17,7 +17,9 @@ if (import.meta.client) {
 }
 
 const handleLogout = () => {
-  const cookie = useCookie("SavedToken");
+  const cookie = useCookie("SavedToken", {
+    maxAge : 0
+  });
   cookie.value = "";
   localStorage.removeItem("SavedToken");
   roleStore.setState("", "", "");
@@ -104,7 +106,7 @@ onBeforeMount(() => {
               <div
                 v-if="roleStore.showDropDown "
                 
-                class="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg"
+                class="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-50"
               >
                 <ul class="py-1">
                   <li

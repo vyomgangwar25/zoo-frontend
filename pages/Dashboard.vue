@@ -1,47 +1,5 @@
 <template>
   <div class="flex h-screen bg-gray-300">
-    <!-- <aside class="w-64 bg-gray-800 text-white flex flex-col">
-      <div class="p-4 text-center font-bold text-xl bg-gray-900">Dashboard</div>
-      <nav class="flex-1 mt-4">
-        <ul class="space-y-2">
-          <li>
-            <nuxt-link
-              to="/"
-              class="block px-4 py-2 text-gray-300 hover:bg-gray-700"
-              >Home</nuxt-link
-            >
-          </li>
-          <li>
-            <nuxt-link
-              to="/User"
-              class="block px-4 py-2 text-gray-300 hover:bg-gray-700"
-              >Users</nuxt-link
-            >
-          </li>
-          <li>
-            <nuxt-link
-              to="/ExtractZooData"
-              class="block px-4 py-2 text-gray-300 hover:bg-gray-700"
-              >Zoo</nuxt-link
-            >
-          </li>
-          <li>
-            <nuxt-link
-              to="#"
-              class="block px-4 py-2 text-gray-300 hover:bg-gray-700"
-            >
-              Animals
-            </nuxt-link>
-          </li>
-        </ul>
-      </nav>
-      <div class="p-4 border-t border-gray-700 text-center">
-        <button @click="logout" class="text-gray-300 hover:bg-gray-700">
-          Logout
-        </button>
-      </div>
-    </aside> -->
-
     <main class="flex-1 p-6">
       <div class="bg-white p-6 rounded-lg shadow-md">
         <h1 class="text-2xl font-bold mb-4">

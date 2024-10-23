@@ -1,4 +1,5 @@
 <template>
+      <AlertPopup :label="toastMessage" :isVisible="isToastVisible" @close="closeToast" />
   <div>
     <div class="flex items-center justify-center min-h-screen bg-blue-100">
       <div class="max-w-md w-full p-8 bg-white shadow-lg rounded-lg">
@@ -31,23 +32,31 @@
 import { ref } from "vue";
 import Button from "~/components/Button.vue";
 import { useCustomFetch } from "~/composable/useFetchOptions";
-
+import AlertPopup from "~/components/AlertPopup.vue";
 const email   = ref("");
+const toastMessage :Ref<string> = ref('');
+const isToastVisible = ref(false);
+const closeToast=()=>{
+  isToastVisible.value=false
+}
 
 const handleResetPassword = async () => {
   try {
-    const response = await useCustomFetch("/forgetpassword", {
+    const response :any= await useCustomFetch("/forgetpassword", {
       method: "POST",
 
       body: JSON.stringify({
         email: email.value,
       }),
     });
-
     console.log(response);
-    alert("reset password link sent to your email address");
-  } catch (err) {
-    console.error(err);
+    toastMessage.value="reset password link sent to  console ";
+    isToastVisible.value = true;
+   
+  } catch (err:any) {
+    toastMessage.value = err.response._data;
+    isToastVisible.value = true;
+   
   }
 };
 </script>

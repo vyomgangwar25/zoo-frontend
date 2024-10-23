@@ -1,8 +1,4 @@
-
 <script lang="ts" setup>
-
-import type { LocationQueryValue } from 'vue-router';
-
 const selectedZooId : Ref<number> = ref(0);
 const props= defineProps<{
   isactive: boolean;
@@ -26,7 +22,7 @@ const props= defineProps<{
   >;
   formData?: {
     name: string;
-    gender: string;
+    
     [x: string]: string;
   };
 }>();

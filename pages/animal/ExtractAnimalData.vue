@@ -1,12 +1,12 @@
-<script lang="ts" setup>
+<script lang="ts"  setup>
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useRoleStore } from "~/store/useRoleStore";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import DeleteModalVue from "~/components/DeleteModalVue.vue";
 import  AlertPopup from "~/components/AlertPopup.vue"
- 
-const toastMessage :Ref<string> = ref('');
+
+const toastMessage  = ref('');
 const isToastVisible = ref(false);
 const closeToast=()=>{
   isToastVisible.value=false
@@ -16,7 +16,6 @@ const roleStore = useRoleStore();
 const route = useRoute();
 const AnimalId = ref();
 const isModalOpen = ref(false);
- 
 
 function openModal(animalId:BigInteger) {
   isModalOpen.value = true;
@@ -29,14 +28,14 @@ function openModal(animalId:BigInteger) {
 }
 const updateAnimalData = async () => {
     try {
-    const response = await useCustomFetch(`/updateanimal/${AnimalId.value}`, {
+    const response : any= await useCustomFetch(`/updateanimal/${AnimalId.value}`, {
       method: "PUT",
       body: JSON.stringify(formData.value),
     });
     toastMessage.value = response;
     fetchanimaldata();
-  } catch (err) {
-    toastMessage.value = err.response._data;     
+  } catch (err:any) {
+    toastMessage.value = err.response._data ;     
   }
   isToastVisible.value = true;
   isModalOpen.value = false;
@@ -65,13 +64,13 @@ const formData = ref({
 });
   const isAnimalRegistrationModal=ref(false);
 const handleSubmit = async () => {
-  if (!formData2.value.name || !formData2.value.gender ||!formData2.value.dob) {
+  if (!formData2.value.name || !formData2.value.gender ||!formData2.value.dob   ) {
      toastMessage.value = "Please fill all the details."
-    isToastVisible.value = true;
+     isToastVisible.value = true;
     return;
   }
   try {
-    const response = await useCustomFetch("/animalregistration", {
+    const response :any = await useCustomFetch("/animalregistration", {
       method: "POST",
       body: JSON.stringify(formData2.value),
     });
@@ -128,9 +127,7 @@ const Okmodal = async () => {
     const response = await useCustomFetch(`/deleteanimal/${animalIdOk.value}`, {
       method: "DELETE",
     });
-    items.value = items.value.filter(
-      (item) => item.animal_id !== animalIdOk.value
-    );
+    items.value = items.value.filter((item) => item.animal_id !== animalIdOk.value);
     if (items.value.length === 0 && pageno.value > 0) {
       pageno.value--;
       fetchanimaldata();
@@ -152,7 +149,6 @@ const selectedZooId = ref(0);
 
 //dropdown api
 const zooList: Ref<{ id: BigInteger; name: string }[]> = ref([]);
-
 const transferModalOpen = async (zooid :BigInteger, trasnferAnimalId:BigInteger) => {
   isTransferModelOpen.value = true;
   TransferAnimalId.value = trasnferAnimalId;
@@ -177,14 +173,11 @@ const closeTransferModal = () => {
 //transfer api
 const transferAnimal = async (id:BigInteger) => {
   try {
-    const response = await useCustomFetch(`/transferanimal`, {
+    const response :any = await useCustomFetch(`/transferanimal`, {
       method: "PUT",
       query: {
         animalid: TransferAnimalId.value,
         zooid: id,
-      },
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("SavedToken")}`,
       },
     });
     toastMessage.value = response;
@@ -219,9 +212,17 @@ const fetchanimaldata = async () => {
     console.error(err);
   }
 };
-const setSelectNo=(no:Number)=>{
+const diasblePgaeNo  =ref(0);
+const setSelectNo=(no:number)=>{
+  if(diasblePgaeNo.value=== no-1)
+   {
+    diasblePgaeNo.value=no-1;
+    return;
+   }
   pageno.value=Number(no)-1;
   fetchanimaldata();
+  diasblePgaeNo.value=no-1;
+  
 }
 const decreaseButton = () => {
   if (pageno.value > 0) {
@@ -250,10 +251,8 @@ onMounted(() => {
     </div>
     <div>
       <p>
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Delectus,
-        totam laboriosam sequi mollitia cum tempore molestiae voluptatum
-        deserunt molestias. A vero praesentium quod quos culpa eaque
-        consequatur, quas aperiam nesciunt?
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Delectus,totam laboriosam sequi mollitia cum tempore molestiae voluptatum
+        deserunt molestias. A vero praesentium quod quos culpa eaque consequatur, quas aperiam nesciunt?
       </p>
     </div>
 
@@ -264,11 +263,9 @@ onMounted(() => {
         <h1>List of Animals in the Zoo</h1>
       </div>
       <div>
-        <button
-          @click=" () => {  isAnimalRegistrationModal = true;
-            } "
-          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-4"
-        >
+        <button @click=" () => {  
+          isAnimalRegistrationModal = true;
+            } " class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-4">
           Add Animal
         </button>
       </div>
@@ -331,6 +328,14 @@ onMounted(() => {
             iconbg=" bg-gray-100"
             iconhover=" hover:bg-gray-500 hover:text-white ml-2"
           />
+          <CustomIcon
+          v-if="roleStore.role === 'admin' "
+          @clicked="navigateTo(`/AnimalTransferHistory?animalId=${animal.animal_id}`)"
+          name="material-symbols:history-2"
+          iconcolour=" text-blue-700"
+            iconbg=" bg-gray-100"
+            iconhover=" hover:bg-gray-500 hover:text-white ml-2"
+          />
         </li>
       </ul>
     </div>
@@ -338,15 +343,13 @@ onMounted(() => {
     <div
       v-if="items.length !== 0"
       class="pagination-controls flex justify-center space-x-4 my-4">
-      <button v-if="pageno>0"
-        class="btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        @click="decreaseButton">
+     
+      <button  class="btn px-4 py-2 rounded" :class="pageno > 0 ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"    @click="decreaseButton">
         Previous
-      </button>
+    </button>
       <button  class="btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" v-for="number in totalPages" :key="number"  @click="setSelectNo(Number(number))">{{ number }}</button>
-      <button v-if="pageno < totalPages-1"
-        class="btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        @click="increaseButton">
+       
+      <button  class="btn px-4 py-2 rounded" :class="pageno <totalPages-1 ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"  @click="increaseButton">
         Next
       </button>
     </div>
