@@ -87,15 +87,15 @@ const handleSubmit = async () => {
       }),
     });
 
-    //console.log(response);
+    console.log(response);
     const token = response.token;
-    roleStore.setState(response.role, response.email, response.name);
+    roleStore.setState(response.role, response.email, response.name,response.id);
 
     const test = useCookie("SavedToken", {
       maxAge : 7200
     });
     test.value = token;
-    localStorage.setItem("SavedToken", token);
+   
 
     router.push("/Dashboard");
   } catch (err: any) {

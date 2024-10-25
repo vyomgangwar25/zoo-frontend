@@ -7,15 +7,17 @@ export const useRoleStore = defineStore('role', {
          role:'',
          email:'',
          name:'',
+         id:0,
          showDropDown:false
       }),
   
   
     actions: {
-      setState(newRole: string,newEmail:string,newName:string) {
+      setState(newRole: string,newEmail:string,newName:string,userId:number) {
         this.role = newRole; 
         this.email= newEmail;
-        this.name=newName
+        this.name=newName;
+        this.id=userId;
       },
       toggleDropDown()
       {

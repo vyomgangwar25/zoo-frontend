@@ -47,7 +47,9 @@ const emits = defineEmits(["success", "close"]);
       <p v-if="modalType == 'delete'" class="text-sm text-gray-500 mb-4">
         <slot name="delete-modal-content-heading" />
       </p>
+
       <!-----------------------modaltype="transfer"----------------------->
+   
       <div v-if="modalType == 'transfer'" class="text-sm text-gray-500 mb-4">
         <slot name="delete-modal-content-heading" />
 

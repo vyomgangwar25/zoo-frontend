@@ -8,11 +8,12 @@ export function useCustomFetch<T>(
   const route=useRoute();
   const token=route.query.token;
   //console.log(token)
+  //console.log(useCookie("SavedToken").value);
   const defaults: UseFetchOptions<T> = {
     baseURL: "http://localhost:8080",
-    headers: localStorage.getItem("SavedToken")
+    headers: useCookie("SavedToken").value
       ? {
-           Authorization: `Bearer ${localStorage.getItem("SavedToken")}`
+           Authorization: `Bearer ${useCookie("SavedToken").value}`
         }
       : 
       token ? { Authorization: `Bearer ${token}`} : {},

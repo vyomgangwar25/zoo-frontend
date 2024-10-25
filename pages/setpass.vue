@@ -7,7 +7,6 @@ const router : Router = useRouter();
  
 const route = useRoute();
 const token = route.query.token;
-
 const newPassword = ref("");
 const toastMessage :Ref<string> = ref('');
 const isToastVisible = ref(false);

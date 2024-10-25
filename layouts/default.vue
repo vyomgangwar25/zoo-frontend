@@ -6,23 +6,22 @@ const roleStore = useRoleStore(); //access the store
 const token = ref("");
 const showDropdown = ref(false);
 const router = useRouter();
- 
+  
 const toggleDropdown = () => {  
   roleStore.toggleDropDown(); 
 };
- 
 
 if (import.meta.client) {
-  token.value = localStorage.getItem("SavedToken");
+  token.value = useCookie("SavedToken").value;
 }
-
+ 
 const handleLogout = () => {
   const cookie = useCookie("SavedToken", {
     maxAge : 0
   });
   cookie.value = "";
-  localStorage.removeItem("SavedToken");
-  roleStore.setState("", "", "");
+  ;
+  roleStore.setState("", "", "","");
   router.push("/login");
   roleStore.closeDropDown()
 };
@@ -33,7 +32,8 @@ const dashboardApi = async () => {
       method: "GET",
     });
 
-    roleStore.setState(response.role, response.userEmail, response.name);
+    roleStore.setState(response.role, response.userEmail, response.name,response.id);
+
   } catch (err) {
     alert(err);
     router.push("/login");
@@ -114,6 +114,11 @@ onBeforeMount(() => {
                     @click="navigateTo('/setpass')"
                   >
                     Update Password
+                  </li>
+                  <li
+                  class="block px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                  @click="navigateTo(`/Profile?id=${roleStore.id}`)">
+                    profile
                   </li>
                   <li
                     @click="handleLogout"

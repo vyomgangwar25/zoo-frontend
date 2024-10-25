@@ -106,7 +106,7 @@ const formData2 = ref({
 });
 
 const zooRegistration = async () => {
-  if ( !formData2.value.name || !formData2.value.location || !formData2.value.size )  {
+  if ( !formData2.value.name || !formData2.value.location || !formData2.value.size || formData2.value.name.trim().length===0)  {
     toastMessage.value = "Please fill all the details."
     isToastVisible.value = true;
     return;
@@ -161,7 +161,7 @@ const fetchzoodata = async () => {
         page: pageno.value, pagesize: pagesize,
       },
     });
-    console.log(response);
+    console.log(response);   
     items.value = response.zoodata;
     totalPages.value = Math.ceil(response.totalzoo / pagesize);
     

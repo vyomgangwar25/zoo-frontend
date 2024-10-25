@@ -33,7 +33,7 @@ const updateAnimalData = async () => {
       body: JSON.stringify(formData.value),
     });
     toastMessage.value = response;
-    fetchanimaldata();
+    fetchanimaldata();  
   } catch (err:any) {
     toastMessage.value = err.response._data ;     
   }
@@ -72,7 +72,7 @@ const handleSubmit = async () => {
   try {
     const response :any = await useCustomFetch("/animalregistration", {
       method: "POST",
-      body: JSON.stringify(formData2.value),
+      body:  formData2.value,
     });
    
     toastMessage.value = response;
@@ -300,7 +300,7 @@ onMounted(() => {
               <span class="font-medium">Gender: {{ animal.gender }}</span>
             </div>
             <div class="text-gray-500">
-              <span class="font-medium">DOB: {{ animal.dob }}</span>
+              <span class="font-medium">DOB: {{ animal.dob.split("T")[0] }}</span>
             </div>
           </div>
 
@@ -310,45 +310,39 @@ onMounted(() => {
             name="heroicons:x-mark"
             iconcolour=" text-red-700"
             iconbg=" bg-gray-100"
-            iconhover=" hover:bg-gray-500 hover:text-white ml-2"
-          />
+            iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
 
           <CustomIcon
             @clicked="openModal(animal.animal_id)"
             name="heroicons:arrow-path"
             iconcolour=" text-blue-700"
             iconbg=" bg-gray-100"
-            iconhover=" hover:bg-gray-500 hover:text-white ml-2"
-          />
+            iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
 
           <CustomIcon
             @clicked="transferModalOpen(route.query.zooId as any, animal.animal_id)"
             name="heroicons:arrow-right-on-rectangle-20-solid"
             iconcolour=" text-blue-700"
             iconbg=" bg-gray-100"
-            iconhover=" hover:bg-gray-500 hover:text-white ml-2"
-          />
+            iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
+
           <CustomIcon
           v-if="roleStore.role === 'admin' "
           @clicked="navigateTo(`/AnimalTransferHistory?animalId=${animal.animal_id}`)"
           name="material-symbols:history-2"
           iconcolour=" text-blue-700"
             iconbg=" bg-gray-100"
-            iconhover=" hover:bg-gray-500 hover:text-white ml-2"
-          />
+            iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
         </li>
       </ul>
     </div>
 
     <div
-      v-if="items.length !== 0"
-      class="pagination-controls flex justify-center space-x-4 my-4">
-     
+      v-if="items.length !== 0" class="pagination-controls flex justify-center space-x-4 my-4">
       <button  class="btn px-4 py-2 rounded" :class="pageno > 0 ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"    @click="decreaseButton">
         Previous
-    </button>
+      </button>
       <button  class="btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" v-for="number in totalPages" :key="number"  @click="setSelectNo(Number(number))">{{ number }}</button>
-       
       <button  class="btn px-4 py-2 rounded" :class="pageno <totalPages-1 ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"  @click="increaseButton">
         Next
       </button>
