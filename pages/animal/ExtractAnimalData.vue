@@ -46,15 +46,16 @@ const formFields = [
     label: "name",
     type: "text",
     placeholder: "Name",
-    errorMessage: "Name not valid",
-    regex: "/^.+$/",
+    
+    errorMessage:"enter valid name",
+    regex:".*[a-zA-Z].*",
   },
   {
     label: "gender",
     type: "text",
     placeholder: "Gender",
-    errorMessage: "Gender not valid",
-    regex: "/^.+$/",
+    errorMessage:"enter gender",
+    regex:".*[a-zA-Z].*",
   },
 ];
 
@@ -89,22 +90,22 @@ const formFields2 = [
     label: "name",
     type: "text",
     placeholder: "Enter name of animal",
-    errorMessage: "Name not valid",
-    regex: "/^.+$/",
+    errorMessage:"enter valid name",
+    regex:".*[a-zA-Z].*",
   },
   {
     label: "gender",
     type: "text",
     placeholder: "Enter gender",
-    errorMessage: "Enter gender",
-    regex: "/^.+$/",
+    errorMessage:"enter gender",
+    regex:".*[a-zA-Z].*",
   },
   {
     label: "dob",
     type: "date",
     placeholder: "Enter dob",
-    errorMessage: "please enter dob",
-    regex: "/^.+$/",
+    errorMessage:"select date",
+    regex:""
   },
 ];
 const formData2 = ref({

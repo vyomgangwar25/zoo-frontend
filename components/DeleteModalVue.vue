@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 const selectedZooId : Ref<number> = ref(0);
+const validityCheck = ref<{ [key: string]: boolean }>({})
 const props= defineProps<{
   isactive: boolean;
   modalType: "form" | "delete" | "transfer";
@@ -22,10 +23,19 @@ const props= defineProps<{
   >;
   formData?: {
     name: string;
-    
     [x: string]: string;
   };
 }>();
+
+
+const emitFormSuccess = () => {
+  const allValid = Object.values(validityCheck.value).every(valid => valid);
+  if (allValid) {
+    emits("success");  
+  } else {
+    alert("Please fill out all fields correctly.");
+  }
+};
 /**
  * This is transfer id 
  */
@@ -100,6 +110,9 @@ const emits = defineEmits(["success", "close"]);
             v-model="props.formData![field.label]"
             :placeholder="field.placeholder"
             :regex="field.regex"
+            :errorMessage="field.errorMessage"
+             @validity="(validity) => { validityCheck[field.label] = validity; }"
+
           />
         </div>
       </div>
@@ -128,7 +141,8 @@ const emits = defineEmits(["success", "close"]);
         </button>
         <button
           v-if="modalType == 'form'"
-          @click="emits('success')"
+          @click="emitFormSuccess"
+         
           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         >
           <slot name="form-success-button"></slot>

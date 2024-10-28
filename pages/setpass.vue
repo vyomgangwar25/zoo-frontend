@@ -10,17 +10,22 @@ const token = route.query.token;
 const newPassword = ref("");
 const toastMessage :Ref<string> = ref('');
 const isToastVisible = ref(false);
+const validationCheck = ref<{  password: boolean }>({password: true});
 const closeToast=()=>{
   isToastVisible.value=false
 }
  
 const setPassword = async () => {
-  if(!newPassword.value)
+  if(!validationCheck.value.password)
 {
-  toastMessage.value="please enter password";
-  isToastVisible.value = true;
   return;
 }
+//   if(!newPassword.value)
+// {
+//   toastMessage.value="please enter password";
+//   isToastVisible.value = true;
+//   return;
+// }
   try {
     const response :any= await useCustomFetch("/setnewpassword", {
       method: "POST",
@@ -47,15 +52,20 @@ const setPassword = async () => {
           Enter new Password
         </h1>
         <form @submit.prevent="setPassword">
-          <div>
-            <label for=""> NewPassword </label>
-            <input
-              class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              type="password"
-              v-model="newPassword"
-              placeholder="Enter new Password"
-            />
-          </div>
+
+          <div class="flex flex-col">
+          <label for="password" class="text-gray-700 font-medium mb-2"
+            >Password</label
+          >
+          <CustomInput
+            type="password"
+            v-model="newPassword"
+            placeholder="Enter your password"
+            regex="[0-9a-zA-Z]{6,}"
+            errorMessage="Password must be at least 6 characters"
+             @validity="(event) => {validationCheck.password=event}"
+          />
+        </div>
           <div class="py-2">
             <Button name="new password" />
           </div>

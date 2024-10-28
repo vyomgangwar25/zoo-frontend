@@ -18,9 +18,10 @@
               type="email"
               v-model="email"
               placeholder="Enter your email"
+              regex="^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$"
+            errorMessage="enter valid email address"
             />
-          </div>
-
+          </div> 
           <Button name="reset">Reset Password</Button>
         </form>
       </div>
@@ -33,7 +34,7 @@ import { ref } from "vue";
 import Button from "~/components/Button.vue";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import AlertPopup from "~/components/AlertPopup.vue";
-const email   = ref("");
+const email = ref("");
 const toastMessage :Ref<string> = ref('');
 const isToastVisible = ref(false);
 const closeToast=()=>{

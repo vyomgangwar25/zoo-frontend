@@ -4,6 +4,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
   const test = useCookie("SavedToken");
   if (test.value) {
     console.log("Token hit");
+    console.log("token")
     return navigateTo("/Dashboard");
   }
   // console.log(process.client);

@@ -14,6 +14,8 @@
             type="text"
             placeholder="Enter your name"
             v-model="name"
+            regex=".*[a-zA-Z].*"
+            errorMessage="enter valid name"
           />
         </div>
 
@@ -25,6 +27,8 @@
             v-model="email"
             type="email"
             placeholder="Enter your email"
+            regex= "^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$"
+            errorMessage="enter valid email address"
           />
         </div>
 
@@ -36,6 +40,9 @@
             v-model="password"
             type="password"
             placeholder="Enter your password"
+            regex="[0-9a-zA-Z]{6,}"
+            errorMessage="Password must be at least 6 characters"
+              
           />
         </div>
 
@@ -83,6 +90,7 @@ const password = ref("");
 const role :Ref<string>= ref("user");
 const toastMessage :Ref<string>= ref('');
 const isToastVisible = ref(false);
+ 
 
 const closeToast=()=>{
   isToastVisible.value=false

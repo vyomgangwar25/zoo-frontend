@@ -21,22 +21,23 @@ const formFields = [
     label: "name",
     type: "text",
     placeholder: "Enter Name",
-    errorMessage: "Name not valid",
-    regex: "/^.+$/",
+    errorMessage:"enter valid name",
+    regex:".*[a-zA-Z].*",
+   
   },
   {
     label: "location",
     type: "text",
     placeholder: "Enter Location",
-    errorMessage: "Location not valid",
-    regex: "/^.+$/",
+    errorMessage:"location not valid",
+    regex:".*[a-zA-Z].*",
   },
   {
     label: "size",
     type: "number",
     placeholder: "Enter size",
-    errorMessage: "Size not valid",
-    regex: "/^.+$/",
+   errorMessage: "Size must be greater then 0",
+    regex: "^(?!0$)[1-9][0-9]*$"
   },
 ];
 
@@ -80,22 +81,23 @@ const formFields2 = [
     label: "name",
     type: "text",
     placeholder: "Enter Name",
-    errorMessage: "Name not valid",
-    regex: "/^.+$/",
+    errorMessage:"enter valid name",
+    regex:".*[a-zA-Z].*",
   },
   {
     label: "location",
     type: "text",
     placeholder: "Enter Location",
-    errorMessage: "Location not valid",
-    regex: "/^.+$/",
+    errorMessage:"enter valid location",
+    regex:".*[a-zA-Z].*",
   },
   {
     label: "size",
     type: "text",
     placeholder: "Enter size",
-    errorMessage: "Size not valid",
-    regex: "/^.+$/",
+    errorMessage: "Size must be greater then 0",
+    regex: "^(?!0$)[1-9][0-9]*$"
+
   },
 ];
 
@@ -106,7 +108,7 @@ const formData2 = ref({
 });
 
 const zooRegistration = async () => {
-  if ( !formData2.value.name || !formData2.value.location || !formData2.value.size || formData2.value.name.trim().length===0)  {
+  if ( !formData2.value.name || !formData2.value.location || !formData2.value.size )  {
     toastMessage.value = "Please fill all the details."
     isToastVisible.value = true;
     return;

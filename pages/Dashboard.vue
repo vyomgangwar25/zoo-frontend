@@ -14,14 +14,12 @@
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from "vue";
+<script lang="ts" setup>
+ 
 import { useRoleStore } from "~/store/useRoleStore";
 
 const roleStore = useRoleStore();
 const router = useRouter();
-const name = ref("");
-const email = ref("");
 
 const logout = () => {
   localStorage.removeItem("SavedToken");

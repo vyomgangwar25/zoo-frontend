@@ -15,6 +15,9 @@
             type="email"
             v-model="email"
             placeholder="Enter your email"
+            regex="^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$"
+            errorMessage="enter valid email address"
+             
           />
         </div>
         <div class="flex flex-col">
@@ -25,9 +28,10 @@
             type="password"
             v-model="password"
             placeholder="Enter your password"
+            regex="[0-9a-zA-Z]{6,}"
+            errorMessage="Password must be at least 6 characters"
           />
         </div>
-
         <Button name="Submit" />
       </form>
    
@@ -53,10 +57,10 @@
 </template>
 
 <script lang="ts" setup>
-definePageMeta({
+ 
+ definePageMeta({
   middleware: "auth",
 });
-
 import { ref } from "vue";
 import { useRoleStore } from "~/store/useRoleStore";
 import { useRouter, type Router } from "vue-router";

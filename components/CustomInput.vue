@@ -23,7 +23,7 @@ const props = defineProps({
   errorMessage: String,
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue",'validity']);
 const errormsz = ref(false);
 
 const onInputChange = (event) => {
@@ -32,7 +32,12 @@ const onInputChange = (event) => {
 
   if (props.regex) {
     const pattern = new RegExp(props.regex);
-    errormsz.value = !pattern.test(value);
+    const isValid = pattern.test(value);
+    errormsz.value = !isValid; 
+    emit("validity", isValid);
+  } else {
+    emit("validity", true);
   }
-};
+}
+ 
 </script>

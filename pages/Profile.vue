@@ -17,15 +17,15 @@ const formFields = [
     label: "name",
     type: "text",
     placeholder: "Name",
-    errorMessage: "Name not valid",
-    regex: "/^.+$/",
+    regex:".*[a-zA-Z].*",
+    errorMessage:"enter valid name",
   },
   {
     label: "email",
     type: "email",
     placeholder: "email",
-    errorMessage: "email not valid",
-    regex: "/^.+$/",
+    regex: "^[\\w.-]+@[a-zA-Z\\d.-]+\\.[a-zA-Z]{2,}$",
+    errorMessage:"enter valid email address"
   },
 ];
 
@@ -39,6 +39,7 @@ const modalOpen=()=>{
   formData.value.name=roleStore.name;
   formData.value.email=roleStore.email
 }
+ 
 
 const handleSubmit=async()=>{
     const response= await useCustomFetch(`/updateuser/${route.query.id}`,{
@@ -57,6 +58,7 @@ const handleSubmit=async()=>{
       
     }
     isModalOpen.value=false;
+    dashboardApi();
   
 }
 
@@ -93,7 +95,7 @@ onMounted(()=>{
  
      <div class=" flex justify-center">
     <div class="flex items-center justify-center mb-4">
-      <label for="name" class="block text-xl font-medium text-gray-700 mr-2">Name:</label>
+      <CustomIcon name="material-symbols:person-rounded" iconcolour=" text-gray-700"/>
       <CustomInput
         type="text"
         placeholder="Enter your name"
@@ -104,7 +106,7 @@ onMounted(()=>{
      </div>
   <div class="flex justify-center">
     <div class="flex items-center justify-center mb-4">
-      <label for="email" class="block text-xl font-medium text-gray-700 mr-2">Email:</label>
+     <CustomIcon name="heroicons:envelope-20-solid" iconcolour=" text-gray-700"     />
       <CustomInput
         type="text"
         placeholder="Enter your email"
@@ -115,7 +117,7 @@ onMounted(()=>{
   </div>
   <div class=" flex justify-center">
     <div class="flex items-center justify-center mb-4">
-      <label for="name" class="block text-xl font-medium text-gray-700 mr-2">Role:</label>
+     <CustomIcon name="heroicons:information-circle-solid"   iconcolour=" text-gray-700"  />
       <CustomInput
         type="text"
         placeholder="Enter role"
