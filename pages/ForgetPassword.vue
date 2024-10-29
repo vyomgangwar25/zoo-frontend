@@ -20,6 +20,7 @@
               placeholder="Enter your email"
               regex="^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$"
             errorMessage="enter valid email address"
+             @validity="(event) => {validationCheck=event}"
             />
           </div> 
           <Button name="reset">Reset Password</Button>
@@ -37,11 +38,17 @@ import AlertPopup from "~/components/AlertPopup.vue";
 const email = ref("");
 const toastMessage :Ref<string> = ref('');
 const isToastVisible = ref(false);
+const validationCheck=ref(true)
 const closeToast=()=>{
   isToastVisible.value=false
 }
 
 const handleResetPassword = async () => {
+  if(!validationCheck.value)
+    {
+      console.log(validationCheck.value)
+  return;
+      }
   try {
     const response :any= await useCustomFetch("/forgetpassword", {
       method: "POST",

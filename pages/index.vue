@@ -27,16 +27,14 @@
         around the world.
       </p>
       <div class="flex justify-center space-x-4 y-2">
-        <button
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
           Learn More
         </button>
-        <button
-          class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Get Started
-        </button>
+
+        <NuxtLink to="/login" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+        Get Started
+       </NuxtLink>
+
       </div>
     </div>
   </div>

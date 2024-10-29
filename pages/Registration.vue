@@ -16,6 +16,7 @@
             v-model="name"
             regex=".*[a-zA-Z].*"
             errorMessage="enter valid name"
+             @validity="(event) => {validationCheck.name=event}"
           />
         </div>
 
@@ -29,6 +30,7 @@
             placeholder="Enter your email"
             regex= "^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$"
             errorMessage="enter valid email address"
+             @validity="(event) => {validationCheck.email=event}"
           />
         </div>
 
@@ -42,6 +44,7 @@
             placeholder="Enter your password"
             regex="[0-9a-zA-Z]{6,}"
             errorMessage="Password must be at least 6 characters"
+             @validity="(event) => {validationCheck.password=event}"
               
           />
         </div>
@@ -76,9 +79,7 @@
 </template>
 
 <script lang="ts" setup>
-definePageMeta({
-  middleware: "auth",
-});
+ 
 import { ref } from "vue";
 
 import Button from "~/components/Button.vue";
@@ -90,13 +91,17 @@ const password = ref("");
 const role :Ref<string>= ref("user");
 const toastMessage :Ref<string>= ref('');
 const isToastVisible = ref(false);
- 
+const validationCheck = ref({name: true,email: true,password: true});
 
 const closeToast=()=>{
   isToastVisible.value=false
 }
 
 const handleSubmit = async () => {
+  if(!validationCheck.value.name || !validationCheck.value.email || !validationCheck.value.password)
+{
+  return;
+}
   try {
     const response = await useCustomFetch("/registration", {
       method: "POST",

@@ -1,6 +1,7 @@
 <script setup>
 import { useRoleStore } from "~/store/useRoleStore";
 import { useCustomFetch } from "~/composable/useFetchOptions";
+ 
 const roleStore = useRoleStore(); //access the store
 
 const token = ref("");
@@ -23,8 +24,15 @@ const handleLogout = () => {
   ;
   roleStore.setState("", "", "","");
   router.push("/login");
-  roleStore.closeDropDown()
+  
 };
+const handleSetPass=()=>{
+  router.push("/setpass")
+}
+
+const handleProfile=()=>{
+  navigateTo(`/Profile?id=${roleStore.id}`)
+}
 const dashboardApi = async () => {
  
   try {
@@ -39,8 +47,6 @@ const dashboardApi = async () => {
     router.push("/login");
   }
 };
-
-
 onBeforeMount(() => {
   if(token.value)
 {
@@ -111,13 +117,13 @@ onBeforeMount(() => {
                 <ul class="py-1">
                   <li
                     class="block px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                    @click="navigateTo('/setpass')"
+                    @click="handleSetPass"
                   >
                     Update Password
                   </li>
                   <li
                   class="block px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                  @click="navigateTo(`/Profile?id=${roleStore.id}`)">
+                  @click="handleProfile   ">
                     profile
                   </li>
                   <li

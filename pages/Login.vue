@@ -17,6 +17,7 @@
             placeholder="Enter your email"
             regex="^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$"
             errorMessage="enter valid email address"
+            @validity="(event) => {validationCheck.email=event}"
              
           />
         </div>
@@ -30,6 +31,7 @@
             placeholder="Enter your password"
             regex="[0-9a-zA-Z]{6,}"
             errorMessage="Password must be at least 6 characters"
+              @validity="(event) => {validationCheck.password=event}"
           />
         </div>
         <Button name="Submit" />
@@ -58,9 +60,7 @@
 
 <script lang="ts" setup>
  
- definePageMeta({
-  middleware: "auth",
-});
+ 
 import { ref } from "vue";
 import { useRoleStore } from "~/store/useRoleStore";
 import { useRouter, type Router } from "vue-router";
@@ -74,6 +74,7 @@ const email: Ref<string> = ref("");
 const password = ref("");
 const toastMessage :Ref<string> = ref('');
 const isToastVisible = ref(false);
+const validationCheck = ref({name: true,email: true,password: true});
 
 const roleStore = useRoleStore();
 
@@ -82,6 +83,11 @@ const closeToast=()=>{
 }
 
 const handleSubmit = async () => {
+  console.log(validationCheck.value.email,validationCheck.value.password)
+  if(!validationCheck.value.email || !validationCheck.value.password)
+{
+  return;
+}
   try {
     const response: any = await useCustomFetch("/login", {
       method: "POST",

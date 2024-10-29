@@ -3,8 +3,7 @@ import { useRoleStore } from "~/store/useRoleStore";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import DeleteModalVue from "~/components/DeleteModalVue.vue";
 import  AlertPopup from "~/components/AlertPopup.vue"
- 
- 
+
 const toastMessage  = ref('');
 const isToastVisible = ref(false);
 const closeToast=()=>{
@@ -155,7 +154,10 @@ const DecreaseButton = () => {
     fetchzoodata();
   }
 };
+
+const loading=ref(false);
 const fetchzoodata = async () => {
+  loading.value=true;
   try {
     const response :any = await useCustomFetch("/extractzoo", {
       method: "GET",
@@ -169,6 +171,9 @@ const fetchzoodata = async () => {
     
   } catch (err) {
     console.error(err);
+  }
+  finally{
+    loading.value=false;
   }
 };
 
@@ -244,12 +249,12 @@ const viewAnimal = (id:BigInteger) => {
     </div>
 
     <div class="p-6 bg-gray-200 rounded-lg">
-      <div
-        v-if="items.length === 0"
-        class="text-2xl bold flex justify-center aligb-center py-10"
-      >
-        loading.....
-      </div>
+      <div v-if="loading" class="text-2xl bold flex justify-center aligb-center py-10">
+       Loading...
+    </div>
+    <div v-else-if="items.length === 0" class="text-2xl bold flex justify-center aligb-center py-10">
+      No zoo present
+    </div>
       <ul class="space-y-4">
         <li
           v-for="(item, index) in items"

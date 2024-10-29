@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 
 import { useCustomFetch } from '~/composable/useFetchOptions';
-import { useRoleStore } from '~/store/useRoleStore'; 
+import { useRoleStore } from '~/store/useRoleStore';
 
 const route=useRoute()
 const roleStore = useRoleStore();

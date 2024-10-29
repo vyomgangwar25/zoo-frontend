@@ -197,8 +197,9 @@ const pagesize = 3;
 const pageno = ref(0);
 const zooid :Ref<number>= ref(0);
 const zooname :Ref<string>= ref("");
-
+const loading=ref(false);
 const fetchanimaldata = async () => {
+  loading.value=true;
   try {
     const response:any = await useCustomFetch(`/extractanimal/${zooid.value}?page=${pageno.value}&pagesize=${pagesize}`,
       {
@@ -212,6 +213,9 @@ const fetchanimaldata = async () => {
   } catch (err) {
     console.error(err);
   }
+  finally{
+    loading.value=false;
+  }
 };
 const diasblePgaeNo  =ref(0);
 const setSelectNo=(no:number)=>{
@@ -222,8 +226,7 @@ const setSelectNo=(no:number)=>{
    }
   pageno.value=Number(no)-1;
   fetchanimaldata();
-  diasblePgaeNo.value=no-1;
-  
+  diasblePgaeNo.value=no-1; 
 }
 const decreaseButton = () => {
   if (pageno.value > 0) {
@@ -231,7 +234,6 @@ const decreaseButton = () => {
     fetchanimaldata();
   }
 };
-
 const increaseButton = () => {
   if (pageno.value < totalPages.value - 1) {
     pageno.value = pageno.value + 1;
@@ -243,7 +245,6 @@ onMounted(() => {
   fetchanimaldata();
 });
 </script>
-
 <template>
   <AlertPopup :label="toastMessage" :isVisible="isToastVisible" @close="closeToast" />
   <div class="container mx-auto p-4">
@@ -289,9 +290,12 @@ onMounted(() => {
     </div>
 
     <div class="p-6 bg-gray-200 rounded-lg mt-5">
-      <div v-if="items.length === 0" class="text-2xl bold flex justify-center aligb-center py-10">
-        loading.....
-      </div>
+    <div v-if="loading" class="text-2xl bold flex justify-center aligb-center py-10">
+       Loading...
+    </div>
+    <div v-else-if="items.length === 0" class="text-2xl bold flex justify-center aligb-center py-10">
+      No animals present
+    </div>
       <ul class="space-y-4" v-else>
         <li  v-for="animal in items"
           class="bg-white shadow-lg rounded-lg p-6 flex justify-between items-center">

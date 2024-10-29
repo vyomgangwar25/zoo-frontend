@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 const selectedZooId : Ref<number> = ref(0);
+const toastMessage :Ref<string> = ref('');
+const isToastVisible = ref(false)
 const validityCheck = ref<{ [key: string]: boolean }>({})
 const props= defineProps<{
   isactive: boolean;
@@ -27,15 +29,22 @@ const props= defineProps<{
   };
 }>();
 
+const closeToast=()=>{
+  isToastVisible.value=false;
+}
 
 const emitFormSuccess = () => {
   const allValid = Object.values(validityCheck.value).every(valid => valid);
   if (allValid) {
     emits("success");  
   } else {
-    alert("Please fill out all fields correctly.");
+    toastMessage.value="Please fill out all fields correctly";
+    isToastVisible.value=true;
+  
   }
 };
+
+
 /**
  * This is transfer id 
  */
@@ -49,6 +58,7 @@ const emitTransfer = () => {
 const emits = defineEmits(["success", "close"]);
 </script>
 <template>
+ <AlertPopup :label="toastMessage" :isVisible="isToastVisible" @close="closeToast" />
   <div
     v-if="isactive"
     class="fixed inset-0 z-10 flex items-center justify-center bg-gray-500 bg-opacity-75"
