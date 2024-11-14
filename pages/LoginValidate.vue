@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-import { Form, Field, ErrorMessage, defineRule } from "vee-validate";
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
+const validationSchema = yup.object({
+  email: yup.string().email('Invalid email format').required('Email is required'),
+  password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+});
 import { useRoleStore } from "~/store/useRoleStore";
 import { useRouter, type Router } from "vue-router";
 import { useCustomFetch } from "~/composable/useFetchOptions";
@@ -9,10 +14,9 @@ const isToastVisible = ref(false);
 const items: Ref<
   { token: string; role: string; email: string; name: string; id: number }[]
 > = ref([]);
-
 const router: Router = useRouter();
-const userEmail  = ref("");
-const userPassword = ref("");
+const email  = ref("");
+const password = ref("");
 const roleStore = useRoleStore();
 
 const closeToast = () => {
@@ -23,8 +27,8 @@ const handleSubmit = async () => {
     const response: any = await useCustomFetch("/login", {
       method: "POST",
       body: JSON.stringify({
-        email: userEmail.value,
-        password: userPassword.value,
+        email: email.value,
+        password: password.value,
       }),
     });
     items.value = response;
@@ -43,7 +47,6 @@ const handleSubmit = async () => {
     test.value = token;
     router.push("/Dashboard");
   } catch (err: any) {
-    console.log("hello")
     toastMessage.value = err.response._data;
     isToastVisible.value = true;
   }
@@ -52,37 +55,46 @@ const handleSubmit = async () => {
 
 <template>
   <div class="flex items-center justify-center min-h-screen bg-blue-100">
-    <AlertPopup
-      :label="toastMessage"
-      :isVisible="isToastVisible"
-      @close="closeToast"
-    />
+ 
 
     <div class="max-w-sm w-full p-8 bg-white shadow-lg rounded-lg">
       <h1 class="text-3xl font-bold text-center text-gray-700 mb-8">
         Login Form
       </h1>
 
-      <Form  @submit="handleSubmit">
+      <Form :validation-schema="validationSchema" @submit="handleSubmit">
         <div class="mb-4">
-          <label for="email" class="block text-sm font-medium text-gray-700" >Email</label >
-          <Field name="email" type="email"
+          <label for="email" class="block text-sm font-medium text-gray-700"
+            >Email</label
+          >
+          <Field
+            name="email"
+            type="email"
             class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
-            v-model="userEmail" rules="required|email"
+            v-model="email"
           />
           <ErrorMessage name="email" class="text-red-600 text-sm mt-1" />
         </div>
 
         <div class="mb-4">
-          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-          <Field  name="password" type="password"
+          <label for="password" class="block text-sm font-medium text-gray-700"
+            >Password</label
+          >
+          <Field
+            name="password"
+            type="password"
             class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
-            v-model="userPassword"  rules="required|min:6"
+            v-model="password"
           />
           <ErrorMessage name="password" class="text-red-600 text-sm mt-1" />
         </div>
-       <Button name="Submit"/>
-        
+
+        <button
+          type="submit"
+          class="mt-4 w-full px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          Submit
+        </button>
       </Form>
 
       <div class="flex items-center justify-center mt-4">
@@ -105,4 +117,4 @@ const handleSubmit = async () => {
   </div>
 </template>
 
- 
+<style scoped></style>

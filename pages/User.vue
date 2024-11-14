@@ -1,5 +1,4 @@
 <template>
- 
   <div class="container">
     <div class="header mb-4">
       List of users that are stored in the database:
@@ -52,7 +51,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-definePageMeta({ layout: "custom2" });
+
 
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import Shimmer from "vue3-loading-shimmer";
@@ -83,25 +82,14 @@ const DecreaseButton = () => {
 };
 
 const fetchUser = async () => {
-  const token = localStorage.getItem("SavedToken");
-
-  if (!token) {
-    alert("No token found");
-    router.push("/login");
-    return;
-  }
-
   try {
     const response = await useCustomFetch(
       `/extractuser?page=${pageno.value}&pagesize=${pagesize}`,
       {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("SavedToken")}`,
-        },
-      }
+      } 
     );
-    //console.log(response);
+    console.log(response);
     items.value = response.users;
     //console.log(response.totalUsers);
 
@@ -115,27 +103,23 @@ const fetchUser = async () => {
 //delete user api
 
 const deleteUser = async (userId) => {
-  const token = localStorage.getItem("SavedToken");
+ 
 
   try {
-    const response = await fetch(`http://localhost:8080/deleteUser/${userId}`, {
+    const response = await useCustomFetch(`http://localhost:8080/deleteUser/${userId}`, {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+     
     });
-    if (!response.ok) {
-      alert("User is not allowed to delete the data from database");
-      //router.push("/login")
-    } else {
+  
+      console.log(response)
+      
       items.value = items.value.filter((item) => item.id !== userId);
       if (items.value.length === 0 && pageno.value > 0) {
         pageno.value--;
         fetchUser();
-      }
+      
 
-      alert("User delete successfully!!");
+    
     }
   } catch (err) {
     console.error("Error deleting user:", err);

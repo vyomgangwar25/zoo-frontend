@@ -4,6 +4,7 @@ import { useCustomFetch } from "~/composable/useFetchOptions";
 import DeleteModalVue from "~/components/DeleteModalVue.vue";
 import  AlertPopup from "~/components/AlertPopup.vue"
 
+ 
 const toastMessage  = ref('');
 const isToastVisible = ref(false);
 const closeToast=()=>{
@@ -20,23 +21,20 @@ const formFields = [
     label: "name",
     type: "text",
     placeholder: "Enter Name",
-    errorMessage:"enter valid name",
-    regex:".*[a-zA-Z].*",
-   
+    rules:"required|alpha"
   },
   {
     label: "location",
     type: "text",
     placeholder: "Enter Location",
-    errorMessage:"location not valid",
-    regex:".*[a-zA-Z].*",
+    rules:"required|alpha"
+
   },
   {
     label: "size",
     type: "number",
     placeholder: "Enter size",
-   errorMessage: "Size must be greater then 0",
-    regex: "^(?!0$)[1-9][0-9]*$"
+    rules:"required"
   },
 ];
 
@@ -46,29 +44,41 @@ const formData = ref({
   size: "",
 });
 
+const comparewithOriginal=ref({
+  name:"",
+  location:"",
+  size:""
+})
 const openModal = (id:BigInteger) => {
   isModalOpen.value = true;
   zooid.value  = id;
   const zooToEdit = items.value.find((zoo) => zoo.id === id);  
   if (zooToEdit) {
-  
   formData.value.name = zooToEdit.name;
   formData.value.location = zooToEdit.location;
   formData.value.size = ""+zooToEdit.size;
 }
+comparewithOriginal.value = { ...formData.value };
 };
-
+const hasDataChanged = () => {
+  return JSON.stringify(formData.value) !== JSON.stringify(comparewithOriginal.value);
+};
 const updateZooData = async () => {
+  if (!hasDataChanged()) {
+    return;
+  }
   try {
-    const response:any = await useCustomFetch(`/updatezoo/${zooid.value}`, {
+    const response :any= await useCustomFetch(`/updatezoo/${zooid.value}`, {
       method: "PUT",
       body: formData.value,
     });
+    console.log(response);
     toastMessage.value = response;
     isToastVisible.value = true;
     fetchzoodata();
   } catch (error:any) {
-    alert(error.response._data)
+    toastMessage.value = error.response._data;
+       isToastVisible.value = true;
     console.log(error);
   }
   isModalOpen.value = false;
@@ -80,23 +90,19 @@ const formFields2 = [
     label: "name",
     type: "text",
     placeholder: "Enter Name",
-    errorMessage:"enter valid name",
-    regex:".*[a-zA-Z].*",
+    rules: "required|alpha"
   },
   {
     label: "location",
     type: "text",
     placeholder: "Enter Location",
-    errorMessage:"enter valid location",
-    regex:".*[a-zA-Z].*",
+    rules: "required|alpha"
   },
   {
     label: "size",
-    type: "text",
+    type: "number",
     placeholder: "Enter size",
-    errorMessage: "Size must be greater then 0",
-    regex: "^(?!0$)[1-9][0-9]*$"
-
+    rules:"required"
   },
 ];
 
@@ -107,16 +113,13 @@ const formData2 = ref({
 });
 
 const zooRegistration = async () => {
-  if ( !formData2.value.name || !formData2.value.location || !formData2.value.size )  {
-    toastMessage.value = "Please fill all the details."
-    isToastVisible.value = true;
-    return;
-  }
+ 
   try {
     const response = await useCustomFetch("/zoo", {
       method: "POST",
       body: JSON.stringify(formData2.value),
     });
+    console.log(response);
     toastMessage.value = "zoo registration done!! ";
     isToastVisible.value = true;
     fetchzoodata();
@@ -132,6 +135,7 @@ const pagesize = 3;
 const pageno = ref(0);
 const diasblePgaeNo=ref(0);
    const setSelectNo=(number:number)=>{
+    console.log("selected no is ",number)
     if(diasblePgaeNo.value=== number-1)
    {
     diasblePgaeNo.value=number-1;
@@ -299,8 +303,7 @@ const viewAnimal = (id:BigInteger) => {
             name="heroicons:x-mark"
             iconcolour=" text-red-700"
             iconbg=" bg-gray-100"
-            iconhover=" hover:bg-gray-500 hover:text-white ml-2"
-          />
+            iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
         
         </li>
       </ul>

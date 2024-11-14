@@ -1,57 +1,60 @@
-<script setup>
+<script lang="ts" setup>
 import { useRoleStore } from "~/store/useRoleStore";
 import { useCustomFetch } from "~/composable/useFetchOptions";
- 
+
 const roleStore = useRoleStore(); //access the store
 
 const token = ref("");
 const showDropdown = ref(false);
 const router = useRouter();
-  
-const toggleDropdown = () => {  
-  roleStore.toggleDropDown(); 
+const items: Ref<
+  { token: string; role: string; email: string; name: string; id: number }[]
+> = ref([]);
+
+const toggleDropdown = () => {
+  roleStore.toggleDropDown();
 };
 
 if (import.meta.client) {
-  token.value = useCookie("SavedToken").value;
+  token.value = useCookie("SavedToken").value as string;
 }
- 
+
 const handleLogout = () => {
   const cookie = useCookie("SavedToken", {
-    maxAge : 0
+    maxAge: 0,
   });
   cookie.value = "";
-  ;
-  roleStore.setState("", "", "","");
+  roleStore.setState("", "", "", 0);
   router.push("/login");
-  
 };
-const handleSetPass=()=>{
-  router.push("/setpass")
-}
+const handleSetPass = () => {
+  router.push("/setpass");
+};
 
-const handleProfile=()=>{
-  navigateTo(`/Profile?id=${roleStore.id}`)
-}
+const handleProfile = () => {
+  navigateTo(`/Profile?id=${roleStore.id}`);
+};
 const dashboardApi = async () => {
- 
   try {
-    const response = await useCustomFetch("/validate_token", {
+    const response: any = await useCustomFetch("/validate_token", {
       method: "GET",
     });
-
-    roleStore.setState(response.role, response.userEmail, response.name,response.id);
-
+    items.value = response;
+    roleStore.setState(
+      items.value[0].role,
+      items.value[0].email,
+      items.value[0].name,
+      items.value[0].id
+    );
   } catch (err) {
     alert(err);
     router.push("/login");
   }
 };
 onBeforeMount(() => {
-  if(token.value)
-{
-  dashboardApi();
-}
+  if (token.value) {
+    dashboardApi();
+  }
 });
 </script>
 
@@ -110,8 +113,7 @@ onBeforeMount(() => {
                 @click="toggleDropdown"
               />
               <div
-                v-if="roleStore.showDropDown "
-                
+                v-if="roleStore.showDropDown"
                 class="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-50"
               >
                 <ul class="py-1">
@@ -122,8 +124,9 @@ onBeforeMount(() => {
                     Update Password
                   </li>
                   <li
-                  class="block px-4 py-2 hover:bg-gray-200 cursor-pointer"
-                  @click="handleProfile   ">
+                    class="block px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                    @click="handleProfile"
+                  >
                     profile
                   </li>
                   <li

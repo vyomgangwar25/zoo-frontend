@@ -1,52 +1,37 @@
 <template>
   <div class="flex items-center justify-center min-h-screen bg-blue-100 p-4">
-    <AlertPopup :label="toastMessage" :isVisible="isToastVisible" @close="closeToast" />
+    <AlertPopup
+      :label="toastMessage"
+      :isVisible="isToastVisible"
+      @close="closeToast"
+    />
     <div class="max-w-md w-full p-8 bg-white shadow-lg rounded-lg">
       <h1 class="text-3xl font-bold text-center text-gray-700 mb-8">
         Registration Form
       </h1>
-      <form @submit.prevent="handleSubmit" class="space-y-4">
+      <Form @submit="handleSubmit" class="space-y-4">
         <div>
-          <label for="name" class="block text-sm font-medium text-gray-700"
-            >Name</label
-          >
-          <CustomInput
-            type="text"
-            placeholder="Enter your name"
-            v-model="name"
-            regex=".*[a-zA-Z].*"
-            errorMessage="enter valid name"
-             @validity="(event) => {validationCheck.name=event}"
-          />
+          <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+          <Field name="name"   type="text"
+            class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
+            v-model="name"  rules="required|alpha" />
+          <ErrorMessage name="name" class="text-red-600 text-sm mt-1" />
         </div>
 
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-700"
-            >Email</label
-          >
-          <CustomInput
-            v-model="email"
-            type="email"
-            placeholder="Enter your email"
-            regex= "^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$"
-            errorMessage="enter valid email address"
-             @validity="(event) => {validationCheck.email=event}"
-          />
+          <label for="email" class="block text-sm font-medium text-gray-700" >Email</label>
+          <Field  name="email" type="email" 
+            class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
+            v-model="userEmail"  rules="required|email"/>
+          <ErrorMessage name="email" class="text-red-600 text-sm mt-1" />
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700"
-            >Password</label
-          >
-          <CustomInput
-            v-model="password"
-            type="password"
-            placeholder="Enter your password"
-            regex="[0-9a-zA-Z]{6,}"
-            errorMessage="Password must be at least 6 characters"
-             @validity="(event) => {validationCheck.password=event}"
-              
-          />
+          <label for="password" class="block text-sm font-medium text-gray-700" >Password</label>
+          <Field name="password"  type="password"
+            class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
+            v-model="password" rules="required|min:6"   />
+          <ErrorMessage name="password" class="text-red-600 text-sm mt-1" />
         </div>
 
         <div>
@@ -73,49 +58,49 @@
             >Sign in</nuxt-link
           >
         </div>
-      </form>
+      </Form>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
- 
 import { ref } from "vue";
+import { Form, Field, ErrorMessage} from "vee-validate";
 
 import Button from "~/components/Button.vue";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import AlertPopup from "~/components/AlertPopup.vue";
-const name : Ref<string> = ref("");
-const email :Ref<string>= ref("");
+const name: Ref<string> = ref("");
+const userEmail: Ref<string> = ref("");
 const password = ref("");
-const role :Ref<string>= ref("user");
-const toastMessage :Ref<string>= ref('');
+const role: Ref<string> = ref("user");
+const toastMessage: Ref<string> = ref("");
 const isToastVisible = ref(false);
-const validationCheck = ref({name: true,email: true,password: true});
+const router = useRouter();
+ 
+ 
 
-const closeToast=()=>{
-  isToastVisible.value=false
-}
+const closeToast = () => {
+  isToastVisible.value = false;
+};
 
 const handleSubmit = async () => {
-  if(!validationCheck.value.name || !validationCheck.value.email || !validationCheck.value.password)
-{
-  return;
-}
+  console.log("helloooooo");
   try {
     const response = await useCustomFetch("/registration", {
       method: "POST",
 
       body: JSON.stringify({
         username: name.value,
-        email: email.value,
+        email: userEmail.value,
         password: password.value,
         role: role.value,
       }),
     });
-   toastMessage.value = response as string;
+    toastMessage.value = response as string;
+
+    router.push("/login");
     isToastVisible.value = true;
-    
   } catch (err: any) {
     toastMessage.value = err.response._data;
     isToastVisible.value = true;

@@ -1,24 +1,14 @@
 import { defineRule } from 'vee-validate';
+import { all } from '@vee-validate/rules';
+export default defineNuxtPlugin(() => {
 
-export default defineNuxtPlugin((nuxtApp) => {
-   
-  defineRule('minLength', (value:any, [limit]:any) => {
-    if (!value || !value.length) {
-      return true;  
-    }
-    if (value.length < limit) {
-      return `This field must be at least ${limit} characters`;
-    }
-    return true;  
+  Object.entries(all).forEach(([name, rule]) => {
+    defineRule(name, rule);
   });
-
- 
-  defineRule('email', (value:any) => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;  
-    if (!value) {
-      return true;  
-    }
-    return emailPattern.test(value) || 'Invalid email address'; 
-  });
+  
+  // defineRule("alphaOnly", (value:any) => {
+  //   const regex = /^[A-Za-z]*$/;
+  //   return regex.test(value) || "Only alphabetic characters are allowed";
+  // });
 });
 

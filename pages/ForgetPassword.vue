@@ -6,7 +6,7 @@
         <h1 class="text-3xl font-bold text-center text-gray-700 mb-8">
           Enter Email
         </h1>
-        <form class="space-y-6" @submit.prevent="handleResetPassword">
+        <Form   class="space-y-6" @submit="handleResetPassword">
           <div class="flex flex-col">
             <label
               for="newPassword"
@@ -14,17 +14,17 @@
             >
               Enter your email
             </label>
-            <CustomInput
-              type="email"
-              v-model="email"
-              placeholder="Enter your email"
-              regex="^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$"
-            errorMessage="enter valid email address"
-             @validity="(event) => {validationCheck=event}"
-            />
+            <Field
+            name="email"
+            type="email"
+            class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
+            v-model="userEmail"
+             rules="required|email"
+          />
+          <ErrorMessage name="email" class="text-red-600 text-sm mt-1" />
           </div> 
           <Button name="reset">Reset Password</Button>
-        </form>
+        </Form>
       </div>
     </div>
   </div>
@@ -33,28 +33,27 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import Button from "~/components/Button.vue";
+import { Form, Field, ErrorMessage, defineRule } from "vee-validate";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import AlertPopup from "~/components/AlertPopup.vue";
-const email = ref("");
+import { email, min, required } from "@vee-validate/rules";
+const userEmail = ref("");
 const toastMessage :Ref<string> = ref('');
 const isToastVisible = ref(false);
-const validationCheck=ref(true)
+defineRule('required', required);
+defineRule('email', email);
+defineRule('min',min);
 const closeToast=()=>{
   isToastVisible.value=false
 }
 
 const handleResetPassword = async () => {
-  if(!validationCheck.value)
-    {
-      console.log(validationCheck.value)
-  return;
-      }
+ 
   try {
     const response :any= await useCustomFetch("/forgetpassword", {
       method: "POST",
-
       body: JSON.stringify({
-        email: email.value,
+        email: userEmail.value,
       }),
     });
     console.log(response);
