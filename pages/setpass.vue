@@ -5,7 +5,6 @@ import { Form, Field, ErrorMessage, defineRule } from "vee-validate";
 import { useRoute, type Router } from "vue-router";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import AlertPopup from "~/components/AlertPopup.vue";
-import { alpha, min, regex, required } from "@vee-validate/rules";
 const router : Router = useRouter();
 const route = useRoute();
 const token = route.query.token;
@@ -13,9 +12,7 @@ const newPassword = ref("");
 const toastMessage :Ref<string> = ref('');
 const isToastVisible = ref(false);
 
-defineRule('required', required);
-defineRule('min',min);
-defineRule('alpha',alpha)
+ 
  
 const closeToast=()=>{
   isToastVisible.value=false
@@ -25,9 +22,7 @@ const vyom = async () => {
   try {
     const response :any= await useCustomFetch("/setnewpassword", {
       method: "POST",
-      body: JSON.stringify({
-        newPassword: newPassword.value,
-      }),
+      body:newPassword.value,
     });
  
     router.push("/login");

@@ -33,28 +33,22 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import Button from "~/components/Button.vue";
-import { Form, Field, ErrorMessage, defineRule } from "vee-validate";
+import { Form, Field, ErrorMessage } from "vee-validate";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import AlertPopup from "~/components/AlertPopup.vue";
-import { email, min, required } from "@vee-validate/rules";
 const userEmail = ref("");
 const toastMessage :Ref<string> = ref('');
 const isToastVisible = ref(false);
-defineRule('required', required);
-defineRule('email', email);
-defineRule('min',min);
 const closeToast=()=>{
   isToastVisible.value=false
 }
 
 const handleResetPassword = async () => {
- 
   try {
     const response :any= await useCustomFetch("/forgetpassword", {
       method: "POST",
-      body: JSON.stringify({
-        email: userEmail.value,
-      }),
+      body:userEmail.value,
+    
     });
     console.log(response);
     toastMessage.value="reset password link sent to  console ";

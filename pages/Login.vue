@@ -6,6 +6,9 @@ import { useCustomFetch } from "~/composable/useFetchOptions";
 import AlertPopup from "~/components/AlertPopup.vue";
 const toastMessage: Ref<string> = ref("");
 const isToastVisible = ref(false);
+ 
+ 
+ 
 const items: Ref<
   { token: string; role: string; email: string; name: string; id: number }[]
 > = ref([]);
@@ -18,6 +21,24 @@ const roleStore = useRoleStore();
 const closeToast = () => {
   isToastVisible.value = false;
 };
+const newString=ref("abcdes");
+const handlenewString=async()=>{
+  try{
+    const response=await useCustomFetch("/newpath",{
+      method:"POST",
+      body: newString.value
+    
+    })
+    console.log(response)
+  }
+  catch(err){
+
+  }
+}
+
+onMounted(()=>{
+  handlenewString();
+})
 const handleSubmit = async () => {
   try {
     const response: any = await useCustomFetch("/login", {
@@ -62,6 +83,7 @@ const handleSubmit = async () => {
       <h1 class="text-3xl font-bold text-center text-gray-700 mb-8">
         Login Form
       </h1>
+ 
 
       <Form  @submit="handleSubmit">
         <div class="mb-4">

@@ -135,7 +135,6 @@ const pagesize = 3;
 const pageno = ref(0);
 const diasblePgaeNo=ref(0);
    const setSelectNo=(number:number)=>{
-    console.log("selected no is ",number)
     if(diasblePgaeNo.value=== number-1)
    {
     diasblePgaeNo.value=number-1;
@@ -283,7 +282,7 @@ const viewAnimal = (id:BigInteger) => {
 
           <CustomIcon
             @clicked="openModal(item.id as any)"
-            name="heroicons:arrow-path"
+            name="heroicons:pencil-square-solid"
             iconcolour=" text-blue-700"
             iconbg=" bg-gray-100"
             iconhover=" hover:bg-gray-500 hover:text-white ml-2"

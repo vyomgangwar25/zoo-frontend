@@ -5,11 +5,7 @@ import { useRoleStore } from "~/store/useRoleStore";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import DeleteModalVue from "~/components/DeleteModalVue.vue";
 import AlertPopup from "~/components/AlertPopup.vue";
-import { defineRule } from "vee-validate";
-import { min, required } from "@vee-validate/rules";
- 
-defineRule('required', required);
-defineRule('min',min);
+
 const toastMessage = ref("");
 const isToastVisible = ref(false);
 const closeToast = () => {
@@ -339,14 +335,14 @@ onMounted(() => {
           <CustomIcon
             v-if="roleStore.role === 'admin'"
             @clicked="modalopen2(animal.animal_id)"
-            name="heroicons:x-mark"
+            name="heroicons:x-mark" 
             iconcolour=" text-red-700"
             iconbg=" bg-gray-100"
             iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
 
           <CustomIcon
             @clicked="openModal(animal.animal_id)"
-            name="heroicons:arrow-path"
+            name="heroicons:pencil-square-solid"
             iconcolour=" text-blue-700"
             iconbg=" bg-gray-100"
             iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>

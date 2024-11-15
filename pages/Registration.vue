@@ -11,26 +11,44 @@
       </h1>
       <Form @submit="handleSubmit" class="space-y-4">
         <div>
-          <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-          <Field name="name"   type="text"
+          <label for="name" class="block text-sm font-medium text-gray-700"
+            >Name</label
+          >
+          <Field
+            name="name"
+            type="text"
             class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
-            v-model="name"  rules="required|alpha" />
+            v-model="name"
+            rules="required|alpha"
+          />
           <ErrorMessage name="name" class="text-red-600 text-sm mt-1" />
         </div>
 
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-700" >Email</label>
-          <Field  name="email" type="email" 
+          <label for="email" class="block text-sm font-medium text-gray-700"
+            >Email</label
+          >
+          <Field
+            name="email"
+            type="email"
             class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
-            v-model="userEmail"  rules="required|email"/>
+            v-model="userEmail"
+            rules="required|email"
+          />
           <ErrorMessage name="email" class="text-red-600 text-sm mt-1" />
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700" >Password</label>
-          <Field name="password"  type="password"
+          <label for="password" class="block text-sm font-medium text-gray-700"
+            >Password</label
+          >
+          <Field
+            name="password"
+            type="password"
             class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
-            v-model="password" rules="required|min:6"   />
+            v-model="password"
+            rules="required|min:6"
+          />
           <ErrorMessage name="password" class="text-red-600 text-sm mt-1" />
         </div>
 
@@ -38,14 +56,18 @@
           <label for="role" class="block text-sm font-medium text-gray-700"
             >Role</label
           >
-          <select
-            v-model="role"
+          <Field  name="role" as="select"
             id="role"
+            v-model="role"
             class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
+            rules="required">
+            <option value="" disabled>Select Role</option>
+            <option v-for="(item, index) in roles" :value="item.role">
+              {{ item.role }}
+            </option>
+          </Field>
+          
+          <ErrorMessage name="role" class="text-red-600 text-sm mt-1" />
         </div>
 
         <Button name="Registration" />
@@ -64,8 +86,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
-import { Form, Field, ErrorMessage} from "vee-validate";
+import { ref, type Ref } from "vue";
+import { Form, Field, ErrorMessage } from "vee-validate";
 
 import Button from "~/components/Button.vue";
 import { useCustomFetch } from "~/composable/useFetchOptions";
@@ -73,19 +95,17 @@ import AlertPopup from "~/components/AlertPopup.vue";
 const name: Ref<string> = ref("");
 const userEmail: Ref<string> = ref("");
 const password = ref("");
-const role: Ref<string> = ref("user");
+const role: Ref<string> = ref("");
 const toastMessage: Ref<string> = ref("");
 const isToastVisible = ref(false);
 const router = useRouter();
- 
- 
+const roles: Ref<{ id: BigInteger; role: string }[]> = ref([]);
 
 const closeToast = () => {
   isToastVisible.value = false;
 };
 
 const handleSubmit = async () => {
-  console.log("helloooooo");
   try {
     const response = await useCustomFetch("/registration", {
       method: "POST",
@@ -98,12 +118,27 @@ const handleSubmit = async () => {
       }),
     });
     toastMessage.value = response as string;
-
-    router.push("/login");
     isToastVisible.value = true;
   } catch (err: any) {
     toastMessage.value = err.response._data;
     isToastVisible.value = true;
   }
 };
+
+const handleRoles = async () => {
+  try {
+    const response2: any = await useCustomFetch("/fetchroles", {
+      method: "GET",
+    });
+    console.log(response2);
+    roles.value = response2;
+  } catch (err: any) {
+    toastMessage.value = err.response2._data;
+    isToastVisible.value = true;
+  }
+};
+
+onMounted(() => {
+  handleRoles();
+});
 </script>
