@@ -81,7 +81,6 @@ const roleStore = useRoleStore();
 const router = useRouter();
 
 const logout = () => {
-  localStorage.removeItem("SavedToken");
   const cookie = useCookie("SavedToken");
   cookie.value = "";
   router.push("/login");

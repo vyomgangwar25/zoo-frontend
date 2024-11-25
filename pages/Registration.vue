@@ -1,3 +1,57 @@
+<script lang="ts" setup>
+import { ref, type Ref } from "vue";
+import { Form, Field, ErrorMessage } from "vee-validate";
+
+import Button from "~/components/Button.vue";
+import { useCustomFetch } from "~/composable/useFetchOptions";
+import AlertPopup from "~/components/AlertPopup.vue";
+const name: Ref<string> = ref("");
+const userEmail: Ref<string> = ref("");
+const password = ref("");
+const role: Ref<string> = ref("");
+const toastMessage: Ref<string> = ref("");
+const isToastVisible = ref(false);
+const router = useRouter();
+const roles: Ref<{ id: BigInteger; role: string }[]> = ref([]);
+
+const closeToast = () => {
+  isToastVisible.value = false;
+};
+
+function handleSubmit () {
+  useCustomFetch("/user/registration", {
+      method: "POST",
+      body: JSON.stringify({
+        username: name.value,
+        email: userEmail.value,
+        password: password.value,
+        role: role.value,
+      }),
+    }).then(function(response :any){
+      toastMessage.value = response as string;
+      isToastVisible.value = true;
+    }) 
+  .catch (function(err: any) {
+    toastMessage.value = err.response._data;
+    isToastVisible.value = true;
+  })
+};
+function handleRoles(){  
+  useCustomFetch("/user/fetchroles", {
+      method: "GET",
+    }).then(function(response2:any){
+      console.log(response2);
+      roles.value = response2;
+    }). catch(function (err: any) {
+    toastMessage.value = err.response2._data;
+    isToastVisible.value = true;
+    }
+    )
+  }
+onMounted(() => {
+  handleRoles();
+});
+</script>
 <template>
   <div class="flex items-center justify-center min-h-screen bg-blue-100 p-4">
     <AlertPopup
@@ -19,7 +73,7 @@
             type="text"
             class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
             v-model="name"
-            rules="required|alpha"
+            rules="required|alpha_spaces"
           />
           <ErrorMessage name="name" class="text-red-600 text-sm mt-1" />
         </div>
@@ -66,7 +120,6 @@
               {{ item.role }}
             </option>
           </Field>
-          
           <ErrorMessage name="role" class="text-red-600 text-sm mt-1" />
         </div>
 
@@ -85,60 +138,4 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import { ref, type Ref } from "vue";
-import { Form, Field, ErrorMessage } from "vee-validate";
 
-import Button from "~/components/Button.vue";
-import { useCustomFetch } from "~/composable/useFetchOptions";
-import AlertPopup from "~/components/AlertPopup.vue";
-const name: Ref<string> = ref("");
-const userEmail: Ref<string> = ref("");
-const password = ref("");
-const role: Ref<string> = ref("");
-const toastMessage: Ref<string> = ref("");
-const isToastVisible = ref(false);
-const router = useRouter();
-const roles: Ref<{ id: BigInteger; role: string }[]> = ref([]);
-
-const closeToast = () => {
-  isToastVisible.value = false;
-};
-
-const handleSubmit = async () => {
-  try {
-    const response = await useCustomFetch("/registration", {
-      method: "POST",
-
-      body: JSON.stringify({
-        username: name.value,
-        email: userEmail.value,
-        password: password.value,
-        role: role.value,
-      }),
-    });
-    toastMessage.value = response as string;
-    isToastVisible.value = true;
-  } catch (err: any) {
-    toastMessage.value = err.response._data;
-    isToastVisible.value = true;
-  }
-};
-
-const handleRoles = async () => {
-  try {
-    const response2: any = await useCustomFetch("/fetchroles", {
-      method: "GET",
-    });
-    console.log(response2);
-    roles.value = response2;
-  } catch (err: any) {
-    toastMessage.value = err.response2._data;
-    isToastVisible.value = true;
-  }
-};
-
-onMounted(() => {
-  handleRoles();
-});
-</script>

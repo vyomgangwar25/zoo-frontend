@@ -60,18 +60,18 @@ const emitTransfer = () => {
       <div v-if="modalType == 'transfer'" class="text-sm text-gray-500 mb-4">
         <slot name="delete-modal-content-heading" />
         <div class="mb-4">
-          <Form>
-          <Field name="selectzooid" as ="select"
-            id="zooSelect"
+          <Form >
+          <Field name="selectedZooId" as ="select"
+            id="selectedZooId"
             v-model="selectedZooId"
-            class="block w-64 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
+            class="block w-64 border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"   rules="required"
           >
             <option disabled value="0">Select Zoo</option>
             <option v-for="(item, index) in zoolist" :key="index" :value="item.id">
               {{ item.name }}
             </option>
           </Field>
-          <ErrorMessage name="selectzooid" class="text-red-600 text-sm mt-1"/>
+          <ErrorMessage name="selectedZooId"  class="text-red-600 text-sm mt-1"/>
         </Form>
         </div>
       </div>

@@ -36,7 +36,7 @@ const handleProfile = () => {
 };
 const dashboardApi = async () => {
   try {
-    const response: any = await useCustomFetch("/validate_token", {
+    const response: any = await useCustomFetch("/user/userinfo", {
       method: "GET",
     });
     items.value = response;

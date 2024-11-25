@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 
-import { Form, Field, ErrorMessage, defineRule } from "vee-validate";
+import { Form, Field, ErrorMessage} from "vee-validate";
 import { useRoute, type Router } from "vue-router";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import AlertPopup from "~/components/AlertPopup.vue";
@@ -18,19 +18,18 @@ const closeToast=()=>{
   isToastVisible.value=false
 }
  
-const vyom = async () => {
-  try {
-    const response :any= await useCustomFetch("/setnewpassword", {
+function vyom() {
+    useCustomFetch("/user/setnewpassword", {
       method: "POST",
       body:newPassword.value,
-    });
- 
-    router.push("/login");
-  } catch (err:any) {
+    }).then(function(response:any){
+      router.push("/login")
+    }).
+   catch(function(err:any) {
     toastMessage.value = err.response._data;
     isToastVisible.value = true;
-  }
-};
+  })
+}
 </script>
 
 <template>

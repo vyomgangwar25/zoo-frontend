@@ -1,12 +1,11 @@
 <template>
     <div class="p-4 flex flex-col items-center w-full"> 
-     
       <div  v-if ="items.length>0" class="p-6 bg-gray-200 rounded-lg w-1/2">
         <h1  class="font-bold text-2xl flex justify-center mb-4">Details of Animal</h1>
   
         <div class="bg-white shadow-lg rounded-lg p-6 flex items-center">
-          <div class="flex-1">
-            <span class="font-medium">Name:</span> {{ animal.name }}
+          <div class="flex-1" v-for="(animal) in animal">
+            <span class="font-medium">Name:</span> {{ animal.name}}
             <div class="text-gray-500">
               <span class="font-medium">Gender:</span> {{ animal.gender }}
             </div>
@@ -58,24 +57,26 @@
     </div>
   </template>
   
-  <script setup>
-  import { ref, onMounted } from 'vue';
-  import { useCustomFetch } from '~/composable/useFetchOptions';
+  <script setup lang='ts'>
+
+import { useCustomFetch } from '~/composable/useFetchOptions';
+
   const route = useRoute();
   
-  const items = ref([]);
-  const animal= ref(""); 
+  const items  :Ref<{ animalName: string; fromzoo: string; tooZoo: string; userName: string }[]>= ref([]);  
+
+  const animal :Ref<{name:string;dob:string;gender:string}[]>= ref([]); 
   
   const handleSubmit = async () => {
     try {
-      const response = await useCustomFetch(`/history/${route.query.animalId}`, {
+      const response :any = await useCustomFetch(`animal/history/${route.query.animalId}`, {
         method: "GET",
       });
       console.log(response);
       
       items.value = response.transferHistoryList; 
       animal.value = response.animalData;
-    } catch (err) {
+    } catch (err:any) {
       console.error(err.response._data);
     }
   };

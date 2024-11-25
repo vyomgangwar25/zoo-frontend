@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { Form, Field,  defineRule } from "vee-validate";
-import { alpha, email, min, regex, required } from "@vee-validate/rules";
+import { Form, Field} from "vee-validate";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import { useRoleStore } from "~/store/useRoleStore";
 
@@ -35,10 +34,6 @@ const formData = ref({
   email: "",
 });
 
-defineRule("required", required);
-defineRule("email", email);
-defineRule("min", min);
-defineRule("regex", regex);
 
 const modalOpen = () => {
   isModalOpen.value = true;
@@ -47,7 +42,7 @@ const modalOpen = () => {
 };
 
 const handleSubmit = async () => {
-  const response = await useCustomFetch(`/updateuser/${route.query.id}`, {
+  const response = await useCustomFetch(`/user/update/${route.query.id}`, {
     method: "PUT",
     body: JSON.stringify({
       username: formData.value.name,
@@ -67,7 +62,7 @@ const handleSubmit = async () => {
 
 const dashboardApi = async () => {
   try {
-    const response: any = await useCustomFetch("/validate_token", {
+    const response: any = await useCustomFetch("/user/userinfo", {
       method: "GET",
     });
 

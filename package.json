@@ -10,7 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@nuxt/icon": "^1.5.1",
+    "@nuxt/icon": "^1.8.2",
     "@pinia/nuxt": "^0.5.5",
     "@vee-validate/rules": "^4.13.2",
     "jwt-decode": "^4.0.0",

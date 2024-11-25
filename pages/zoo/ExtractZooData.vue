@@ -4,7 +4,6 @@ import { useCustomFetch } from "~/composable/useFetchOptions";
 import DeleteModalVue from "~/components/DeleteModalVue.vue";
 import  AlertPopup from "~/components/AlertPopup.vue"
 
- 
 const toastMessage  = ref('');
 const isToastVisible = ref(false);
 const closeToast=()=>{
@@ -21,13 +20,13 @@ const formFields = [
     label: "name",
     type: "text",
     placeholder: "Enter Name",
-    rules:"required|alpha"
+    rules:"required|alpha_spaces"
   },
   {
     label: "location",
     type: "text",
     placeholder: "Enter Location",
-    rules:"required|alpha"
+    rules:"required|alpha_spaces"
 
   },
   {
@@ -68,7 +67,7 @@ const updateZooData = async () => {
     return;
   }
   try {
-    const response :any= await useCustomFetch(`/updatezoo/${zooid.value}`, {
+    const response :any= await useCustomFetch(`/zoo/update/${zooid.value}`, {
       method: "PUT",
       body: formData.value,
     });
@@ -90,13 +89,13 @@ const formFields2 = [
     label: "name",
     type: "text",
     placeholder: "Enter Name",
-    rules: "required|alpha"
+    rules: "required|alpha_spaces"
   },
   {
     label: "location",
     type: "text",
     placeholder: "Enter Location",
-    rules: "required|alpha"
+    rules: "required|alpha_spaces"
   },
   {
     label: "size",
@@ -115,7 +114,7 @@ const formData2 = ref({
 const zooRegistration = async () => {
  
   try {
-    const response = await useCustomFetch("/zoo", {
+    const response = await useCustomFetch("/zoo/create", {
       method: "POST",
       body: JSON.stringify(formData2.value),
     });
@@ -162,7 +161,7 @@ const loading=ref(false);
 const fetchzoodata = async () => {
   loading.value=true;
   try {
-    const response :any = await useCustomFetch("/extractzoo", {
+    const response :any = await useCustomFetch("/zoo/list", {
       method: "GET",
       params: {
         page: pageno.value, pagesize: pagesize,
@@ -194,7 +193,7 @@ const deleteModalOpen = (id:BigInteger) => {
 };
 const deleteZoo = async () => {
   try {
-    const response = await useCustomFetch(`/deletezoo/${deleteZooIdOk.value}`, {
+    const response = await useCustomFetch(`/zoo/delete/${deleteZooIdOk.value}`, {
       method: "DELETE",
     });
     items.value = items.value.filter((item) => item.id !== deleteZooIdOk.value);
@@ -259,11 +258,7 @@ const viewAnimal = (id:BigInteger) => {
       No zoo present
     </div>
       <ul class="space-y-4">
-        <li
-          v-for="(item, index) in items"
-        
-          class="bg-white shadow-lg rounded-lg p-6 flex justify-between items-center"
-        >
+        <li v-for="(item, index) in items"  class="bg-white shadow-lg rounded-lg p-6 flex justify-between items-center">
           <div class="w-24 h-24 mr-4">
             <img
               src="https://assets.simpleviewinc.com/simpleview/image/upload/c_limit,q_75,w_1200/v1/crm/houston/Asian-Elephant-0479-0654-783906ecce425e6_783908b6-f2dd-dbab-baaafeb9c82c3d70.jpg"

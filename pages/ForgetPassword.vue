@@ -1,3 +1,33 @@
+<script lang="ts" setup>
+import { ref } from "vue";
+import Button from "~/components/Button.vue";
+import { Form, Field, ErrorMessage } from "vee-validate";
+import { useCustomFetch } from "~/composable/useFetchOptions";
+import AlertPopup from "~/components/AlertPopup.vue";
+const userEmail = ref("");
+const toastMessage :Ref<string> = ref('');
+const isToastVisible = ref(false);
+const closeToast=()=>{
+  isToastVisible.value=false
+}
+
+function handleResetPassword  (){
+  
+     useCustomFetch("/user/forgetpassword", {
+      method: "POST",
+      body:userEmail.value,
+    
+    }).then(function(response:any){
+    console.log(response);
+    toastMessage.value="reset password link sent to  console ";
+    isToastVisible.value = true;
+    }). catch(function (err:any) {
+    toastMessage.value = err.response._data;
+    isToastVisible.value = true;
+  })
+};
+</script>
+
 <template>
       <AlertPopup :label="toastMessage" :isVisible="isToastVisible" @close="closeToast" />
   <div>
@@ -30,34 +60,4 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import { ref } from "vue";
-import Button from "~/components/Button.vue";
-import { Form, Field, ErrorMessage } from "vee-validate";
-import { useCustomFetch } from "~/composable/useFetchOptions";
-import AlertPopup from "~/components/AlertPopup.vue";
-const userEmail = ref("");
-const toastMessage :Ref<string> = ref('');
-const isToastVisible = ref(false);
-const closeToast=()=>{
-  isToastVisible.value=false
-}
 
-const handleResetPassword = async () => {
-  try {
-    const response :any= await useCustomFetch("/forgetpassword", {
-      method: "POST",
-      body:userEmail.value,
-    
-    });
-    console.log(response);
-    toastMessage.value="reset password link sent to  console ";
-    isToastVisible.value = true;
-   
-  } catch (err:any) {
-    toastMessage.value = err.response._data;
-    isToastVisible.value = true;
-   
-  }
-};
-</script>

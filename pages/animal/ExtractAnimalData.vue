@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+
 import { useRoleStore } from "~/store/useRoleStore";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import DeleteModalVue from "~/components/DeleteModalVue.vue";
@@ -38,7 +37,7 @@ const updateAnimalData = async () => {
   }
   try {
     const response: any = await useCustomFetch(
-      `/updateanimal/${AnimalId.value}`,
+      `/animal/update/${AnimalId.value}`,
       {
         method: "PUT",
         body: JSON.stringify(formData.value),
@@ -58,7 +57,7 @@ const formFields = [
     label: "name",
     type: "text",
     placeholder: "Name",
-    rules:"required|alpha"
+    rules:"required|alpha_spaces"
   },
   {
     label: "gender",
@@ -81,7 +80,7 @@ const isAnimalRegistrationModal = ref(false);
 const handleSubmit = async () => {
   
   try {
-    const response: any = await useCustomFetch("/animalregistration", {
+    const response: any = await useCustomFetch("/animal/create", {
       method: "POST",
       body: formData2.value,
     });
@@ -100,13 +99,13 @@ const formFields2 = [
     label: "name",
     type: "text",
     placeholder: "Enter name of animal",
-    rules:"required|alpha"
+    rules:"required|alpha_spaces"
   },
   {
     label: "gender",
     type: "text",
     placeholder: "Enter gender",
-    rules:"required|alpha"
+    rules:"required|alpha_spaces"
   },
   {
     label: "dob",
@@ -132,7 +131,7 @@ const modalopen2 = (animalId: BigInteger) => {
 };
 const Okmodal = async () => {
   try {
-    const response = await useCustomFetch(`/deleteanimal/${animalIdOk.value}`, {
+    const response = await useCustomFetch(`/animal/delete/${animalIdOk.value}`, {
       method: "DELETE",
     });
     items.value = items.value.filter(
@@ -166,7 +165,7 @@ const transferModalOpen = async (
   isTransferModelOpen.value = true;
   TransferAnimalId.value = trasnferAnimalId;
   try {
-    const response: any = await useCustomFetch(`/getdropdowndata`, {
+    const response: any = await useCustomFetch(`/animal/zoolist`, {
       method: "GET",
       query: {
         zooId: zooid,
@@ -186,7 +185,7 @@ const closeTransferModal = () => {
 //transfer api
 const transferAnimal = async (id: BigInteger) => {
   try {
-    const response: any = await useCustomFetch(`/transferanimal`, {
+    const response: any = await useCustomFetch(`/animal/transfer`, {
       method: "PUT",
       query: {
         animalid: TransferAnimalId.value,
@@ -215,7 +214,7 @@ const fetchanimaldata = async () => {
   loading.value = true;
   try {
     const response: any = await useCustomFetch(
-      `/extractanimal/${zooid.value}?page=${pageno.value}&pagesize=${pagesize}`,
+      `/animal/list/${zooid.value}?page=${pageno.value}&pagesize=${pagesize}`,
       {
         method: "GET",
       }

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Form, Field, ErrorMessage, defineRule } from "vee-validate";
+import { Form, Field, ErrorMessage} from "vee-validate";
 import { useRoleStore } from "~/store/useRoleStore";
 import { useRouter, type Router } from "vue-router";
 import { useCustomFetch } from "~/composable/useFetchOptions";
@@ -7,8 +7,7 @@ import AlertPopup from "~/components/AlertPopup.vue";
 const toastMessage: Ref<string> = ref("");
 const isToastVisible = ref(false);
  
- 
- 
+
 const items: Ref<
   { token: string; role: string; email: string; name: string; id: number }[]
 > = ref([]);
@@ -21,35 +20,18 @@ const roleStore = useRoleStore();
 const closeToast = () => {
   isToastVisible.value = false;
 };
-const newString=ref("abcdes");
-const handlenewString=async()=>{
-  try{
-    const response=await useCustomFetch("/newpath",{
-      method:"POST",
-      body: newString.value
-    
-    })
-    console.log(response)
-  }
-  catch(err){
-
-  }
-}
-
-onMounted(()=>{
-  handlenewString();
-})
-const handleSubmit = async () => {
-  try {
-    const response: any = await useCustomFetch("/login", {
+ 
+function handleSubmit (){
+  
+    useCustomFetch("/user/login", {
       method: "POST",
       body: JSON.stringify({
         email: userEmail.value,
         password: userPassword.value,
       }),
-    });
-    items.value = response;
-    console.log(response);
+    }).then(function(response:any){
+      items.value = response;
+   // console.log(response);
     const token = items.value[0].token;
     roleStore.setState(
       items.value[0].role,
@@ -63,12 +45,12 @@ const handleSubmit = async () => {
     });
     test.value = token;
     router.push("/Dashboard");
-  } catch (err: any) {
-    console.log("hello")
+    }). catch (function(err: any) {
     toastMessage.value = err.response._data;
     isToastVisible.value = true;
-  }
-};
+  })
+}
+ 
 </script>
 
 <template>
@@ -104,7 +86,6 @@ const handleSubmit = async () => {
           <ErrorMessage name="password" class="text-red-600 text-sm mt-1" />
         </div>
        <Button name="Submit"/>
-        
       </Form>
 
       <div class="flex items-center justify-center mt-4">
