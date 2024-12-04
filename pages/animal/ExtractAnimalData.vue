@@ -1,10 +1,7 @@
 <script lang="ts" setup>
-
 import { useRoleStore } from "~/store/useRoleStore";
 import { useCustomFetch } from "~/composable/useFetchOptions";
-import DeleteModalVue from "~/components/DeleteModalVue.vue";
-import AlertPopup from "~/components/AlertPopup.vue";
-
+ 
 const toastMessage = ref("");
 const isToastVisible = ref(false);
 const closeToast = () => {
@@ -15,32 +12,32 @@ const roleStore = useRoleStore();
 const route = useRoute();
 const AnimalId = ref();
 const isModalOpen = ref(false);
+ 
 
-function openModal(animalId: BigInteger) {
+function updatemodalOpen(animalId: BigInteger) {
   isModalOpen.value = true;
   AnimalId.value = animalId;
   const animalToEdit = items.value.find((zoo) => zoo.animal_id === animalId);
   if (animalToEdit) {
-    formData.value.name = animalToEdit.name;
-    formData.value.gender = animalToEdit.gender;
+    updateData.value.name = animalToEdit.name;
+    updateData.value.gender = animalToEdit.gender;
   }
-  comparewithOriginal.value = { ...formData.value };
+  comparewithOriginal.value = { ...updateData.value };
 }
 const hasDataChanged = () => {
   return (
-    JSON.stringify(formData.value) !== JSON.stringify(comparewithOriginal.value)
+    JSON.stringify(updateData.value) !== JSON.stringify(comparewithOriginal.value)
   );
 };
-const updateAnimalData = async () => {
+const updateAnimal = async () => {
   if (!hasDataChanged()) {
     return;
   }
   try {
-    const response: any = await useCustomFetch(
-      `/animal/update/${AnimalId.value}`,
+    const response: any = await useCustomFetch(`/animal/update/${AnimalId.value}`,
       {
         method: "PUT",
-        body: JSON.stringify(formData.value),
+        body: JSON.stringify(updateData.value),
       }
     );
     toastMessage.value = response;
@@ -52,7 +49,7 @@ const updateAnimalData = async () => {
   isModalOpen.value = false;
 };
 
-const formFields = [
+const update = [
   {
     label: "name",
     type: "text",
@@ -68,7 +65,7 @@ const formFields = [
 ];
 
 
-const formData = ref({
+const updateData = ref({
   name: "",
   gender: "",
 });
@@ -76,25 +73,24 @@ const comparewithOriginal = ref({
   name: "",
   gender: "",
 });
-const isAnimalRegistrationModal = ref(false);
-const handleSubmit = async () => {
-  
-  try {
-    const response: any = await useCustomFetch("/animal/create", {
-      method: "POST",
-      body: formData2.value,
-    });
 
-    toastMessage.value = response;
+const isAnimalRegistrationModal = ref(false);
+function handleSubmit() {
+     useCustomFetch("/animal/create", {
+      method: "POST",
+      body: createAnimalData.value,
+    }).then(function(response:any){
+      toastMessage.value = response;
     isToastVisible.value = true;
     fetchanimaldata();
-  } catch (err) {
+    }). catch (function(err) {
     console.log(err);
-  }
+  })
   isAnimalRegistrationModal.value = false;
+  createAnimalData.value.name="";createAnimalData.value.gender="";createAnimalData.value.dob="";
 };
 
-const formFields2 = [
+const createAnimal = [
   {
     label: "name",
     type: "text",
@@ -114,7 +110,7 @@ const formFields2 = [
     rules:"required"
   },
 ];
-const formData2 = ref({
+const createAnimalData = ref({
   name: "",
   gender: "",
   dob: "",
@@ -125,29 +121,32 @@ const formData2 = ref({
 const isactive = ref(false);
 const animalIdOk = ref();
 
-const modalopen2 = (animalId: BigInteger) => {
+const deletemodalopen = (animalId: BigInteger) => {
+ 
   animalIdOk.value = animalId;
   isactive.value = true;
 };
-const Okmodal = async () => {
-  try {
-    const response = await useCustomFetch(`/animal/delete/${animalIdOk.value}`, {
+function deleteanimal (){
+  useCustomFetch(`/animal/delete/${animalIdOk.value}`, {
       method: "DELETE",
-    });
-    items.value = items.value.filter(
+    }).then(function(){
+      items.value = items.value.filter(
       (item) => item.animal_id !== animalIdOk.value
     );
     if (items.value.length === 0 && pageno.value > 0) {
       pageno.value--;
       fetchanimaldata();
     }
-  } catch (error) {
+
+    }). catch (function(error) {
     console.error("Error deleting animal:", error);
-  }
+  })
+    
+  
   isactive.value = false;
 };
 
-const closeModal2 = () => {
+const closedeleteModal = () => {
   isactive.value = false;
 };
 
@@ -158,10 +157,7 @@ const selectedZooId = ref(0);
 
 //dropdown api
 const zooList: Ref<{ id: BigInteger; name: string }[]> = ref([]);
-const transferModalOpen = async (
-  zooid: BigInteger,
-  trasnferAnimalId: BigInteger
-) => {
+const transferModalOpen = async (zooid: BigInteger,trasnferAnimalId: BigInteger) => {
   isTransferModelOpen.value = true;
   TransferAnimalId.value = trasnferAnimalId;
   try {
@@ -172,7 +168,7 @@ const transferModalOpen = async (
       },
     });
     console.log(response);
-    zooList.value = response.filteredZoos;
+    zooList.value = response;
   } catch (err) {
     console.error(err);
   }
@@ -183,23 +179,24 @@ const closeTransferModal = () => {
   isTransferModelOpen.value = false;
 };
 //transfer api
-const transferAnimal = async (id: BigInteger) => {
-  try {
-    const response: any = await useCustomFetch(`/animal/transfer`, {
+function transferAnimal(id: BigInteger) {
+ 
+     useCustomFetch(`/animal/transfer`, {
       method: "PUT",
       query: {
         animalid: TransferAnimalId.value,
         zooid: id,
       },
-    });
-    console.log(response);
+    }).then(function(response:any){
+      console.log(response);
     toastMessage.value = response;
     isToastVisible.value = true;
     isTransferModelOpen.value = false;
     fetchanimaldata();
-  } catch (err) {
+
+    }).catch (function(err:any){
     console.error(err);
-  }
+  })
 };
 
 const totalPages = ref(0);
@@ -208,29 +205,31 @@ const items: Ref< {zooname: string;animalcount: BigInteger;animal_id: BigInteger
 const pagesize = 3;
 const pageno = ref(0);
 const zooid: Ref<number> = ref(0);
-const zooname: Ref<string> = ref("");
+const description: Ref<string>=ref("")
 const loading = ref(false);
-const fetchanimaldata = async () => {
+function fetchanimaldata () {
   loading.value = true;
-  try {
-    const response: any = await useCustomFetch(
-      `/animal/list/${zooid.value}?page=${pageno.value}&pagesize=${pagesize}`,
+  
+    useCustomFetch(`/animal/list/${zooid.value}?page=${pageno.value}&pagesize=${pagesize}`,
       {
         method: "GET",
       }
-    );
-    console.log(response);
+    ).then(function(response:any){
     items.value = response.animaldata || [];
     totalPages.value = Math.ceil(response.animalcount / pagesize);
-    zooname.value = response.zooname;
-  } catch (err) {
-    console.error(err);
-  } finally {
+  
+    description.value=response.zoodescription
+
+    }).catch (function(err) {
+    console.error(err)}).
+   finally(function(){
     loading.value = false;
-  }
+   }) 
 };
+const selectedPage=ref(1);
 const diasblePgaeNo = ref(0);
 const setSelectNo = (no: number) => {
+  selectedPage.value=no;
   if (diasblePgaeNo.value === no - 1) {
     diasblePgaeNo.value = no - 1;
     return;
@@ -255,6 +254,7 @@ onMounted(() => {
   zooid.value = Number(route.query.zooId);
   fetchanimaldata();
 });
+const zooname=route.query.zooname;
 </script>
 <template>
   <AlertPopup
@@ -268,8 +268,7 @@ onMounted(() => {
     </div>
     <div>
       <p>
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Delectus,tota laboriosam sequi mollitia cum tempore molestiae voluptatum deserunt
-        molestias. A vero praesentium quod quos culpa eaque consequatur, quas  aperiam nesciunt?
+         {{ description }}
       </p>
     </div>
 
@@ -287,18 +286,18 @@ onMounted(() => {
 
       <!---------------------------------------------------ADD Animal Modal------------------------------------->
 
-      <DeleteModalVue
+      <CustomModal
         :isactive="isAnimalRegistrationModal"
         @success="handleSubmit"
         @close="(event) => (isAnimalRegistrationModal = event)"
         :modalType="'form'"
-        :formField="formFields2"
-        :formData="formData2">
+        :formField="createAnimal"
+        :formData="createAnimalData">
         <template #form-modal-content-heading>
           Animal Registraction form
         </template>
         <template #form-success-button> Submit</template>
-      </DeleteModalVue>
+      </CustomModal>
     </div>
 
     <div class="p-6 bg-gray-200 rounded-lg mt-5">
@@ -314,8 +313,8 @@ onMounted(() => {
       >
         No animals present
       </div>
-      <ul class="space-y-4" v-else>
-        <li
+      <div class="space-y-4" v-else>
+        <div
           v-for="animal in items"
           class="bg-white shadow-lg rounded-lg p-6 flex justify-between items-center"
         >
@@ -330,40 +329,44 @@ onMounted(() => {
               >
             </div>
           </div>
-
+          <ul class="flex ">
+            <li title="delete">
           <CustomIcon
             v-if="roleStore.role === 'admin'"
-            @clicked="modalopen2(animal.animal_id)"
+            @clicked="deletemodalopen(animal.animal_id)"
             name="heroicons:x-mark" 
             iconcolour=" text-red-700"
             iconbg=" bg-gray-100"
             iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
-
+          </li>
+          <li title="update">
           <CustomIcon
-            @clicked="openModal(animal.animal_id)"
+            @clicked="updatemodalOpen(animal.animal_id)"
             name="heroicons:pencil-square-solid"
             iconcolour=" text-blue-700"
             iconbg=" bg-gray-100"
             iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
-
+          </li>
+          <li title="transfer">
           <CustomIcon
-            @clicked="
-            transferModalOpen(route.query.zooId as any, animal.animal_id)"
+            @clicked="transferModalOpen(route.query.zooId as any, animal.animal_id)"
             name="heroicons:arrow-right-on-rectangle-20-solid"
             iconcolour=" text-blue-700"
             iconbg=" bg-gray-100"
             iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
-
+          </li>
+           <li title="history">
           <CustomIcon
             v-if="roleStore.role === 'admin'"
-            @clicked="
-              navigateTo(`/AnimalTransferHistory?animalId=${animal.animal_id}`)"
+            @clicked="navigateTo(`/AnimalTransferHistory?animalId=${animal.animal_id}`)"
             name="material-symbols:history-2"
             iconcolour=" text-blue-700"
             iconbg=" bg-gray-100"
             iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
-        </li>
-      </ul>
+          </li>
+          </ul>
+        </div>
+      </div>
     </div>
 
     <div
@@ -375,7 +378,7 @@ onMounted(() => {
         Previous
       </button>
       <button
-        class="btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" v-for="number in totalPages" :key="number"  @click="setSelectNo(Number(number))"> {{ number }} </button>
+        class="btn bg-white-100 text-black-200 border-2 px-4 py-2 rounded hover:bg-white-500" v-for="number in totalPages" :key="number" :class="pageno+1==number? 'btn bg-red-500 text-white px-4 py-2 hover:bg-red-600 ':'' "  @click="setSelectNo(Number(number))"> {{ number }} </button>
       <button
         class="btn px-4 py-2 rounded"
         :class="pageno < totalPages - 1 ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'" @click="increaseButton">
@@ -384,30 +387,30 @@ onMounted(() => {
     </div>
   </div>
   <!------------------------------------------------------------Update  Modal  ------------------------------------------------------>
-  <DeleteModalVue
+  <CustomModal
     :isactive="isModalOpen"
-    @success="updateAnimalData"
+    @success="updateAnimal"
     @close="(event) => (isModalOpen = event)"
     :modalType="'form'"
-    :formField="formFields"
-    :formData="formData">
+    :formField="update"
+    :formData="updateData">
     <template #form-modal-content-heading> Update Animal Data </template>
     <template #form-success-button> Update </template>
-  </DeleteModalVue>
+  </CustomModal>
 
   <!----------------------------------------------------------DELETE MODAL------------------------------------------------------------>
-  <DeleteModalVue
+  <CustomModal
     :isactive="isactive"
-    @success="Okmodal"
-    @close="closeModal2"
+    @success="deleteanimal"
+    @close="closedeleteModal"
     :modalType="'delete'">
     <template #delete-modal-content-heading>
       Are you sure you want to delete this animal
     </template>
-  </DeleteModalVue>
+  </CustomModal>
 
   <!-----------------------------------------------------------------Transfer Modal------------------------------------------------------>
-  <DeleteModalVue
+  <CustomModal
     :isactive="isTransferModelOpen"
     @success="
     (selectedZooId) => {transferAnimal(selectedZooId);}"
@@ -415,5 +418,5 @@ onMounted(() => {
     :modalType="'transfer'"
     :zoolist="zooList">
     <template #delete-modal-content-heading> Animal Transfer </template>
-  </DeleteModalVue>
+  </CustomModal>
 </template>

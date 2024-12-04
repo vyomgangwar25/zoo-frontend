@@ -11,6 +11,13 @@ const router = useRouter();
 const name = ref(roleStore.name);
 const userEmail = ref(roleStore.email);
 const role = ref(roleStore.role);
+const toastMessage: Ref<string> = ref("");
+const isToastVisible = ref(false);
+
+const closeToast = () => {
+  isToastVisible.value = false;
+};
+
 const items: Ref<
   { token: string; role: string; email: string; name: string; id: number }[]
 > = ref([]);
@@ -42,13 +49,17 @@ const modalOpen = () => {
 };
 
 const handleSubmit = async () => {
-  const response = await useCustomFetch(`/user/update/${route.query.id}`, {
+  try{
+  const response :any= await useCustomFetch(`/user/update/${route.query.id}`, {
     method: "PUT",
     body: JSON.stringify({
       username: formData.value.name,
       email: formData.value.email,
-    }),
+    })
+ 
   });
+  toastMessage.value=response;
+  isToastVisible.value=true;
 
   if (response && formData.value.email !== userEmail.value) {
     roleStore.setState("", "", "", 0);
@@ -58,6 +69,12 @@ const handleSubmit = async () => {
   }
   isModalOpen.value = false;
   dashboardApi();
+  }
+  catch(err:any){
+    toastMessage.value=err.response._data.errormessage;
+    isToastVisible.value=true;
+  }
+
 };
 
 const dashboardApi = async () => {
@@ -88,6 +105,11 @@ onMounted(() => {
 
 <template>
   <div>
+    <AlertPopup
+      :label="toastMessage"
+      :isVisible="isToastVisible"
+      @close="closeToast"
+    />
     <div class="flex justify-center">
       <Icon
         name="heroicons:user-circle"
@@ -162,7 +184,7 @@ onMounted(() => {
         </button>
       </div>
     </div>
-    <DeleteModalVue
+    <CustomModal
       :isactive="isModalOpen"
       @success="handleSubmit"
       @close="(event) => (isModalOpen = event)"
@@ -172,6 +194,6 @@ onMounted(() => {
     >
       <template #form-modal-content-heading> Update User Data </template>
       <template #form-success-button> Update </template>
-    </DeleteModalVue>
+    </CustomModal>
   </div>
 </template>

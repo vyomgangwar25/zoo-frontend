@@ -60,15 +60,7 @@
           </p>
         </div>
       </section>
-
-      <div class="flex justify-center">
-        <button
-          @click="logout"
-          class="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600"
-        >
-          Logout
-        </button>
-      </div>
+ 
     </main>
   </div>
 </template>
@@ -80,12 +72,12 @@ import { useRouter } from "vue-router";
 const roleStore = useRoleStore();
 const router = useRouter();
 
-const logout = () => {
-  const cookie = useCookie("SavedToken");
-  cookie.value = "";
-  router.push("/login");
+// const logout = () => {
+//   const cookie = useCookie("SavedToken");
+//   cookie.value = "";
+//   router.push("/login");
   
-};
+// };
 
 const getTimeOfDay = (): string => {
   const hours = new Date().getHours();

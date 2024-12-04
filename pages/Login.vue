@@ -3,14 +3,26 @@ import { Form, Field, ErrorMessage} from "vee-validate";
 import { useRoleStore } from "~/store/useRoleStore";
 import { useRouter, type Router } from "vue-router";
 import { useCustomFetch } from "~/composable/useFetchOptions";
-import AlertPopup from "~/components/AlertPopup.vue";
+ 
 const toastMessage: Ref<string> = ref("");
 const isToastVisible = ref(false);
  
+class User { 
+  token: string;
+  role: string;
+  email: string; 
+  name: string; 
+  id: number
+  constructor(token: string, role: string, email: string, name: string, id: number) {
+        this.name = name;
+        this.email = email;
+        this.token = token;
+        this.id = id;
+        this.role = role;
+    }
+}
 
-const items: Ref<
-  { token: string; role: string; email: string; name: string; id: number }[]
-> = ref([]);
+var items: User;
 
 const router: Router = useRouter();
 const userEmail  = ref("");
@@ -30,14 +42,14 @@ function handleSubmit (){
         password: userPassword.value,
       }),
     }).then(function(response:any){
-      items.value = response;
+      items = response;
    // console.log(response);
-    const token = items.value[0].token;
+    const token = items.token;
     roleStore.setState(
-      items.value[0].role,
-      items.value[0].email,
-      items.value[0].name,
-      items.value[0].id
+      items.role,
+      items.email,
+      items.name,
+      items.id
     );
 
     const test = useCookie("SavedToken", {

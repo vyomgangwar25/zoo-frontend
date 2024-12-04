@@ -4,14 +4,14 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 
 import Button from "~/components/Button.vue";
 import { useCustomFetch } from "~/composable/useFetchOptions";
-import AlertPopup from "~/components/AlertPopup.vue";
+ 
 const name: Ref<string> = ref("");
 const userEmail: Ref<string> = ref("");
 const password = ref("");
 const role: Ref<string> = ref("");
 const toastMessage: Ref<string> = ref("");
 const isToastVisible = ref(false);
-const router = useRouter();
+ 
 const roles: Ref<{ id: BigInteger; role: string }[]> = ref([]);
 
 const closeToast = () => {
@@ -34,13 +34,16 @@ function handleSubmit () {
   .catch (function(err: any) {
     toastMessage.value = err.response._data;
     isToastVisible.value = true;
-  })
+  }) 
+ 
+         
 };
+ 
 function handleRoles(){  
   useCustomFetch("/user/fetchroles", {
       method: "GET",
     }).then(function(response2:any){
-      console.log(response2);
+      //console.log(response2);
       roles.value = response2;
     }). catch(function (err: any) {
     toastMessage.value = err.response2._data;

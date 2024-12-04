@@ -3,7 +3,7 @@ import { Form, Field, ErrorMessage} from 'vee-validate';
 import { ref} from 'vue';
 import AlertPopup from '~/components/AlertPopup.vue';
  
-const selectedZooId = ref<number>(0);
+const selectedZooId = ref<number>();
 const toastMessage = ref<string>('');
 const isToastVisible = ref(false);
  
@@ -23,9 +23,9 @@ const props = defineProps<{
     rules:string;
   }>;
   formData?: { 
-    name: string; [
-    x: string]: string };
-}>();
+    name: string; 
+    [x: string]: string 
+  };}>();
 
 const closeToast = () => {
   isToastVisible.value = false;
@@ -60,7 +60,7 @@ const emitTransfer = () => {
       <div v-if="modalType == 'transfer'" class="text-sm text-gray-500 mb-4">
         <slot name="delete-modal-content-heading" />
         <div class="mb-4">
-          <Form >
+          <Form @submit="emitTransfer">
           <Field name="selectedZooId" as ="select"
             id="selectedZooId"
             v-model="selectedZooId"
@@ -72,6 +72,19 @@ const emitTransfer = () => {
             </option>
           </Field>
           <ErrorMessage name="selectedZooId"  class="text-red-600 text-sm mt-1"/>
+          <div class="flex  justify-end space-x-2">
+          <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-500" >
+          Transfer
+        </button>
+        <button
+           
+          @click="emits('close')"
+          class="px-4 py-2 bg-gray-100 text-gray-900 text-sm rounded hover:bg-gray-200"
+        >
+          Cancel
+        </button>
+         
+          </div>
         </Form>
         </div>
       </div>
@@ -115,13 +128,6 @@ const emitTransfer = () => {
     
       <div v-if="modalType !== 'form'" class="flex justify-end space-x-2">
         <button
-          v-if="modalType == 'transfer'"
-          @click="emitTransfer"
-          class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-500"
-        >
-          Transfer
-        </button>
-        <button
           v-if="modalType == 'delete'"
           @click="emits('success')"
           class="px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-500"
@@ -129,7 +135,7 @@ const emitTransfer = () => {
           Ok
         </button>
         <button
-          v-if="modalType == 'delete' || 'transfer'"
+          v-if="modalType == 'delete'"
           @click="emits('close')"
           class="px-4 py-2 bg-gray-100 text-gray-900 text-sm rounded hover:bg-gray-200"
         >

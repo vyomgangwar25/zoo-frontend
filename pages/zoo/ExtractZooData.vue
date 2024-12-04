@@ -1,8 +1,7 @@
 <script lang="ts" setup >
 import { useRoleStore } from "~/store/useRoleStore";
 import { useCustomFetch } from "~/composable/useFetchOptions";
-import DeleteModalVue from "~/components/DeleteModalVue.vue";
-import  AlertPopup from "~/components/AlertPopup.vue"
+ 
 
 const toastMessage  = ref('');
 const isToastVisible = ref(false);
@@ -35,18 +34,26 @@ const formFields = [
     placeholder: "Enter size",
     rules:"required"
   },
+  {
+    label: "description",
+    type: "text",
+    placeholder: "Enter description",
+    rules:"required"
+  },
 ];
 
 const formData = ref({
   name: "",
   location: "",
   size: "",
+  description:""
 });
 
 const comparewithOriginal=ref({
   name:"",
   location:"",
-  size:""
+  size:"",
+  description:""
 })
 const openModal = (id:BigInteger) => {
   isModalOpen.value = true;
@@ -56,30 +63,29 @@ const openModal = (id:BigInteger) => {
   formData.value.name = zooToEdit.name;
   formData.value.location = zooToEdit.location;
   formData.value.size = ""+zooToEdit.size;
+  formData.value.description=zooToEdit.description;
 }
 comparewithOriginal.value = { ...formData.value };
 };
 const hasDataChanged = () => {
   return JSON.stringify(formData.value) !== JSON.stringify(comparewithOriginal.value);
 };
-const updateZooData = async () => {
+ function updateZooData () {
   if (!hasDataChanged()) {
     return;
   }
-  try {
-    const response :any= await useCustomFetch(`/zoo/update/${zooid.value}`, {
+   useCustomFetch(`/zoo/update/${zooid.value}`, {
       method: "PUT",
       body: formData.value,
-    });
-    console.log(response);
+    }).then(function(response:any){
     toastMessage.value = response;
     isToastVisible.value = true;
     fetchzoodata();
-  } catch (error:any) {
+    }).catch(function(error:any) {
     toastMessage.value = error.response._data;
        isToastVisible.value = true;
-    console.log(error);
-  }
+    console.log(error)
+  })
   isModalOpen.value = false;
 };
 
@@ -103,38 +109,46 @@ const formFields2 = [
     placeholder: "Enter size",
     rules:"required"
   },
+  {
+     label:"description",
+     type:"text",
+     placeholder:"Enter description",
+     rules:"required"
+  }
 ];
 
 const formData2 = ref({
   name: "",
   location: "",
   size: "",
+  description:"",
 });
 
-const zooRegistration = async () => {
- 
-  try {
-    const response = await useCustomFetch("/zoo/create", {
+function zooRegistration() { 
+    useCustomFetch("/zoo/create", {
       method: "POST",
       body: JSON.stringify(formData2.value),
-    });
-    console.log(response);
-    toastMessage.value = "zoo registration done!! ";
+    }).then(function(response:any){
+      toastMessage.value = response;
     isToastVisible.value = true;
     fetchzoodata();
-  } catch (err) {
+    }).catch (function(err) {
     console.log(err);
-  }
+  })
+  formData2.value.name=""; formData2.value.location="";formData2.value.size=""; formData2.value.description="";
   isZooRegistrationModal.value = false;
 };
 
 const totalPages = ref(0);
-const items:Ref<{totalzoo:BigInteger; name:string;  location:string; size:BigInteger; id:BigInteger}[]> = ref([]);
+const items:Ref<{totalzoo:BigInteger; name:string;  location:string; size:BigInteger; description:string; id:BigInteger}[]> = ref([]);
 const pagesize = 3;
 const pageno = ref(0);
+const selectedpage=ref(1);
 const diasblePgaeNo=ref(0);
-   const setSelectNo=(number:number)=>{
-    if(diasblePgaeNo.value=== number-1)
+
+  const setSelectNo=(number:number)=>{
+    selectedpage.value=number;
+  if(diasblePgaeNo.value=== number-1)
    {
     diasblePgaeNo.value=number-1;
     return;
@@ -158,29 +172,27 @@ const DecreaseButton = () => {
 };
 
 const loading=ref(false);
-const fetchzoodata = async () => {
+function fetchzoodata (){
   loading.value=true;
-  try {
-    const response :any = await useCustomFetch("/zoo/list", {
+    useCustomFetch("/zoo/list", {
       method: "GET",
       params: {
         page: pageno.value, pagesize: pagesize,
       },
-    });
-    console.log(response);   
+    }).then(function (response:any){  
     items.value = response.zoodata;
     totalPages.value = Math.ceil(response.totalzoo / pagesize);
-    
-  } catch (err) {
+    }).catch (function(err) {
     console.error(err);
-  }
-  finally{
+  }).
+  finally(function(){
     loading.value=false;
-  }
+  })
 };
 
 onMounted(() => {
   fetchzoodata();
+
 });
 
 //delete api
@@ -191,19 +203,19 @@ const deleteModalOpen = (id:BigInteger) => {
   deleteZooIdOk.value = id;
   isDeleteModalOpen.value = true;
 };
-const deleteZoo = async () => {
-  try {
-    const response = await useCustomFetch(`/zoo/delete/${deleteZooIdOk.value}`, {
+function deleteZoo () {
+ 
+    useCustomFetch(`/zoo/delete/${deleteZooIdOk.value}`, {
       method: "DELETE",
-    });
-    items.value = items.value.filter((item) => item.id !== deleteZooIdOk.value);
+    }).then(function(){
+      items.value = items.value.filter((item) => item.id !== deleteZooIdOk.value);
     if (items.value.length === 0 && pageno.value > 0) {
       pageno.value--;
       fetchzoodata();
     }
-  } catch (error) {
+    }).catch (function(error) {
     console.log(error);
-  }
+  })
   isDeleteModalOpen.value = false;
 };
 const deleteModalClose = () => {
@@ -211,10 +223,10 @@ const deleteModalClose = () => {
 };
 
 //view animal api
-const viewAnimal = (id:BigInteger) => {
+const viewAnimal = (id:BigInteger,name:string) => {
   router.push({
     path: "/Animal/ExtractAnimalData",
-    query: { zooId: Number(id) },
+    query: { zooId: Number(id) , zooname:name},
   });
 };
 </script>
@@ -237,7 +249,7 @@ const viewAnimal = (id:BigInteger) => {
       </button>
 
       <!--------------------------------------AddZooModal----------------------------------------------------------------->
-      <DeleteModalVue
+      <CustomModal
         :isactive="isZooRegistrationModal"
         @success="zooRegistration"
         @close="(event) => (isZooRegistrationModal = event)"
@@ -247,7 +259,7 @@ const viewAnimal = (id:BigInteger) => {
       >
         <template #form-modal-content-heading> Add Zoo </template>
         <template #form-success-button> Add </template>
-      </DeleteModalVue>
+      </CustomModal>
     </div>
 
     <div class="p-6 bg-gray-200 rounded-lg">
@@ -257,8 +269,8 @@ const viewAnimal = (id:BigInteger) => {
     <div v-else-if="items.length === 0" class="text-2xl bold flex justify-center aligb-center py-10">
       No zoo present
     </div>
-      <ul class="space-y-4">
-        <li v-for="(item, index) in items"  class="bg-white shadow-lg rounded-lg p-6 flex justify-between items-center">
+      <div class="space-y-4">
+        <ul v-for="(item, index) in items"  class="bg-white shadow-lg rounded-lg p-6 flex justify-between items-center">
           <div class="w-24 h-24 mr-4">
             <img
               src="https://assets.simpleviewinc.com/simpleview/image/upload/c_limit,q_75,w_1200/v1/crm/houston/Asian-Elephant-0479-0654-783906ecce425e6_783908b6-f2dd-dbab-baaafeb9c82c3d70.jpg"
@@ -273,39 +285,46 @@ const viewAnimal = (id:BigInteger) => {
             <div class="text-gray-500">
               <span class="font-medium">Size:</span> {{ item.size }} acres
             </div>
+            <div class="text-gray-500">
+              <span class="font-medium">Description:</span> {{ item.description}} 
+            </div>
           </div>
-
+         <li title="update">
           <CustomIcon
             @clicked="openModal(item.id as any)"
             name="heroicons:pencil-square-solid"
             iconcolour=" text-blue-700"
             iconbg=" bg-gray-100"
-            iconhover=" hover:bg-gray-500 hover:text-white ml-2"
+            iconhover=" hover:bg-gray-500 hover:text-white ml-2" 
           />
-
+         </li>
+          
+           <li title="view">
           <CustomIcon
-            @clicked="viewAnimal(item.id)"
+            @clicked="viewAnimal(item.id,item.name)"
             name="heroicons:eye"
             iconcolour=" text-blue-700"
             iconbg=" bg-gray-100"
             iconhover=" hover:bg-gray-500 hover:text-white ml-2"
           />
-
-          <CustomIcon
+        </li>
+          <li title="delete">
+            <CustomIcon
             v-if="roleStore.role === 'admin'"
             @clicked="deleteModalOpen(item.id)"
             name="heroicons:x-mark"
             iconcolour=" text-red-700"
             iconbg=" bg-gray-100"
             iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
+          </li>
         
-        </li>
-      </ul>
+        </ul>
+      </div>
     </div>
 
     <!---------------------Update modal--------------------------------->
 
-    <DeleteModalVue
+    <CustomModal
       :isactive="isModalOpen"
       @success="updateZooData"
       @close="(event) => (isModalOpen = event)"
@@ -315,11 +334,11 @@ const viewAnimal = (id:BigInteger) => {
     >
       <template #form-modal-content-heading> Update Zoo Data </template>
       <template #form-success-button> Update </template>
-    </DeleteModalVue>
+    </CustomModal>
 
     <!---------------------Delete modal--------------------------------->
 
-    <DeleteModalVue
+    <CustomModal
       :isactive="isDeleteModalOpen"
       @success="deleteZoo"
       @close="deleteModalClose"
@@ -328,19 +347,21 @@ const viewAnimal = (id:BigInteger) => {
       <template #delete-modal-content-heading>
         Are you sure you want to delete this zoo
       </template>
-    </DeleteModalVue>
+    </CustomModal>
 
     <div
       v-if="items.length !== 0"
-      class="pagination-controls flex justify-center space-x-4 my-4"
+      class=" flex justify-center space-x-4 my-4"
     >
     <button  class="btn px-4 py-2 rounded" :class="pageno > 0 ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'" @click="DecreaseButton">
         Previous
     </button>
-      <button  class="btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" v-for="number in totalPages" :key="number"  @click="setSelectNo(number)">{{ number }}</button>
-      <button  class="btn px-4 py-2 rounded" :class="pageno <totalPages-1 ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'" @click="IncreaseButton">
-        Next
-      </button>
+    <button  class="btn bg-white-100 text-black px-4 py-2 rounded border-2 hover:bg-white-500"
+      v-for="number in totalPages" :key="number" :class="pageno+1==number? 'btn bg-red-500 text-white px-4 py-2 hover:bg-red-600 ':''" @click="setSelectNo(number)">{{ number }}
+    </button>
+    <button  class="btn px-4 py-2 rounded" :class="pageno <totalPages-1 ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'" @click="IncreaseButton">
+      Next
+    </button>
     </div>
   </div>
 </template>
