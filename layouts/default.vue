@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 import { useRoleStore } from "~/store/useRoleStore";
 import { useCustomFetch } from "~/composable/useFetchOptions";
+import type { User } from "~/types/UserData";
 
 const roleStore = useRoleStore(); //access the store
 
 const token = ref("");
 const showDropdown = ref(false);
 const router = useRouter();
-const items: Ref<
-  { token: string; role: string; email: string; name: string; id: number }[]
-> = ref([]);
+const items: Ref<User> = ref({} as User);
 
 const toggleDropdown = () => {
   roleStore.toggleDropDown();
@@ -39,19 +38,20 @@ const dashboardApi = async () => {
     const response: any = await useCustomFetch("/user/userinfo", {
       method: "GET",
     });
+    console.log(response)
     items.value = response;
     roleStore.setState(
-      items.value[0].role,
-      items.value[0].email,
-      items.value[0].name,
-      items.value[0].id
+      items.value.role,
+      items.value.email,
+      items.value.username,
+      items.value.id
     );
   } catch (err) {
     alert(err);
     router.push("/login");
   }
 };
-onBeforeMount(() => {
+onMounted(() => {
   if (token.value) {
     dashboardApi();
   }

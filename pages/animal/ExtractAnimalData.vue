@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { useRoleStore } from "~/store/useRoleStore";
 import { useCustomFetch } from "~/composable/useFetchOptions";
+import type { AnimalData } from "~/types/AnimalData";
+import type { fetchAnimal } from "~/types/FetchAnimal";
  
 const toastMessage = ref("");
 const isToastVisible = ref(false);
@@ -14,14 +16,12 @@ const AnimalId = ref();
 const isModalOpen = ref(false);
  
 
-function updatemodalOpen(animalId: BigInteger) {
+function updatemodalOpen(animalId:BigInteger,animal:any) {
   isModalOpen.value = true;
-  AnimalId.value = animalId;
-  const animalToEdit = items.value.find((zoo) => zoo.animal_id === animalId);
-  if (animalToEdit) {
-    updateData.value.name = animalToEdit.name;
-    updateData.value.gender = animalToEdit.gender;
-  }
+    AnimalId.value = animalId;
+    updateData.value.name = animal.name;
+    updateData.value.gender = animal.gender;
+ 
   comparewithOriginal.value = { ...updateData.value };
 }
 const hasDataChanged = () => {
@@ -33,18 +33,18 @@ const updateAnimal = async () => {
   if (!hasDataChanged()) {
     return;
   }
-  try {
-    const response: any = await useCustomFetch(`/animal/update/${AnimalId.value}`,
+      useCustomFetch<string>(`/animal/update/${AnimalId.value}`,
       {
         method: "PUT",
         body: JSON.stringify(updateData.value),
-      }
-    );
-    toastMessage.value = response;
-    fetchanimaldata();
-  } catch (err: any) {
+      }).
+      then(function(response){
+      toastMessage.value = response;
+      fetchanimaldata();
+    }).
+   catch (function(err) {
     toastMessage.value = err.response._data;
-  }
+  })
   isToastVisible.value = true;
   isModalOpen.value = false;
 };
@@ -64,7 +64,6 @@ const update = [
   },
 ];
 
-
 const updateData = ref({
   name: "",
   gender: "",
@@ -76,10 +75,10 @@ const comparewithOriginal = ref({
 
 const isAnimalRegistrationModal = ref(false);
 function handleSubmit() {
-     useCustomFetch("/animal/create", {
+     useCustomFetch<string>("/animal/create", {
       method: "POST",
       body: createAnimalData.value,
-    }).then(function(response:any){
+    }).then(function(response){
       toastMessage.value = response;
     isToastVisible.value = true;
     fetchanimaldata();
@@ -137,12 +136,9 @@ function deleteanimal (){
       pageno.value--;
       fetchanimaldata();
     }
-
     }). catch (function(error) {
     console.error("Error deleting animal:", error);
   })
-    
-  
   isactive.value = false;
 };
 
@@ -181,13 +177,13 @@ const closeTransferModal = () => {
 //transfer api
 function transferAnimal(id: BigInteger) {
  
-     useCustomFetch(`/animal/transfer`, {
+     useCustomFetch<string>(`/animal/transfer`, {
       method: "PUT",
       query: {
         animalid: TransferAnimalId.value,
         zooid: id,
       },
-    }).then(function(response:any){
+    }).then(function(response){
       console.log(response);
     toastMessage.value = response;
     isToastVisible.value = true;
@@ -200,26 +196,22 @@ function transferAnimal(id: BigInteger) {
 };
 
 const totalPages = ref(0);
-const items: Ref< {zooname: string;animalcount: BigInteger;animal_id: BigInteger; dob: string;gender: string;name: string;
-  zoo_id: BigInteger; id: BigInteger}[]> = ref([]);
+const items: Ref< AnimalData[]> = ref([]);
 const pagesize = 3;
 const pageno = ref(0);
 const zooid: Ref<number> = ref(0);
-const description: Ref<string>=ref("")
 const loading = ref(false);
 function fetchanimaldata () {
   loading.value = true;
   
-    useCustomFetch(`/animal/list/${zooid.value}?page=${pageno.value}&pagesize=${pagesize}`,
+    useCustomFetch<fetchAnimal>(`/animal/list/${zooid.value}?page=${pageno.value}&pagesize=${pagesize}`,
       {
         method: "GET",
       }
-    ).then(function(response:any){
+    ).then(function(response){
+      console.log(response)
     items.value = response.animaldata || [];
     totalPages.value = Math.ceil(response.animalcount / pagesize);
-  
-    description.value=response.zoodescription
-
     }).catch (function(err) {
     console.error(err)}).
    finally(function(){
@@ -267,9 +259,7 @@ const zooname=route.query.zooname;
       Welcome to {{ zooname }}
     </div>
     <div>
-      <p>
-         {{ description }}
-      </p>
+      
     </div>
 
     <div :class="items.length == 0 ? 'flex items-center justify-center' : 'flex items-center justify-between'">
@@ -341,7 +331,7 @@ const zooname=route.query.zooname;
           </li>
           <li title="update">
           <CustomIcon
-            @clicked="updatemodalOpen(animal.animal_id)"
+            @clicked="updatemodalOpen(animal.animal_id, animal)"
             name="heroicons:pencil-square-solid"
             iconcolour=" text-blue-700"
             iconbg=" bg-gray-100"

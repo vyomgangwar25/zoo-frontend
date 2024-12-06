@@ -11,8 +11,6 @@ const token = route.query.token;
 const newPassword = ref("");
 const toastMessage :Ref<string> = ref('');
 const isToastVisible = ref(false);
-
- 
  
 const closeToast=()=>{
   isToastVisible.value=false
@@ -22,10 +20,10 @@ function setnewpassword() {
     useCustomFetch("/user/setnewpassword", {
       method: "POST",
       body:newPassword.value,
-    }).then(function(response:any){
+    }).then(function(response){
       router.push("/login")
     }).
-   catch(function(err:any) {
+   catch(function(err) {
     toastMessage.value = err.response._data;
     isToastVisible.value = true;
   })

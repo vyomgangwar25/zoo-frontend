@@ -1,6 +1,8 @@
 <script lang="ts" setup >
 import { useRoleStore } from "~/store/useRoleStore";
 import { useCustomFetch } from "~/composable/useFetchOptions";
+import type { fetchzoo } from "~/types/FetchZoo";
+import type { zoodata } from "~/types/ZooData";
  
 
 const toastMessage  = ref('');
@@ -55,18 +57,18 @@ const comparewithOriginal=ref({
   size:"",
   description:""
 })
-const openModal = (id:BigInteger) => {
+const openModal = (id:BigInteger,item:any) => {
   isModalOpen.value = true;
   zooid.value  = id;
-  const zooToEdit = items.value.find((zoo) => zoo.id === id);  
-  if (zooToEdit) {
-  formData.value.name = zooToEdit.name;
-  formData.value.location = zooToEdit.location;
-  formData.value.size = ""+zooToEdit.size;
-  formData.value.description=zooToEdit.description;
-}
+
+  formData.value.name = item.name;
+  formData.value.location = item.location;
+  formData.value.size = ""+item.size;
+  formData.value.description=item.description;
+ 
 comparewithOriginal.value = { ...formData.value };
-};
+}
+
 const hasDataChanged = () => {
   return JSON.stringify(formData.value) !== JSON.stringify(comparewithOriginal.value);
 };
@@ -74,10 +76,10 @@ const hasDataChanged = () => {
   if (!hasDataChanged()) {
     return;
   }
-   useCustomFetch(`/zoo/update/${zooid.value}`, {
+   useCustomFetch<string>(`/zoo/update/${zooid.value}`, {
       method: "PUT",
       body: formData.value,
-    }).then(function(response:any){
+    }).then(function(response){
     toastMessage.value = response;
     isToastVisible.value = true;
     fetchzoodata();
@@ -125,10 +127,10 @@ const formData2 = ref({
 });
 
 function zooRegistration() { 
-    useCustomFetch("/zoo/create", {
+    useCustomFetch<string>("/zoo/create", {
       method: "POST",
       body: JSON.stringify(formData2.value),
-    }).then(function(response:any){
+    }).then(function(response){
       toastMessage.value = response;
     isToastVisible.value = true;
     fetchzoodata();
@@ -140,7 +142,7 @@ function zooRegistration() {
 };
 
 const totalPages = ref(0);
-const items:Ref<{totalzoo:BigInteger; name:string;  location:string; size:BigInteger; description:string; id:BigInteger}[]> = ref([]);
+const items:Ref<zoodata[]> = ref([]);
 const pagesize = 3;
 const pageno = ref(0);
 const selectedpage=ref(1);
@@ -174,12 +176,13 @@ const DecreaseButton = () => {
 const loading=ref(false);
 function fetchzoodata (){
   loading.value=true;
-    useCustomFetch("/zoo/list", {
+    useCustomFetch<fetchzoo>("/zoo/list", {
       method: "GET",
       params: {
         page: pageno.value, pagesize: pagesize,
       },
-    }).then(function (response:any){  
+    }).then(function (response){ 
+      console.log(response) 
     items.value = response.zoodata;
     totalPages.value = Math.ceil(response.totalzoo / pagesize);
     }).catch (function(err) {
@@ -273,7 +276,7 @@ const viewAnimal = (id:BigInteger,name:string) => {
         <ul v-for="(item, index) in items"  class="bg-white shadow-lg rounded-lg p-6 flex justify-between items-center">
           <div class="w-24 h-24 mr-4">
             <img
-              src="https://assets.simpleviewinc.com/simpleview/image/upload/c_limit,q_75,w_1200/v1/crm/houston/Asian-Elephant-0479-0654-783906ecce425e6_783908b6-f2dd-dbab-baaafeb9c82c3d70.jpg"
+              src="public/img1.jpg"
               class="w-full h-full object-cover rounded-lg"
             />
           </div>
@@ -291,7 +294,7 @@ const viewAnimal = (id:BigInteger,name:string) => {
           </div>
          <li title="update">
           <CustomIcon
-            @clicked="openModal(item.id as any)"
+            @clicked="openModal(item.id as any,item)"
             name="heroicons:pencil-square-solid"
             iconcolour=" text-blue-700"
             iconbg=" bg-gray-100"

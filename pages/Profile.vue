@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Form, Field} from "vee-validate";
+import { Form, Field } from "vee-validate";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import { useRoleStore } from "~/store/useRoleStore";
 
@@ -8,9 +8,7 @@ const roleStore = useRoleStore();
 const cookies = useCookie("SavedToken");
 const isModalOpen = ref(false);
 const router = useRouter();
-const name = ref(roleStore.name);
-const userEmail = ref(roleStore.email);
-const role = ref(roleStore.role);
+
 const toastMessage: Ref<string> = ref("");
 const isToastVisible = ref(false);
 
@@ -18,9 +16,7 @@ const closeToast = () => {
   isToastVisible.value = false;
 };
 
-const items: Ref<
-  { token: string; role: string; email: string; name: string; id: number }[]
-> = ref([]);
+//const items: Ref<{ token: string; role: string; email: string; name: string; id: number }[]> = ref([]);
 const formFields = [
   {
     label: "name",
@@ -41,7 +37,6 @@ const formData = ref({
   email: "",
 });
 
-
 const modalOpen = () => {
   isModalOpen.value = true;
   formData.value.name = roleStore.name;
@@ -49,58 +44,38 @@ const modalOpen = () => {
 };
 
 const handleSubmit = async () => {
-  try{
-  const response :any= await useCustomFetch(`/user/update/${route.query.id}`, {
-    method: "PUT",
-    body: JSON.stringify({
-      username: formData.value.name,
-      email: formData.value.email,
-    })
- 
-  });
-  toastMessage.value=response;
-  isToastVisible.value=true;
-
-  if (response && formData.value.email !== userEmail.value) {
-    roleStore.setState("", "", "", 0);
-    cookies.value = "";
-    router.push("/login");
-    return;
-  }
-  isModalOpen.value = false;
-  dashboardApi();
-  }
-  catch(err:any){
-    toastMessage.value=err.response._data.errormessage;
-    isToastVisible.value=true;
-  }
-
-};
-
-const dashboardApi = async () => {
   try {
-    const response: any = await useCustomFetch("/user/userinfo", {
-      method: "GET",
-    });
-
-    items.value = response;
-
-    roleStore.setState(
-      items.value[0].role,
-      items.value[0].email,
-      items.value[0].name,
-      items.value[0].id
+    const response = await useCustomFetch<string>(
+      `/user/update/${route.query.id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          username: formData.value.name,
+          email: formData.value.email,
+        }),
+      }
     );
-    name.value = roleStore.name;
-    userEmail.value = roleStore.email;
-    role.value = roleStore.role;
-  } catch (err) {
-    alert(err);
+    toastMessage.value = response;
+    isToastVisible.value = true;
+
+    if (response && formData.value.email !== roleStore.email) {
+      roleStore.setState("", "", "", 0);
+      cookies.value = "";
+      router.push("/login");
+      return;
+    }
+    roleStore.setState(
+      roleStore.role,
+      formData.value.email,
+      formData.value.name,
+      roleStore.id
+    );
+    isModalOpen.value = false;
+  } catch (err: any) {
+    toastMessage.value = err.response._data.errormessage;
+    isToastVisible.value = true;
   }
 };
-onMounted(() => {
-  dashboardApi();
-});
 </script>
 
 <template>
@@ -129,11 +104,10 @@ onMounted(() => {
               name="name"
               type="name"
               class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
-              v-model="name"
+              v-model="roleStore.name"
               rules="required"
               :disabled="true"
             />
-  
           </div>
         </div>
         <div class="flex justify-center">
@@ -146,11 +120,10 @@ onMounted(() => {
               name="email"
               type="email"
               class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
-              v-model="userEmail"
+              v-model="roleStore.email"
               rules="required|email"
               :disabled="true"
             />
-      
           </div>
         </div>
 
@@ -164,11 +137,10 @@ onMounted(() => {
               name="role"
               type="text"
               class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
-              v-model="role"
+              v-model="roleStore.role"
               rules="required"
               :disabled="true"
             />
-     
           </div>
         </div>
       </div>

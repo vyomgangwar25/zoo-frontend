@@ -20,5 +20,5 @@ export function useCustomFetch<T>(
   };
   let mergedOptions = {};
   mergedOptions = { ...defaults, ...options };
-  return $fetch(url, mergedOptions);
+  return $fetch<T>(url, mergedOptions);
 }

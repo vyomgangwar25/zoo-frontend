@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, type Ref } from "vue";
+ 
 import { Form, Field, ErrorMessage } from "vee-validate";
-
 import Button from "~/components/Button.vue";
 import { useCustomFetch } from "~/composable/useFetchOptions";
- 
+import type { Roles } from "~/types/HandleRoles";
+
 const name: Ref<string> = ref("");
 const userEmail: Ref<string> = ref("");
 const password = ref("");
@@ -12,45 +12,45 @@ const role: Ref<string> = ref("");
 const toastMessage: Ref<string> = ref("");
 const isToastVisible = ref(false);
  
-const roles: Ref<{ id: BigInteger; role: string }[]> = ref([]);
-
+const roles :Ref<Roles[]> = ref([]); 
 const closeToast = () => {
   isToastVisible.value = false;
 };
 
-function handleSubmit () {
-  useCustomFetch("/user/registration", {
-      method: "POST",
-      body: JSON.stringify({
-        username: name.value,
-        email: userEmail.value,
-        password: password.value,
-        role: role.value,
-      }),
-    }).then(function(response :any){
-      toastMessage.value = response as string;
+function handleRegistration() {
+  useCustomFetch<string>("/user/registration", {
+    method: "POST",
+    body: JSON.stringify({
+      username: name.value,
+      email: userEmail.value,
+      password: password.value,
+      role: role.value,
+    }),
+  })
+    .then(function (response) {
+      console.log(response)
+      toastMessage.value = response;
       isToastVisible.value = true;
-    }) 
-  .catch (function(err: any) {
-    toastMessage.value = err.response._data;
-    isToastVisible.value = true;
-  }) 
- 
-         
-};
- 
-function handleRoles(){  
-  useCustomFetch("/user/fetchroles", {
-      method: "GET",
-    }).then(function(response2:any){
-      //console.log(response2);
+    })
+    .catch(function (err) {
+      toastMessage.value = err.response._data;
+      isToastVisible.value = true;
+    });
+}
+
+function handleRoles() {
+  useCustomFetch<Roles[]>("/user/fetchroles", {
+    method: "GET",
+  })
+    .then(function (response2) {
+      console.log(response2);
       roles.value = response2;
-    }). catch(function (err: any) {
-    toastMessage.value = err.response2._data;
-    isToastVisible.value = true;
-    }
-    )
-  }
+    })
+    .catch(function (err) {
+      toastMessage.value = err.response2._data;
+      isToastVisible.value = true;
+    });
+}
 onMounted(() => {
   handleRoles();
 });
@@ -66,7 +66,7 @@ onMounted(() => {
       <h1 class="text-3xl font-bold text-center text-gray-700 mb-8">
         Registration Form
       </h1>
-      <Form @submit="handleSubmit" class="space-y-4">
+      <Form @submit="handleRegistration" class="space-y-4">
         <div>
           <label for="name" class="block text-sm font-medium text-gray-700"
             >Name</label
@@ -113,14 +113,17 @@ onMounted(() => {
           <label for="role" class="block text-sm font-medium text-gray-700"
             >Role</label
           >
-          <Field  name="role" as="select"
+          <Field
+            name="role"
+            as="select"
             id="role"
             v-model="role"
             class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rules="required">
+            rules="required"
+          >
             <option value="" disabled>Select Role</option>
-            <option v-for="(item, index) in roles" :value="item.role">
-              {{ item.role }}
+            <option v-for="(item, index) in roles" :value="item?.role">
+              {{ item?.role }}
             </option>
           </Field>
           <ErrorMessage name="role" class="text-red-600 text-sm mt-1" />
@@ -140,5 +143,3 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
-

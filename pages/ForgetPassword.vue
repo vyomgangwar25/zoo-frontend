@@ -11,13 +11,13 @@ const closeToast=()=>{
   isToastVisible.value=false
 }
 
-function handleResetPassword  (){
+function forgetPassword  (){
   
-     useCustomFetch("/user/forgetpassword", {
+     useCustomFetch<string>("/user/forgetpassword", {
       method: "POST",
       body:userEmail.value,
     
-    }).then(function(response:any){
+    }).then(function(response){
     console.log(response);
     toastMessage.value="reset password link sent to  console ";
     isToastVisible.value = true;
@@ -36,7 +36,7 @@ function handleResetPassword  (){
         <h1 class="text-3xl font-bold text-center text-gray-700 mb-8">
           Enter Email
         </h1>
-        <Form   class="space-y-6" @submit="handleResetPassword">
+        <Form   class="space-y-6" @submit="forgetPassword">
           <div class="flex flex-col">
             <label
               for="newPassword"
