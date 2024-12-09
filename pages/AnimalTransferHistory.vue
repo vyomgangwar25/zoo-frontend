@@ -84,7 +84,7 @@ function animalHistory() {
     method: "GET",
   })
     .then(function (response) {
-      console.log(response);
+     // console.log(response);
       items.value = response.transferHistoryList;
       animal.value = response.animalData;
     })

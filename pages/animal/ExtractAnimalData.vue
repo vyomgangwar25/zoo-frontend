@@ -163,7 +163,7 @@ const transferModalOpen = async (zooid: BigInteger,trasnferAnimalId: BigInteger)
         zooId: zooid,
       },
     });
-    console.log(response);
+     console.log(response);
     zooList.value = response;
   } catch (err) {
     console.error(err);
@@ -184,7 +184,7 @@ function transferAnimal(id: BigInteger) {
         zooid: id,
       },
     }).then(function(response){
-      console.log(response);
+      //console.log(response);
     toastMessage.value = response;
     isToastVisible.value = true;
     isTransferModelOpen.value = false;
@@ -209,7 +209,7 @@ function fetchanimaldata () {
         method: "GET",
       }
     ).then(function(response){
-      console.log(response)
+     // console.log(response)
     items.value = response.animaldata || [];
     totalPages.value = Math.ceil(response.animalcount / pagesize);
     }).catch (function(err) {
@@ -291,23 +291,14 @@ const zooname=route.query.zooname;
     </div>
 
     <div class="p-6 bg-gray-200 rounded-lg mt-5">
-      <div
-        v-if="loading"
-        class="text-2xl bold flex justify-center aligb-center py-10"
-      >
+      <div v-if="loading" class="text-2xl bold flex justify-center aligb-center py-10">
         Loading...
       </div>
-      <div
-        v-else-if="items.length === 0"
-        class="text-2xl bold flex justify-center aligb-center py-10"
-      >
+      <div v-else-if="items.length === 0" class="text-2xl bold flex justify-center aligb-center py-10">
         No animals present
       </div>
       <div class="space-y-4" v-else>
-        <div
-          v-for="animal in items"
-          class="bg-white shadow-lg rounded-lg p-6 flex justify-between items-center"
-        >
+        <div v-for="animal in items" class="bg-white shadow-lg rounded-lg p-6 flex justify-between items-center" >
           <div class="flex-grow">
             <div class="text-lg font-semibold">Name: {{ animal.name }}</div>
             <div class="text-gray-500">

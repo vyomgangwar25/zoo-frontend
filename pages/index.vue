@@ -10,7 +10,7 @@
     />
 
     <h1
-      class="relative z-10 text-white text-6xl font-extrabold text-center"
+      class="absolute z-10 text-white text-6xl font-extrabold text-center"
       style="
         max-width: 600px;
         font-family: Arial, sans-serif;

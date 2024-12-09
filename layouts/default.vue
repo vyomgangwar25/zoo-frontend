@@ -38,7 +38,7 @@ const dashboardApi = async () => {
     const response: any = await useCustomFetch("/user/userinfo", {
       method: "GET",
     });
-    console.log(response)
+    //console.log(response)
     items.value = response;
     roleStore.setState(
       items.value.role,

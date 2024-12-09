@@ -60,7 +60,6 @@
           </p>
         </div>
       </section>
- 
     </main>
   </div>
 </template>
@@ -76,7 +75,7 @@ const router = useRouter();
 //   const cookie = useCookie("SavedToken");
 //   cookie.value = "";
 //   router.push("/login");
-  
+
 // };
 
 const getTimeOfDay = (): string => {

@@ -92,7 +92,7 @@ const hasDataChanged = () => {
 };
 
 const isZooRegistrationModal = ref(false);
-const formFields2 = [
+const  createZooFileds = [
   {
     label: "name",
     type: "text",
@@ -119,7 +119,7 @@ const formFields2 = [
   }
 ];
 
-const formData2 = ref({
+const createZooData = ref({
   name: "",
   location: "",
   size: "",
@@ -129,7 +129,7 @@ const formData2 = ref({
 function zooRegistration() { 
     useCustomFetch<string>("/zoo/create", {
       method: "POST",
-      body: JSON.stringify(formData2.value),
+      body: JSON.stringify(createZooData.value),
     }).then(function(response){
       toastMessage.value = response;
     isToastVisible.value = true;
@@ -137,7 +137,7 @@ function zooRegistration() {
     }).catch (function(err) {
     console.log(err);
   })
-  formData2.value.name=""; formData2.value.location="";formData2.value.size=""; formData2.value.description="";
+  createZooData.value.name=""; createZooData.value.location="";createZooData.value.size=""; createZooData.value.description="";
   isZooRegistrationModal.value = false;
 };
 
@@ -182,7 +182,7 @@ function fetchzoodata (){
         page: pageno.value, pagesize: pagesize,
       },
     }).then(function (response){ 
-      console.log(response) 
+     // console.log(response) 
     items.value = response.zoodata;
     totalPages.value = Math.ceil(response.totalzoo / pagesize);
     }).catch (function(err) {
@@ -257,8 +257,8 @@ const viewAnimal = (id:BigInteger,name:string) => {
         @success="zooRegistration"
         @close="(event) => (isZooRegistrationModal = event)"
         :modalType="'form'"
-        :formField="formFields2"
-        :formData="formData2"
+        :formField="createZooFileds"
+        :formData="createZooData"
       >
         <template #form-modal-content-heading> Add Zoo </template>
         <template #form-success-button> Add </template>
@@ -320,7 +320,7 @@ const viewAnimal = (id:BigInteger,name:string) => {
             iconbg=" bg-gray-100"
             iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
           </li>
-        
+
         </ul>
       </div>
     </div>

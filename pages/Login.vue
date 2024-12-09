@@ -29,19 +29,19 @@ function handleLogin() {
   })
     .then(function (response) {
       items.value = response;
-     // console.log(response);
-      const token = items.value.token;
+      // console.log(response);
+      //const token = items.value.token;
       roleStore.setState(
         items.value.role,
         items.value.email,
         items.value.username,
         items.value.id
       );
-
-      const test = useCookie("SavedToken", {
+      const token = useCookie("SavedToken", {
         maxAge: 7200,
       });
-      test.value = token;
+  
+      token.value = items.value.token;
       router.push("/Dashboard");
     })
     .catch(function (err) {

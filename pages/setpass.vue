@@ -4,10 +4,10 @@ import { ref } from "vue";
 import { Form, Field, ErrorMessage} from "vee-validate";
 import { useRoute, type Router } from "vue-router";
 import { useCustomFetch } from "~/composable/useFetchOptions";
- 
+//  const cookie=useCookie("SavedToken");
+//  console.log(cookie.value)
 const router : Router = useRouter();
 const route = useRoute();
-const token = route.query.token;
 const newPassword = ref("");
 const toastMessage :Ref<string> = ref('');
 const isToastVisible = ref(false);
@@ -15,12 +15,12 @@ const isToastVisible = ref(false);
 const closeToast=()=>{
   isToastVisible.value=false
 }
- 
 function setnewpassword() {
     useCustomFetch("/user/setnewpassword", {
       method: "POST",
       body:newPassword.value,
     }).then(function(response){
+      //cookie.value="";
       router.push("/login")
     }).
    catch(function(err) {

@@ -19,8 +19,9 @@ function forgetPassword  (){
     
     }).then(function(response){
     console.log(response);
-    toastMessage.value="reset password link sent to  console ";
-    isToastVisible.value = true;
+    navigateTo(`${response}`)
+    // toastMessage.value="reset password link sent to  console ";
+    // isToastVisible.value = true;
     }). catch(function (err:any) {
     toastMessage.value = err.response._data;
     isToastVisible.value = true;
