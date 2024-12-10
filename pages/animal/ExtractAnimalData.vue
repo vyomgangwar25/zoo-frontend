@@ -15,7 +15,29 @@ const route = useRoute();
 const AnimalId = ref();
 const isModalOpen = ref(false);
  
+const update = [
+  {
+    label: "name",
+    type: "text",
+    placeholder: "Name",
+    rules:"required|alpha_spaces"
+  },
+  {
+    label: "gender",
+    type: "text",
+    placeholder: "Gender",
+    rules:"required"
+  },
+];
 
+const updateData = ref({
+  name: "",
+  gender: "",
+});
+const comparewithOriginal = ref({
+  name: "",
+  gender: "",
+});
 function updatemodalOpen(animalId:BigInteger,animal:any) {
   isModalOpen.value = true;
     AnimalId.value = animalId;
@@ -49,29 +71,6 @@ const updateAnimal = async () => {
   isModalOpen.value = false;
 };
 
-const update = [
-  {
-    label: "name",
-    type: "text",
-    placeholder: "Name",
-    rules:"required|alpha_spaces"
-  },
-  {
-    label: "gender",
-    type: "text",
-    placeholder: "Gender",
-    rules:"required"
-  },
-];
-
-const updateData = ref({
-  name: "",
-  gender: "",
-});
-const comparewithOriginal = ref({
-  name: "",
-  gender: "",
-});
 
 const isAnimalRegistrationModal = ref(false);
 function handleSubmit() {
@@ -163,7 +162,7 @@ const transferModalOpen = async (zooid: BigInteger,trasnferAnimalId: BigInteger)
         zooId: zooid,
       },
     });
-     console.log(response);
+    //  console.log(response);
     zooList.value = response;
   } catch (err) {
     console.error(err);
@@ -184,6 +183,7 @@ function transferAnimal(id: BigInteger) {
         zooid: id,
       },
     }).then(function(response){
+
       //console.log(response);
     toastMessage.value = response;
     isToastVisible.value = true;
@@ -284,7 +284,7 @@ const zooname=route.query.zooname;
         :formField="createAnimal"
         :formData="createAnimalData">
         <template #form-modal-content-heading>
-          Animal Registraction form
+          Animal Registration form
         </template>
         <template #form-success-button> Submit</template>
       </CustomModal>
@@ -359,7 +359,7 @@ const zooname=route.query.zooname;
         Previous
       </button>
       <button
-        class="btn bg-white-100 text-black-200 border-2 px-4 py-2 rounded hover:bg-white-500" v-for="number in totalPages" :key="number" :class="pageno+1==number? 'btn bg-red-500 text-white px-4 py-2 hover:bg-red-600 ':'' "  @click="setSelectNo(Number(number))"> {{ number }} </button>
+        class="btn bg-white-100 text-black-200 border-2 px-4 py-2 rounded hover:bg-white-500" v-for="number in totalPages"  :class="pageno+1==number? 'btn bg-red-500 text-white px-4 py-2 hover:bg-red-600 ':'' "  @click="setSelectNo(Number(number))"> {{ number }} </button>
       <button
         class="btn px-4 py-2 rounded"
         :class="pageno < totalPages - 1 ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'" @click="increaseButton">

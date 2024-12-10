@@ -5,7 +5,7 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import AlertPopup from "~/components/AlertPopup.vue";
 const userEmail = ref("");
-const toastMessage :Ref<string> = ref('');
+const toastMessage = ref('');
 const isToastVisible = ref(false);
 const closeToast=()=>{
   isToastVisible.value=false
@@ -22,7 +22,7 @@ function forgetPassword  (){
     navigateTo(`${response}`)
     // toastMessage.value="reset password link sent to  console ";
     // isToastVisible.value = true;
-    }). catch(function (err:any) {
+    }). catch(function (err) {
     toastMessage.value = err.response._data;
     isToastVisible.value = true;
   })

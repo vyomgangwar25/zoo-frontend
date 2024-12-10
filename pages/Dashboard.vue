@@ -78,7 +78,7 @@ const router = useRouter();
 
 // };
 
-const getTimeOfDay = (): string => {
+const getTimeOfDay = () => {
   const hours = new Date().getHours();
   if (hours < 12) {
     return "Morning";

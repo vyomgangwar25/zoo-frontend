@@ -294,7 +294,7 @@ const viewAnimal = (id:BigInteger,name:string) => {
           </div>
          <li title="update">
           <CustomIcon
-            @clicked="openModal(item.id as any,item)"
+            @clicked="openModal(item.id ,item)"
             name="heroicons:pencil-square-solid"
             iconcolour=" text-blue-700"
             iconbg=" bg-gray-100"
@@ -356,7 +356,7 @@ const viewAnimal = (id:BigInteger,name:string) => {
       v-if="items.length !== 0"
       class=" flex justify-center space-x-4 my-4"
     >
-    <button  class="btn px-4 py-2 rounded" :class="pageno > 0 ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'" @click="DecreaseButton">
+    <!-- <button  class="btn px-4 py-2 rounded" :class="pageno > 0 ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'" @click="DecreaseButton">
         Previous
     </button>
     <button  class="btn bg-white-100 text-black px-4 py-2 rounded border-2 hover:bg-white-500"
@@ -364,7 +364,8 @@ const viewAnimal = (id:BigInteger,name:string) => {
     </button>
     <button  class="btn px-4 py-2 rounded" :class="pageno <totalPages-1 ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'" @click="IncreaseButton">
       Next
-    </button>
+    </button> -->
+    <Pagination :totalPages="totalPages"  :pageno="pageno" />
     </div>
   </div>
 </template>
