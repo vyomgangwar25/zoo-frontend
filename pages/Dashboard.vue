@@ -66,17 +66,8 @@
 
 <script lang="ts" setup>
 import { useRoleStore } from "~/store/useRoleStore";
-import { useRouter } from "vue-router";
-
 const roleStore = useRoleStore();
-const router = useRouter();
-
-// const logout = () => {
-//   const cookie = useCookie("SavedToken");
-//   cookie.value = "";
-//   router.push("/login");
-
-// };
+ 
 
 const getTimeOfDay = () => {
   const hours = new Date().getHours();

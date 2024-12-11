@@ -38,8 +38,8 @@ const comparewithOriginal = ref({
   name: "",
   gender: "",
 });
-function updatemodalOpen(animalId:BigInteger,animal:any) {
-  isModalOpen.value = true;
+function updatemodalOpen(animalId:number,animal:any) {
+   isModalOpen.value = true;
     AnimalId.value = animalId;
     updateData.value.name = animal.name;
     updateData.value.gender = animal.gender;
@@ -119,7 +119,7 @@ const createAnimalData = ref({
 const isactive = ref(false);
 const animalIdOk = ref();
 
-const deletemodalopen = (animalId: BigInteger) => {
+const deletemodalopen = (animalId: number) => {
  
   animalIdOk.value = animalId;
   isactive.value = true;
@@ -152,7 +152,7 @@ const selectedZooId = ref(0);
 
 //dropdown api
 const zooList: Ref<{ id: BigInteger; name: string }[]> = ref([]);
-const transferModalOpen = async (zooid: BigInteger,trasnferAnimalId: BigInteger) => {
+const transferModalOpen = async (zooid: BigInteger,trasnferAnimalId: number) => {
   isTransferModelOpen.value = true;
   TransferAnimalId.value = trasnferAnimalId;
   try {
@@ -162,7 +162,7 @@ const transferModalOpen = async (zooid: BigInteger,trasnferAnimalId: BigInteger)
         zooId: zooid,
       },
     });
-    //  console.log(response);
+      console.log(response);
     zooList.value = response;
   } catch (err) {
     console.error(err);
@@ -198,18 +198,18 @@ function transferAnimal(id: BigInteger) {
 const totalPages = ref(0);
 const items: Ref< AnimalData[]> = ref([]);
 const pagesize = 3;
-const pageno = ref(0);
+const pageno = ref(1);
 const zooid: Ref<number> = ref(0);
 const loading = ref(false);
 function fetchanimaldata () {
   loading.value = true;
   
-    useCustomFetch<fetchAnimal>(`/animal/list/${zooid.value}?page=${pageno.value}&pagesize=${pagesize}`,
+    useCustomFetch<fetchAnimal>(`/animal/list/${zooid.value}?page=${pageno.value-1}&pagesize=${pagesize}`,
       {
         method: "GET",
       }
     ).then(function(response){
-     // console.log(response)
+     
     items.value = response.animaldata || [];
     totalPages.value = Math.ceil(response.animalcount / pagesize);
     }).catch (function(err) {
@@ -218,30 +218,13 @@ function fetchanimaldata () {
     loading.value = false;
    }) 
 };
-const selectedPage=ref(1);
-const diasblePgaeNo = ref(0);
-const setSelectNo = (no: number) => {
-  selectedPage.value=no;
-  if (diasblePgaeNo.value === no - 1) {
-    diasblePgaeNo.value = no - 1;
-    return;
-  }
-  pageno.value = Number(no) - 1;
+ 
+ 
+const handlePageChange=(page:number)=>{
+  pageno.value=page;
   fetchanimaldata();
-  diasblePgaeNo.value = no - 1;
-};
-const decreaseButton = () => {
-  if (pageno.value > 0) {
-    pageno.value = pageno.value - 1;
-    fetchanimaldata();
-  }
-};
-const increaseButton = () => {
-  if (pageno.value < totalPages.value - 1) {
-    pageno.value = pageno.value + 1;
-    fetchanimaldata();
-  }
-};
+}
+
 onMounted(() => {
   zooid.value = Number(route.query.zooId);
   fetchanimaldata();
@@ -353,18 +336,8 @@ const zooname=route.query.zooname;
     <div
       v-if="items.length !== 0"
       class="pagination-controls flex justify-center space-x-4 my-4">
-      <button
-        class="btn px-4 py-2 rounded"
-        :class="pageno > 0 ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer': 'bg-gray-300 text-gray-500 cursor-not-allowed'" @click="decreaseButton">
-        Previous
-      </button>
-      <button
-        class="btn bg-white-100 text-black-200 border-2 px-4 py-2 rounded hover:bg-white-500" v-for="number in totalPages"  :class="pageno+1==number? 'btn bg-red-500 text-white px-4 py-2 hover:bg-red-600 ':'' "  @click="setSelectNo(Number(number))"> {{ number }} </button>
-      <button
-        class="btn px-4 py-2 rounded"
-        :class="pageno < totalPages - 1 ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'" @click="increaseButton">
-        Next
-      </button>
+      
+      <Pagination :totalPages="totalPages"  :initialPage="pageno" @PageChange=" handlePageChange"  />
     </div>
   </div>
   <!------------------------------------------------------------Update  Modal  ------------------------------------------------------>

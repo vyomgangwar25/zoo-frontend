@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-
 import { Form, Field, ErrorMessage } from "vee-validate";
 import { useRoute, type Router } from "vue-router";
 import { useCustomFetch } from "~/composable/useFetchOptions";

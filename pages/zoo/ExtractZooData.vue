@@ -57,7 +57,7 @@ const comparewithOriginal=ref({
   size:"",
   description:""
 })
-const openModal = (id:BigInteger,item:any) => {
+const openModal = (id:Number,item:any) => {
   isModalOpen.value = true;
   zooid.value  = id;
 
@@ -144,34 +144,14 @@ function zooRegistration() {
 const totalPages = ref(0);
 const items:Ref<zoodata[]> = ref([]);
 const pagesize = 3;
-const pageno = ref(0);
-const selectedpage=ref(1);
-const diasblePgaeNo=ref(0);
+const pageno = ref(1);
+ 
+const handlePageChange=(page:number)=>{
+ // console.log("page no from component",page)
+  pageno.value=page;
+  fetchzoodata();
 
-  const setSelectNo=(number:number)=>{
-    selectedpage.value=number;
-  if(diasblePgaeNo.value=== number-1)
-   {
-    diasblePgaeNo.value=number-1;
-    return;
-   }
-     pageno.value=number-1;
-    fetchzoodata();
-    diasblePgaeNo.value=number-1;
-   }
-
-const IncreaseButton = () => {
-  if (pageno.value < totalPages.value - 1) {
-    pageno.value = pageno.value + 1;
-    fetchzoodata();
-  }
-};
-const DecreaseButton = () => {
-  if (pageno.value > 0) {
-    pageno.value = pageno.value - 1;
-    fetchzoodata();
-  }
-};
+}
 
 const loading=ref(false);
 function fetchzoodata (){
@@ -179,12 +159,14 @@ function fetchzoodata (){
     useCustomFetch<fetchzoo>("/zoo/list", {
       method: "GET",
       params: {
-        page: pageno.value, pagesize: pagesize,
+        page: pageno.value-1, pagesize: pagesize,
       },
     }).then(function (response){ 
      // console.log(response) 
     items.value = response.zoodata;
     totalPages.value = Math.ceil(response.totalzoo / pagesize);
+    
+    
     }).catch (function(err) {
     console.error(err);
   }).
@@ -195,14 +177,13 @@ function fetchzoodata (){
 
 onMounted(() => {
   fetchzoodata();
-
 });
 
 //delete api
 
 const isDeleteModalOpen = ref(false);
 const deleteZooIdOk = ref();
-const deleteModalOpen = (id:BigInteger) => {
+const deleteModalOpen = (id:Number) => {
   deleteZooIdOk.value = id;
   isDeleteModalOpen.value = true;
 };
@@ -226,7 +207,7 @@ const deleteModalClose = () => {
 };
 
 //view animal api
-const viewAnimal = (id:BigInteger,name:string) => {
+const viewAnimal = (id:Number,name:string) => {
   router.push({
     path: "/Animal/ExtractAnimalData",
     query: { zooId: Number(id) , zooname:name},
@@ -297,8 +278,7 @@ const viewAnimal = (id:BigInteger,name:string) => {
             @clicked="openModal(item.id ,item)"
             name="heroicons:pencil-square-solid"
             iconcolour=" text-blue-700"
-            iconbg=" bg-gray-100"
-            iconhover=" hover:bg-gray-500 hover:text-white ml-2" 
+            
           />
          </li>
           
@@ -352,20 +332,8 @@ const viewAnimal = (id:BigInteger,name:string) => {
       </template>
     </CustomModal>
 
-    <div
-      v-if="items.length !== 0"
-      class=" flex justify-center space-x-4 my-4"
-    >
-    <!-- <button  class="btn px-4 py-2 rounded" :class="pageno > 0 ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'" @click="DecreaseButton">
-        Previous
-    </button>
-    <button  class="btn bg-white-100 text-black px-4 py-2 rounded border-2 hover:bg-white-500"
-      v-for="number in totalPages" :key="number" :class="pageno+1==number? 'btn bg-red-500 text-white px-4 py-2 hover:bg-red-600 ':''" @click="setSelectNo(number)">{{ number }}
-    </button>
-    <button  class="btn px-4 py-2 rounded" :class="pageno <totalPages-1 ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed'" @click="IncreaseButton">
-      Next
-    </button> -->
-    <Pagination :totalPages="totalPages"  :pageno="pageno" />
+    <div v-if="items.length !== 0" class=" flex justify-center space-x-4 my-4">
+    <Pagination :totalPages="totalPages"  :initialPage="pageno" @PageChange=" handlePageChange"/>
     </div>
   </div>
 </template>

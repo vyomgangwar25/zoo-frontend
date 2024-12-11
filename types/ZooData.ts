@@ -1,8 +1,8 @@
 export  interface zoodata{
-    totalzoo:BigInteger,
+    totalzoo:Number,
     name:string,
     location:string,
-    size:BigInteger,
+    size:Number,
     description:string,
-    id:BigInteger
+    id:Number
 }

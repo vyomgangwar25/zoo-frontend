@@ -1,15 +1,25 @@
-<script setup>
-const props = defineProps({
-  label: {
-    type: String,
-    required: true,
-  },
-  isVisible: {
-    type: Boolean,
-    required: true,
-  },
-});
+<script setup lang="ts">
 
+const props = withDefaults(defineProps<{
+  label: string,
+  isVisible: boolean,
+  timeOut?: number
+  }>(), 
+  {
+    isVisible: false,
+    timeOut: 2000
+  })
+
+  const timer = ref(props.timeOut)
+
+watch(
+  () => props.isVisible, 
+  (isVisible) => {
+    if(isVisible)
+  //   setInterval (()=>{ 
+  // } ,)
+    setTimeout(()=>{emit('close')}, props.timeOut)
+  }) 
 const emit = defineEmits(["close"]);
 </script>
 
@@ -40,6 +50,7 @@ const emit = defineEmits(["close"]);
           d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
         />
       </svg>
+
     </button>
   </div>
 </template>

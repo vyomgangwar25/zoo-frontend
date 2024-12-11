@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { Form, Field, ErrorMessage } from "vee-validate";
-import { ref } from "vue";
-import AlertPopup from "~/components/AlertPopup.vue";
+import AlertPopup from "@/components/AlertPopup.vue";
 
 const selectedZooId = ref<number>();
 const toastMessage = ref<string>("");
@@ -37,12 +36,8 @@ const emitFormSuccess = () => {
 };
 
 const emitTransfer = () => {
-  if (selectedZooId.value) {
+  if (selectedZooId.value) 
     emits("success", selectedZooId.value);
-  } else {
-    toastMessage.value = "Please select a zoo before transferring.";
-    isToastVisible.value = true;
-  }
 };
 </script>
 

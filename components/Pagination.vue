@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="space-x-2">
     <button
       class="btn px-4 py-2 rounded"
       :class="
-        pageno > 0
+        pageno > 1
           ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer'
           : 'bg-gray-300 text-gray-500 cursor-not-allowed'
       "
@@ -14,9 +14,8 @@
     <button
       class="btn bg-white-100 text-black px-4 py-2 rounded border-2 hover:bg-white-500"
       v-for="number in props.totalPages"
-      :key="number"
       :class="
-        pageno + 1 == number
+        pageno === number
           ? 'btn bg-red-500 text-white px-4 py-2 hover:bg-red-600 '
           : ''
       "
@@ -27,7 +26,7 @@
     <button
       class="btn px-4 py-2 rounded"
       :class="
-        pageno < props.totalPages - 1
+        pageno < props.totalPages
           ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer'
           : 'bg-gray-300 text-gray-500 cursor-not-allowed'
       "
@@ -38,66 +37,47 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
+const emit = defineEmits(["PageChange"]);
 
- 
-const pageno = ref(0);
 const selectedpage = ref(1);
-const diasblePgaeNo = ref(0);
- 
-// function fetchzoodata() {
-//   loading.value = true;
-//   useCustomFetch<fetchzoo>("/zoo/list", {
-//     method: "GET",
-//     params: {
-//       page: pageno.value,
-//       pagesize: pagesize,
-//     },
-//   })
-//     .then(function (response) {
-//       // console.log(response)
-//       items.value = response.zoodata;
-//       totalPages.value = Math.ceil(response.totalzoo / pagesize);
-//     })
-//     .catch(function (err) {
-//       console.error(err);
-//     })
-//     .finally(function () {
-//       loading.value = false;
-//     });
-// }
+const diasblePgaeNo = ref(1);
 
-const props=defineProps({
-  totalPages:Number,
-  pageno:Number
-   
-})
-const setSelectNo = (number: number) => {
+const props = defineProps({
+  totalPages: Number,
+  initialPage: Number,
+});
+
+const pageno = ref(props.initialPage);
+
+const setSelectNo = (number) => {
   selectedpage.value = number;
-  if (diasblePgaeNo.value === number - 1) {
-    diasblePgaeNo.value = number - 1;
+
+  if (diasblePgaeNo.value === number) {
+    diasblePgaeNo.value = number;
     return;
   }
-  pageno.value = number - 1;
-  //fetchzoodata();
-  diasblePgaeNo.value = number - 1;
+
+  pageno.value = number;
+
+  emit("PageChange", number);
+
+  diasblePgaeNo.value = number;
 };
 
 const IncreaseButton = () => {
-  if (pageno.value < props.totalPages.value - 1) {
-    console.log(pageno.value )
+  if (pageno.value < props.totalPages) {
     pageno.value = pageno.value + 1;
-    //fetchzoodata();
+    setSelectNo(pageno.value);
   }
 };
 const DecreaseButton = () => {
-  if (pageno.value > 0) {
-    console.log(pageno.value )
+  if (pageno.value > 1) {
     pageno.value = pageno.value - 1;
-    //fetchzoodata();
+
+    setSelectNo(pageno.value);
   }
 };
- 
 </script>
 
 <style></style>
