@@ -147,7 +147,6 @@ const pagesize = 3;
 const pageno = ref(1);
  
 const handlePageChange=(page:number)=>{
- // console.log("page no from component",page)
   pageno.value=page;
   fetchzoodata();
 
@@ -162,11 +161,8 @@ function fetchzoodata (){
         page: pageno.value-1, pagesize: pagesize,
       },
     }).then(function (response){ 
-     // console.log(response) 
     items.value = response.zoodata;
     totalPages.value = Math.ceil(response.totalzoo / pagesize);
-    
-    
     }).catch (function(err) {
     console.error(err);
   }).
@@ -189,7 +185,7 @@ const deleteModalOpen = (id:Number) => {
 };
 function deleteZoo () {
  
-    useCustomFetch(`/zoo/delete/${deleteZooIdOk.value}`, {
+    useCustomFetch<string>(`/zoo/delete/${deleteZooIdOk.value}`, {
       method: "DELETE",
     }).then(function(){
       items.value = items.value.filter((item) => item.id !== deleteZooIdOk.value);
@@ -198,7 +194,9 @@ function deleteZoo () {
       fetchzoodata();
     }
     }).catch (function(error) {
-    console.log(error);
+      // toastMessage.value = error.response._data;
+      // isToastVisible.value = true;
+      console.log(error)
   })
   isDeleteModalOpen.value = false;
 };
@@ -209,7 +207,7 @@ const deleteModalClose = () => {
 //view animal api
 const viewAnimal = (id:Number,name:string) => {
   router.push({
-    path: "/Animal/ExtractAnimalData",
+    path: "/Animal/AnimalData",
     query: { zooId: Number(id) , zooname:name},
   });
 };
@@ -278,17 +276,14 @@ const viewAnimal = (id:Number,name:string) => {
             @clicked="openModal(item.id ,item)"
             name="heroicons:pencil-square-solid"
             iconcolour=" text-blue-700"
-            
           />
          </li>
           
-           <li title="view">
+          <li title="view">
           <CustomIcon
             @clicked="viewAnimal(item.id,item.name)"
             name="heroicons:eye"
-            iconcolour=" text-blue-700"
-            iconbg=" bg-gray-100"
-            iconhover=" hover:bg-gray-500 hover:text-white ml-2"
+            iconcolour=" text-blue-700" 
           />
         </li>
           <li title="delete">
@@ -297,8 +292,7 @@ const viewAnimal = (id:Number,name:string) => {
             @clicked="deleteModalOpen(item.id)"
             name="heroicons:x-mark"
             iconcolour=" text-red-700"
-            iconbg=" bg-gray-100"
-            iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
+            />
           </li>
 
         </ul>

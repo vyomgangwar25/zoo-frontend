@@ -14,7 +14,7 @@ const closeToast = () => {
   isToastVisible.value = false;
 };
 
-function setnewpassword() {
+function setNewPassword() {
   useCustomFetch<string>("/user/setnewpassword", {
     method: "POST",
     body: newPassword.value,
@@ -41,7 +41,7 @@ function setnewpassword() {
         <h1 class="text-3xl font-bold text-center text-gray-700 mb-8">
           Enter new Password
         </h1>
-        <Form @submit="setnewpassword">
+        <Form @submit="setNewPassword">
           <div>
             <Field
               name="newPassword"

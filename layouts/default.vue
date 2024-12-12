@@ -5,6 +5,7 @@ import type { User } from "~/types/UserData";
 
 const roleStore = useRoleStore(); //access the store
 
+
 const token = ref("");
 const showDropdown = ref(false);
 const router = useRouter();
@@ -27,7 +28,7 @@ const handleLogout = () => {
   router.push("/login");
 };
 const handleSetPass = () => {
-  router.push("/setpass");
+  router.push("/SetPassword");
 };
 
 const handleProfile = () => {
@@ -100,7 +101,7 @@ onMounted(() => {
             <li>
               <nuxt-link
                 class="border border-white text-white bg-transparent hover:bg-white hover:text-black font-bold py-2 px-4 rounded"
-                to="/zoo/ExtractZooData"
+                to="/zoo/ZooData"
               >
                 Zoo Data
               </nuxt-link>

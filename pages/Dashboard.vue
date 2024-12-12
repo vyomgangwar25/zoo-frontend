@@ -67,7 +67,6 @@
 <script lang="ts" setup>
 import { useRoleStore } from "~/store/useRoleStore";
 const roleStore = useRoleStore();
- 
 
 const getTimeOfDay = () => {
   const hours = new Date().getHours();

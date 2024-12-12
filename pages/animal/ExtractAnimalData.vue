@@ -38,7 +38,7 @@ const comparewithOriginal = ref({
   name: "",
   gender: "",
 });
-function updatemodalOpen(animalId:number,animal:any) {
+function updateModalOpen(animalId:number,animal:any) {
    isModalOpen.value = true;
     AnimalId.value = animalId;
     updateData.value.name = animal.name;
@@ -62,7 +62,7 @@ const updateAnimal = async () => {
       }).
       then(function(response){
       toastMessage.value = response;
-      fetchanimaldata();
+      fetchAnimalData();
     }).
    catch (function(err) {
     toastMessage.value = err.response._data;
@@ -80,7 +80,7 @@ function handleSubmit() {
     }).then(function(response){
       toastMessage.value = response;
     isToastVisible.value = true;
-    fetchanimaldata();
+    fetchAnimalData();
     }). catch (function(err) {
     console.log(err);
   })
@@ -119,12 +119,12 @@ const createAnimalData = ref({
 const isactive = ref(false);
 const animalIdOk = ref();
 
-const deletemodalopen = (animalId: number) => {
+const deleteModalOpen = (animalId: number) => {
  
   animalIdOk.value = animalId;
   isactive.value = true;
 };
-function deleteanimal (){
+function deleteAnimal (){
   useCustomFetch(`/animal/delete/${animalIdOk.value}`, {
       method: "DELETE",
     }).then(function(){
@@ -133,7 +133,7 @@ function deleteanimal (){
     );
     if (items.value.length === 0 && pageno.value > 0) {
       pageno.value--;
-      fetchanimaldata();
+      fetchAnimalData();
     }
     }). catch (function(error) {
     console.error("Error deleting animal:", error);
@@ -141,7 +141,7 @@ function deleteanimal (){
   isactive.value = false;
 };
 
-const closedeleteModal = () => {
+const closeDeleteModal = () => {
   isactive.value = false;
 };
 
@@ -162,7 +162,7 @@ const transferModalOpen = async (zooid: BigInteger,trasnferAnimalId: number) => 
         zooId: zooid,
       },
     });
-      console.log(response);
+      // console.log(response);
     zooList.value = response;
   } catch (err) {
     console.error(err);
@@ -183,12 +183,10 @@ function transferAnimal(id: BigInteger) {
         zooid: id,
       },
     }).then(function(response){
-
-      //console.log(response);
     toastMessage.value = response;
     isToastVisible.value = true;
     isTransferModelOpen.value = false;
-    fetchanimaldata();
+    fetchAnimalData();
 
     }).catch (function(err:any){
     console.error(err);
@@ -201,7 +199,7 @@ const pagesize = 3;
 const pageno = ref(1);
 const zooid: Ref<number> = ref(0);
 const loading = ref(false);
-function fetchanimaldata () {
+function fetchAnimalData () {
   loading.value = true;
   
     useCustomFetch<fetchAnimal>(`/animal/list/${zooid.value}?page=${pageno.value-1}&pagesize=${pagesize}`,
@@ -222,27 +220,22 @@ function fetchanimaldata () {
  
 const handlePageChange=(page:number)=>{
   pageno.value=page;
-  fetchanimaldata();
+  fetchAnimalData();
 }
 
 onMounted(() => {
   zooid.value = Number(route.query.zooId);
-  fetchanimaldata();
+  fetchAnimalData();
 });
 const zooname=route.query.zooname;
 </script>
 <template>
-  <AlertPopup
-    :label="toastMessage"
-    :isVisible="isToastVisible"
-    @close="closeToast"
-  />
+  <AlertPopup :label="toastMessage" :isVisible="isToastVisible"  @close="closeToast" />
   <div class="container mx-auto p-4">
     <div class="text-2xl font-bold flex justify-center items-center mb-3">
       Welcome to {{ zooname }}
     </div>
     <div>
-      
     </div>
 
     <div :class="items.length == 0 ? 'flex items-center justify-center' : 'flex items-center justify-between'">
@@ -297,36 +290,28 @@ const zooname=route.query.zooname;
             <li title="delete">
           <CustomIcon
             v-if="roleStore.role === 'admin'"
-            @clicked="deletemodalopen(animal.animal_id)"
+            @clicked="deleteModalOpen(animal.animal_id)"
             name="heroicons:x-mark" 
-            iconcolour=" text-red-700"
-            iconbg=" bg-gray-100"
-            iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
+            iconcolour=" text-red-700"/>
           </li>
           <li title="update">
           <CustomIcon
-            @clicked="updatemodalOpen(animal.animal_id, animal)"
+            @clicked="updateModalOpen(animal.animal_id, animal)"
             name="heroicons:pencil-square-solid"
-            iconcolour=" text-blue-700"
-            iconbg=" bg-gray-100"
-            iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
+            iconcolour=" text-blue-700"/>
           </li>
           <li title="transfer">
           <CustomIcon
             @clicked="transferModalOpen(route.query.zooId as any, animal.animal_id)"
             name="heroicons:arrow-right-on-rectangle-20-solid"
-            iconcolour=" text-blue-700"
-            iconbg=" bg-gray-100"
-            iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
+            iconcolour=" text-blue-700"/>
           </li>
            <li title="history">
           <CustomIcon
             v-if="roleStore.role === 'admin'"
             @clicked="navigateTo(`/AnimalTransferHistory?animalId=${animal.animal_id}`)"
             name="material-symbols:history-2"
-            iconcolour=" text-blue-700"
-            iconbg=" bg-gray-100"
-            iconhover=" hover:bg-gray-500 hover:text-white ml-2"/>
+            iconcolour=" text-blue-700"/>
           </li>
           </ul>
         </div>
@@ -355,8 +340,8 @@ const zooname=route.query.zooname;
   <!----------------------------------------------------------DELETE MODAL------------------------------------------------------------>
   <CustomModal
     :isactive="isactive"
-    @success="deleteanimal"
-    @close="closedeleteModal"
+    @success="deleteAnimal"
+    @close="closeDeleteModal"
     :modalType="'delete'">
     <template #delete-modal-content-heading>
       Are you sure you want to delete this animal

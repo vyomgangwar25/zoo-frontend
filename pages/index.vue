@@ -4,7 +4,7 @@
     style="height: calc(100vh - 4rem)"
   >
     <img
-      src="https://images.forbesindia.com/media/images/2023/Jul/img_214501_0-tiger.jpg"
+      src="public/indexImg.webp"
       alt="A description of the image"
       class="absolute inset-0 object-cover w-full h-full"
     />
@@ -95,7 +95,7 @@
     <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
       <div class="md:w-1/3 bg-white rounded-lg shadow-md overflow-hidden">
         <img
-          src="https://img.freepik.com/free-photo/view-wild-lion-nature_23-2150460851.jpg"
+          src="public/lion.jpg"
           alt="Lion"
           class="w-full h-40 object-cover"
         />
@@ -110,7 +110,7 @@
 
       <div class="md:w-1/3 bg-white rounded-lg shadow-md overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1503066211613-c17ebc9daef0?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MTd8fHxlbnwwfHx8fHw%3D"
+          src="public/tiger.jpeg"
           alt="Tiger"
           class="w-full h-40 object-cover"
         />
@@ -125,7 +125,7 @@
 
       <div class="md:w-1/3 bg-white rounded-lg shadow-md overflow-hidden">
         <img
-          src="https://c4.wallpaperflare.com/wallpaper/27/86/500/panda-animal-cute-bear-wallpaper-preview.jpg"
+          src="public/panda.jpg"
           alt="panda"
           class="w-full h-40 object-cover"
         />
@@ -141,14 +141,7 @@
   </section>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+</script>
 
-<style scoped>
-button {
-  transition: background-color 0.3s ease;
-}
-
-section {
-  margin-top: 20px;
-}
-</style>
+ 

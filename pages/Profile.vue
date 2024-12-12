@@ -1,6 +1,8 @@
 <script lang="ts" setup>
+import { email } from "@vee-validate/rules";
 import { Form, Field } from "vee-validate";
 import { useCustomFetch } from "~/composable/useFetchOptions";
+ 
 import { useRoleStore } from "~/store/useRoleStore";
 
 const route = useRoute();
@@ -37,14 +39,30 @@ const formData = ref({
   email: "",
 });
 
+const compareWithOriginal = ref({
+  name: "",
+  email: "",
+});
+
 const modalOpen = () => {
   isModalOpen.value = true;
   formData.value.name = roleStore.name;
   formData.value.email = roleStore.email;
+
+  compareWithOriginal.value = { ...formData.value };
+};
+
+const hasDataChanged = () => {
+  return (
+    JSON.stringify(formData.value) !== JSON.stringify(compareWithOriginal.value)
+  );
 };
 
 const handleSubmit = async () => {
   try {
+    if (!hasDataChanged()) {
+      return;
+    }
     const response = await useCustomFetch<string>(
       `/user/update/${route.query.id}`,
       {

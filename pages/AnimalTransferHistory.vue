@@ -1,10 +1,11 @@
 <template>
-  <div class="p-4 flex flex-col items-center w-full">
-    <div v-if="items.length > 0" class="p-6 bg-gray-200 rounded-lg w-1/2">
-      <h1 class="font-bold text-2xl flex justify-center mb-4">
+  <div class="container mx-auto p-4">
+    <h1 v-if="items.length" class="font-bold text-2xl flex justify-center mb-4">
         Details of Animal
       </h1>
 
+  <!-- <div class="p-4 flex flex-col items-center w-full"> -->
+    <div v-if="items.length > 0" class="p-6 bg-gray-200 rounded-lg ">
       <div class="bg-white shadow-lg rounded-lg p-6 flex items-center">
         <div class="flex-1">
           <span class="font-medium">Name:</span> {{ animal?.name }}
@@ -31,12 +32,12 @@
       <h1 class="font-bold text-2xl text-gray-600 mt-4">No history found</h1>
     </div>
 
-    <div v-else class="w-full">
+    <div v-else class="p-6  ">
       <h1 class="font-bold text-2xl flex justify-center mt-6">
         Animal Transfer History
       </h1>
 
-      <table class="w-1/2 mt-5 border mx-auto">
+      <table class="w-full mt-5 border mx-auto">
         <thead>
           <tr class="bg-gray-200">
             <th class="border border-gray-300 px-4 py-2 text-left">S.No</th>
@@ -67,6 +68,7 @@
       </table>
     </div>
   </div>
+<!-- </div> -->
 </template>
 
 <script lang="ts" setup>
