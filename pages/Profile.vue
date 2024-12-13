@@ -2,7 +2,7 @@
 import { email } from "@vee-validate/rules";
 import { Form, Field } from "vee-validate";
 import { useCustomFetch } from "~/composable/useFetchOptions";
- 
+
 import { useRoleStore } from "~/store/useRoleStore";
 
 const route = useRoute();
@@ -10,9 +10,10 @@ const roleStore = useRoleStore();
 const cookies = useCookie("SavedToken");
 const isModalOpen = ref(false);
 const router = useRouter();
-
+const isConfirmOpen = ref(false);
 const toastMessage: Ref<string> = ref("");
 const isToastVisible = ref(false);
+const update = ref("Update");
 
 const closeToast = () => {
   isToastVisible.value = false;
@@ -67,19 +68,16 @@ const handleSubmit = async () => {
       `/user/update/${route.query.id}`,
       {
         method: "PUT",
-        body: JSON.stringify({
-          username: formData.value.name,
-          email: formData.value.email,
-        }),
+        body: formData.value,
       }
     );
     toastMessage.value = response;
     isToastVisible.value = true;
 
     if (response && formData.value.email !== roleStore.email) {
+      isConfirmOpen.value = true;
       roleStore.setState("", "", "", 0);
       cookies.value = "";
-      router.push("/login");
       return;
     }
     roleStore.setState(
@@ -93,6 +91,10 @@ const handleSubmit = async () => {
     toastMessage.value = err.response._data.errormessage;
     isToastVisible.value = true;
   }
+};
+const modalClose = () => {
+   router.push("/login");
+  isConfirmOpen.value = false;
 };
 </script>
 
@@ -184,6 +186,17 @@ const handleSubmit = async () => {
     >
       <template #form-modal-content-heading> Update User Data </template>
       <template #form-success-button> Update </template>
+    </CustomModal>
+
+    <CustomModal
+      :isactive="isConfirmOpen"
+      @success="modalClose"
+      @close="modalClose"
+      :modalType="'confirmation'"
+    >
+      <template #delete-modal-content-heading>
+        you are going to logout because you update the email
+      </template>
     </CustomModal>
   </div>
 </template>

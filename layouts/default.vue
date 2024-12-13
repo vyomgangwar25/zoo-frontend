@@ -20,6 +20,7 @@ if (import.meta.client) {
 }
 
 const handleLogout = () => {
+  console.log("hello logout")
   const cookie = useCookie("SavedToken", {
     maxAge: 0,
   });

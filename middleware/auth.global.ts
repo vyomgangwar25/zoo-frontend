@@ -8,7 +8,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
   if (token.value && (to.path == '/login' || to.path == "/registration")) {
     return navigateTo("/Dashboard");
   }
-  else if(!token.value && (to.path=='/zoo/ZooData' || to.path=='/Animal/AnimalData') ){
+  else if(!token.value && (to.path=='/zoo/ZooData' || to.path=='/animal/AnimalData') ){
     return navigateTo('/login')
   } else {
     return;

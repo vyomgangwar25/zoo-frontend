@@ -10,7 +10,7 @@ const emits = defineEmits(["success", "close"]);
 
 const props = defineProps<{
   isactive: boolean;
-  modalType: "form" | "delete" | "transfer";
+  modalType: "form" | "delete" | "transfer" | "confirmation";
   zoolist?: Array<{
     id: BigInteger;
     name: string;
@@ -36,8 +36,7 @@ const emitFormSuccess = () => {
 };
 
 const emitTransfer = () => {
-  if (selectedZooId.value) 
-    emits("success", selectedZooId.value);
+  if (selectedZooId.value) emits("success", selectedZooId.value);
 };
 </script>
 
@@ -52,7 +51,10 @@ const emitTransfer = () => {
     class="fixed inset-0 z-10 flex items-center justify-center bg-gray-500 bg-opacity-75"
   >
     <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
-      <p v-if="modalType == 'delete'" class="text-sm text-gray-500 mb-4">
+      <p
+        v-if="modalType == 'delete' || 'confirmation'"
+        class="text-sm text-gray-500 mb-4"
+      >
         <slot name="delete-modal-content-heading" />
       </p>
 
@@ -99,6 +101,7 @@ const emitTransfer = () => {
         </div>
       </div>
 
+      <!-- Form Modal -->
       <Form v-if="modalType == 'form'" @submit="emitFormSuccess">
         <div class="flex justify-between items-center pb-4 border-b">
           <h3 class="text-lg font-semibold">
@@ -123,15 +126,25 @@ const emitTransfer = () => {
               class="block text-sm font-medium text-gray-700"
               >{{ field.label }}</label
             >
-            <Field
+            <Field v-if="field.label !='gender'"
               :name="field.label"
               :type="field.type"
               v-model="props.formData![field.label]"
               :placeholder="field.placeholder"
               class="border-b-2 border-gray-300 focus:outline-none focus:border-blue-500"
               :rules="field.rules"
-            />
+            /> 
             <ErrorMessage :name="field.label" class="text-red-600 text-sm" />
+              <div v-if="field.label=='gender'">
+            <Field :name="field.label" as="select"  v-model="props.formData![field.label]">
+              <option value="" disabled>Select Role</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Others">Other</option>
+            </Field>
+            <ErrorMessage :name="field.label" class="text-red-600 text-sm" />
+          </div>
+           
           </div>
         </div>
 
@@ -145,9 +158,11 @@ const emitTransfer = () => {
         </div>
       </Form>
 
+      <!----Delete Modal--->
+
       <div v-if="modalType !== 'form'" class="flex justify-end space-x-2">
         <button
-          v-if="modalType == 'delete'"
+          v-if="modalType == 'delete' || 'confirmation'"
           @click="emits('success')"
           class="px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-500"
         >

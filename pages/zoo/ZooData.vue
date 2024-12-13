@@ -4,7 +4,6 @@ import { useCustomFetch } from "~/composable/useFetchOptions";
 import type { fetchzoo } from "~/types/FetchZoo";
 import type { zoodata } from "~/types/ZooData";
  
-
 const toastMessage  = ref('');
 const isToastVisible = ref(false);
 const closeToast=()=>{
@@ -155,6 +154,7 @@ const handlePageChange=(page:number)=>{
 const loading=ref(false);
 function fetchzoodata (){
   loading.value=true;
+   if(pageno.value>0)
     useCustomFetch<fetchzoo>("/zoo/list", {
       method: "GET",
       params: {
@@ -189,7 +189,7 @@ function deleteZoo () {
       method: "DELETE",
     }).then(function(){
       items.value = items.value.filter((item) => item.id !== deleteZooIdOk.value);
-    if (items.value.length === 0 && pageno.value > 0) {
+    if (items.value.length === 0 && pageno.value > 1) {
       pageno.value--;
       fetchzoodata();
     }
@@ -207,7 +207,7 @@ const deleteModalClose = () => {
 //view animal api
 const viewAnimal = (id:Number,name:string) => {
   router.push({
-    path: "/Animal/AnimalData",
+    path: "/animal/AnimalData",
     query: { zooId: Number(id) , zooname:name},
   });
 };

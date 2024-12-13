@@ -78,10 +78,10 @@ function handleSubmit() {
       method: "POST",
       body: createAnimalData.value,
     }).then(function(response){
-      toastMessage.value = response;
+    toastMessage.value = response;
     isToastVisible.value = true;
     fetchAnimalData();
-    }). catch (function(err) {
+    }).catch (function(err) {
     console.log(err);
   })
   isAnimalRegistrationModal.value = false;
@@ -131,7 +131,7 @@ function deleteAnimal (){
       items.value = items.value.filter(
       (item) => item.animal_id !== animalIdOk.value
     );
-    if (items.value.length === 0 && pageno.value > 0) {
+    if (items.value.length === 0 && pageno.value > 1) {
       pageno.value--;
       fetchAnimalData();
     }
@@ -201,7 +201,7 @@ const zooid: Ref<number> = ref(0);
 const loading = ref(false);
 function fetchAnimalData () {
   loading.value = true;
-  
+     
     useCustomFetch<fetchAnimal>(`/animal/list/${zooid.value}?page=${pageno.value-1}&pagesize=${pagesize}`,
       {
         method: "GET",
