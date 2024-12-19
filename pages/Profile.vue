@@ -2,7 +2,6 @@
 import { email } from "@vee-validate/rules";
 import { Form, Field } from "vee-validate";
 import { useCustomFetch } from "~/composable/useFetchOptions";
-
 import { useRoleStore } from "~/store/useRoleStore";
 
 const route = useRoute();
@@ -13,13 +12,11 @@ const router = useRouter();
 const isConfirmOpen = ref(false);
 const toastMessage: Ref<string> = ref("");
 const isToastVisible = ref(false);
-const update = ref("Update");
 
-const closeToast = () => {
-  isToastVisible.value = false;
-};
+ 
+const isCheckModal=ref(true)
 
-//const items: Ref<{ token: string; role: string; email: string; name: string; id: number }[]> = ref([]);
+ 
 const formFields = [
   {
     label: "name",
@@ -93,7 +90,7 @@ const handleSubmit = async () => {
   }
 };
 const modalClose = () => {
-   router.push("/login");
+  router.push("/login");
   isConfirmOpen.value = false;
 };
 </script>
@@ -103,7 +100,7 @@ const modalClose = () => {
     <AlertPopup
       :label="toastMessage"
       :isVisible="isToastVisible"
-      @close="closeToast"
+      @close=" isToastVisible = false;"
     />
     <div class="flex justify-center">
       <Icon
@@ -193,6 +190,7 @@ const modalClose = () => {
       @success="modalClose"
       @close="modalClose"
       :modalType="'confirmation'"
+      :isCheckModal="isCheckModal"
     >
       <template #delete-modal-content-heading>
         you are going to logout because you update the email

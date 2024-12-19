@@ -6,7 +6,7 @@ export default defineNuxtPlugin(() => {
     defineRule(name, rule);
   });
   
-  // defineRule("alphaOnly", (value:any) => {
+  // defineRule("alphaOnly", (value:) => {
   //   const regex = /^[A-Za-z]*$/;
   //   return regex.test(value) || "Only alphabetic characters are allowed";
   // });

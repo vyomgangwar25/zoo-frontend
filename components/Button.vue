@@ -1,12 +1,8 @@
-<script setup>
+<script lang="ts" setup>
 import { defineProps } from "vue";
-
-const props = defineProps({
-  name: {
-    type: String,
-    required: true,
-  },
-});
+const props = defineProps<{
+  name: string;
+}>();
 </script>
 
 <template>
@@ -15,7 +11,7 @@ const props = defineProps({
       type="submit"
       class="px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
     >
-      {{ name }}
+      {{ props.name }}
     </button>
   </div>
 </template>

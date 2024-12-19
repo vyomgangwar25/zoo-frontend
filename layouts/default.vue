@@ -5,7 +5,6 @@ import type { User } from "~/types/UserData";
 
 const roleStore = useRoleStore(); //access the store
 
-
 const token = ref("");
 const showDropdown = ref(false);
 const router = useRouter();
@@ -19,14 +18,21 @@ if (import.meta.client) {
   token.value = useCookie("SavedToken").value as string;
 }
 
-const handleLogout = () => {
-  console.log("hello logout")
-  const cookie = useCookie("SavedToken", {
-    maxAge: 0,
-  });
-  cookie.value = "";
-  roleStore.setState("", "", "", 0);
-  router.push("/login");
+const handleLogout = async () => {
+  try {
+    const response:any = await useCustomFetch("/user/logout", {
+      method: "POST",
+    });
+    console.log(response);
+    const cookie = useCookie("SavedToken", {
+      maxAge: 0,
+    });
+    cookie.value = "";
+    roleStore.setState("", "", "", 0);
+    router.push("/login");
+  } catch (err) {
+    console.log(err);
+  }
 };
 const handleSetPass = () => {
   router.push("/SetPassword");
@@ -40,7 +46,7 @@ const dashboardApi = async () => {
     const response: any = await useCustomFetch("/user/userinfo", {
       method: "GET",
     });
-    //console.log(response)
+
     items.value = response;
     roleStore.setState(
       items.value.role,
@@ -62,7 +68,7 @@ onMounted(() => {
 
 <template>
   <nav class="bg-gray-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div style="max-width: 95rem" class="mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <h1 class="text-white text-4xl font-bold">
           <nuxt-link to="/">Zoo</nuxt-link>
@@ -129,7 +135,7 @@ onMounted(() => {
                     class="block px-4 py-2 hover:bg-gray-200 cursor-pointer"
                     @click="handleProfile"
                   >
-                    profile
+                    Profile
                   </li>
                   <li
                     @click="handleLogout"

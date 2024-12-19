@@ -15,13 +15,15 @@
         max-width: 600px;
         font-family: Arial, sans-serif;
         margin-top: -33.5rem;
+        position: sticky;
+        top: 80px;
       "
     >
       Welcome to the Zoo
     </h1>
 
-    <div class="absolute mid-10 left-10 z-10 max-w-lg">
-      <p class="text-white text-2xl font-medium text-center mx-auto">
+    <div class="absolute mid-10 left-10 z-10 max-w-lg"  >
+      <p class="text-white text-2xl font-medium text-center mx-auto" style="position: sticky; top: 80px">
         Discover amazing animals and learn about their habitats.We are dedicated
         to providing information and resources about various animal species from
         around the world.

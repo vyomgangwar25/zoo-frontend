@@ -37,20 +37,20 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts"  setup>
 const emit = defineEmits(["PageChange"]);
 
 const selectedpage = ref(1);
 const diasblePgaeNo = ref(1);
 
-const props = defineProps({
-  totalPages: Number,
-  initialPage: Number,
-});
+const props =  defineProps<{
+  totalPages: number,
+  initialPage: number,
+}>();
 
 const pageno = ref(props.initialPage);
 
-const setSelectNo = (number) => {
+const setSelectNo = (number:number) => {
   selectedpage.value = number;
 
   if (diasblePgaeNo.value === number) {

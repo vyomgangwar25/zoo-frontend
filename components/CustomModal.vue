@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 import { Form, Field, ErrorMessage } from "vee-validate";
-import AlertPopup from "@/components/AlertPopup.vue";
 
 const selectedZooId = ref<number>();
-const toastMessage = ref<string>("");
-const isToastVisible = ref(false);
 
 const emits = defineEmits(["success", "close"]);
 
@@ -25,11 +22,8 @@ const props = defineProps<{
     name: string;
     [x: string]: string;
   };
+  isCheckModal?: boolean;
 }>();
-
-const closeToast = () => {
-  isToastVisible.value = false;
-};
 
 const emitFormSuccess = () => {
   emits("success");
@@ -41,20 +35,12 @@ const emitTransfer = () => {
 </script>
 
 <template>
-  <AlertPopup
-    :label="toastMessage"
-    :isVisible="isToastVisible"
-    @close="closeToast"
-  />
   <div
     v-if="isactive"
     class="fixed inset-0 z-10 flex items-center justify-center bg-gray-500 bg-opacity-75"
   >
     <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
-      <p
-        v-if="modalType == 'delete' || 'confirmation'"
-        class="text-sm text-gray-500 mb-4"
-      >
+      <p v-if="props.isCheckModal" class="text-sm text-gray-500 mb-4">
         <slot name="delete-modal-content-heading" />
       </p>
 
@@ -74,7 +60,7 @@ const emitTransfer = () => {
               <option disabled value="">Select Zoo</option>
               <option
                 v-for="(item, index) in zoolist"
-                :key="index"
+                
                 :value="item.id"
               >
                 {{ item.name }}
@@ -126,25 +112,43 @@ const emitTransfer = () => {
               class="block text-sm font-medium text-gray-700"
               >{{ field.label }}</label
             >
-            <Field v-if="field.label !='gender'"
+            <Field
+              v-if="field.label !== 'gender' && field.label !== 'description'"
               :name="field.label"
               :type="field.type"
               v-model="props.formData![field.label]"
               :placeholder="field.placeholder"
               class="border-b-2 border-gray-300 focus:outline-none focus:border-blue-500"
               :rules="field.rules"
-            /> 
-            <ErrorMessage :name="field.label" class="text-red-600 text-sm" />
-              <div v-if="field.label=='gender'">
-            <Field :name="field.label" as="select"  v-model="props.formData![field.label]">
-              <option value="" disabled>Select Role</option>
+            />
+
+            <Field
+              v-if="field.label == 'description'"
+              :name="field.label"
+              as="textarea"
+              v-model="props.formData![field.label]"
+              :placeholder="field.placeholder"
+              class="border-b-2 border-gray-300 focus:outline-none focus:border-blue-500"
+              rows="1"
+              col="1"
+              :rules="field.rules"
+            ></Field>
+
+            <Field
+              v-if="field.label == 'gender'"
+              :name="field.label"
+              as="select"
+              v-model="props.formData![field.label]"
+              class="border-b-2 border-gray-300 focus:outline-none focus:border-blue-500"
+              :rules="field.rules"
+            >
+              <option value="" disabled>Select Gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
-              <option value="Others">Other</option>
+              <option value="Other">Other</option>
             </Field>
+
             <ErrorMessage :name="field.label" class="text-red-600 text-sm" />
-          </div>
-           
           </div>
         </div>
 
@@ -162,7 +166,7 @@ const emitTransfer = () => {
 
       <div v-if="modalType !== 'form'" class="flex justify-end space-x-2">
         <button
-          v-if="modalType == 'delete' || 'confirmation'"
+          v-if="props.isCheckModal"
           @click="emits('success')"
           class="px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-500"
         >

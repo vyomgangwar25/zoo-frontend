@@ -6,10 +6,8 @@ import type { zoodata } from "~/types/ZooData";
  
 const toastMessage  = ref('');
 const isToastVisible = ref(false);
-const closeToast=()=>{
-  isToastVisible.value=false
-}
-
+const isCheckModal=ref(true)
+ 
 const roleStore = useRoleStore();
 const router = useRouter();
 const isModalOpen = ref(false);
@@ -31,9 +29,9 @@ const formFields = [
   },
   {
     label: "size",
-    type: "number",
-    placeholder: "Enter size",
-    rules:"required"
+    type: "text",
+    placeholder: "Enter size in acers",
+    rules:"required|min_value:1"
   },
   {
     label: "description",
@@ -56,16 +54,11 @@ const comparewithOriginal=ref({
   size:"",
   description:""
 })
-const openModal = (id:Number,item:any) => {
+const updateModalOpen = (id:Number,item:any) => {
   isModalOpen.value = true;
   zooid.value  = id;
-
-  formData.value.name = item.name;
-  formData.value.location = item.location;
-  formData.value.size = ""+item.size;
-  formData.value.description=item.description;
- 
-comparewithOriginal.value = { ...formData.value };
+  formData.value={...item}
+  comparewithOriginal.value = { ...item};
 }
 
 const hasDataChanged = () => {
@@ -80,13 +73,12 @@ const hasDataChanged = () => {
       body: formData.value,
     }).then(function(response){
     toastMessage.value = response;
-    isToastVisible.value = true;
+
     fetchzoodata();
     }).catch(function(error:any) {
-    toastMessage.value = error.response._data;
-       isToastVisible.value = true;
-    console.log(error)
+    toastMessage.value = error.response._data; 
   })
+  isToastVisible.value = true;
   isModalOpen.value = false;
 };
 
@@ -106,14 +98,14 @@ const  createZooFileds = [
   },
   {
     label: "size",
-    type: "number",
-    placeholder: "Enter size",
-    rules:"required"
+    type: "text",
+    placeholder: "Enter size in Acrs",
+    rules:"required|min_value:1"
   },
   {
      label:"description",
-     type:"text",
-     placeholder:"Enter description",
+     type:"textarea",
+     placeholder:" Write Description",
      rules:"required"
   }
 ];
@@ -148,7 +140,6 @@ const pageno = ref(1);
 const handlePageChange=(page:number)=>{
   pageno.value=page;
   fetchzoodata();
-
 }
 
 const loading=ref(false);
@@ -189,13 +180,15 @@ function deleteZoo () {
       method: "DELETE",
     }).then(function(){
       items.value = items.value.filter((item) => item.id !== deleteZooIdOk.value);
-    if (items.value.length === 0 && pageno.value > 1) {
+      if(pageno.value>1 && items.value.length ==0 )
+    {
       pageno.value--;
       fetchzoodata();
     }
+    else  {
+      fetchzoodata();
+    }
     }).catch (function(error) {
-      // toastMessage.value = error.response._data;
-      // isToastVisible.value = true;
       console.log(error)
   })
   isDeleteModalOpen.value = false;
@@ -214,17 +207,14 @@ const viewAnimal = (id:Number,name:string) => {
 </script>
 
 <template>
-  <AlertPopup :label="toastMessage" :isVisible="isToastVisible" @close="closeToast" />
+  <AlertPopup :label="toastMessage" :isVisible="isToastVisible" @close="isToastVisible=false" />
   <div class="container mx-auto p-4">
     <div :class=" items.length === 0? 'flex justify-center mb-4' : 'flex justify-between mb-4' " >
       <div v-if="items.length !== 0" class="header text-2xl font-bold">
         List of Zoos stored in the database:
       </div>
       <button
-        @click="() => {
-            isZooRegistrationModal = true;
-          }
-        "
+        @click="() =>isZooRegistrationModal = true"
         class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
       >
         Add Zoo
@@ -260,7 +250,7 @@ const viewAnimal = (id:Number,name:string) => {
             />
           </div>
           <div class="flex-grow">
-            <div class="text-lg font-semibold">Name:{{ item.name }}</div>
+            <div class="text-lg font-semibold">Name:{{item.name }}</div>
             <div class="text-gray-500">
               <span class="font-medium">Location:</span> {{ item.location }}
             </div>
@@ -273,7 +263,7 @@ const viewAnimal = (id:Number,name:string) => {
           </div>
          <li title="update">
           <CustomIcon
-            @clicked="openModal(item.id ,item)"
+            @clicked="updateModalOpen(item.id ,item)"
             name="heroicons:pencil-square-solid"
             iconcolour=" text-blue-700"
           />
@@ -320,6 +310,7 @@ const viewAnimal = (id:Number,name:string) => {
       @success="deleteZoo"
       @close="deleteModalClose"
       :modalType="'delete'"
+      :isCheckModal="isCheckModal"  
     >
       <template #delete-modal-content-heading>
         Are you sure you want to delete this zoo

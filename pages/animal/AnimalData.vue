@@ -6,10 +6,8 @@ import type { fetchAnimal } from "~/types/FetchAnimal";
  
 const toastMessage = ref("");
 const isToastVisible = ref(false);
-const closeToast = () => {
-  isToastVisible.value = false;
-};
-
+const isCheckModal=ref(true)
+ 
 const roleStore = useRoleStore();
 const route = useRoute();
 const AnimalId = ref();
@@ -99,7 +97,7 @@ const createAnimal = [
     label: "gender",
     type: "text",
     placeholder: "Enter gender",
-    rules:"required|alpha_spaces"
+    rules:"required"
   },
   {
     label: "dob",
@@ -162,7 +160,7 @@ const transferModalOpen = async (zooid: BigInteger,trasnferAnimalId: number) => 
         zooId: zooid,
       },
     });
-      // console.log(response);
+      console.log(response);
     zooList.value = response;
   } catch (err) {
     console.error(err);
@@ -217,7 +215,6 @@ function fetchAnimalData () {
    }) 
 };
  
- 
 const handlePageChange=(page:number)=>{
   pageno.value=page;
   fetchAnimalData();
@@ -230,7 +227,7 @@ onMounted(() => {
 const zooname=route.query.zooname;
 </script>
 <template>
-  <AlertPopup :label="toastMessage" :isVisible="isToastVisible"  @close="closeToast" />
+  <AlertPopup :label="toastMessage" :isVisible="isToastVisible"  @close="isToastVisible= false" />
   <div class="container mx-auto p-4">
     <div class="text-2xl font-bold flex justify-center items-center mb-3">
       Welcome to {{ zooname }}
@@ -342,7 +339,8 @@ const zooname=route.query.zooname;
     :isactive="isactive"
     @success="deleteAnimal"
     @close="closeDeleteModal"
-    :modalType="'delete'">
+    :modalType="'delete'"
+    :isCheckModal="isCheckModal" >
     <template #delete-modal-content-heading>
       Are you sure you want to delete this animal
     </template>
