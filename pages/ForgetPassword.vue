@@ -4,6 +4,8 @@ import { useCustomFetch } from "~/composable/useFetchOptions";
 const userEmail = ref("");
 const toastMessage = ref("");
 const isToastVisible = ref(false);
+const tokenurl=ref("");
+ 
 const closeToast = () => {
   isToastVisible.value = false;
 };
@@ -13,9 +15,8 @@ function forgetPassword() {
     method: "POST",
     body: userEmail.value,
   })
-    .then(function (response) {
-      //console.log(response);
-      navigateTo(`${response}`);
+    .then(function (response:any) { 
+      navigateTo(`/SetPassword?token=${response[0]}`);
       // toastMessage.value="reset password link sent to  console ";
       // isToastVisible.value = true;
     })

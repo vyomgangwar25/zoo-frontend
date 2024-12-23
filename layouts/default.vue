@@ -35,7 +35,7 @@ const handleLogout = async () => {
   }
 };
 const handleSetPass = () => {
-  router.push("/SetPassword");
+  router.push("/UpdatePassword");
 };
 
 const handleProfile = () => {

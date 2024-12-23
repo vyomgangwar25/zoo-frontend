@@ -6,7 +6,6 @@ export function useCustomFetch<T>(
 ) {
   const route = useRoute();
   const token = route.query.token;
-  //console.log(token)
   //console.log(useCookie("SavedToken").value);
   const defaults: UseFetchOptions<T> = {
     baseURL: "http://localhost:8080",
@@ -15,7 +14,7 @@ export function useCustomFetch<T>(
           Authorization: `Bearer ${useCookie("SavedToken").value}`,
         }
       : token
-      ? { Authorization: `Bearer ${token}` }
+      ? { Authorization2: `Bearer ${token}` }
       : {},
   };
   let mergedOptions = {};
