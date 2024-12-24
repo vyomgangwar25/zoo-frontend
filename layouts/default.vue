@@ -20,10 +20,10 @@ if (import.meta.client) {
 
 const handleLogout = async () => {
   try {
-    const response:any = await useCustomFetch("/user/logout", {
+    const response: any = await useCustomFetch("/user/logout", {
       method: "POST",
     });
-    console.log(response);
+
     const cookie = useCookie("SavedToken", {
       maxAge: 0,
     });

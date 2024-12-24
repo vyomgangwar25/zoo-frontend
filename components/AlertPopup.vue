@@ -17,11 +17,10 @@ const timer = ref(props.timeOut);
 watch(
   () => props.isVisible,
   (isVisible) => {
-    if (isVisible) console.log("is visible");
-
-    setTimeout(() => {
-      emit("close");
-    }, props.timeOut);
+    if (isVisible)
+      setTimeout(() => {
+        emit("close");
+      }, props.timeOut);
     // setInterval(() => {
     //   isVisible = false;
 
