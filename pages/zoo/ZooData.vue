@@ -278,7 +278,7 @@ const viewAnimal = (id:Number,name:string) => {
         </li>
           <li title="delete">
             <CustomIcon
-            v-if="roleStore.role === 'admin'"
+            v-if="roleStore.role === '2'"
             @clicked="deleteModalOpen(item.id)"
             name="heroicons:x-mark"
             iconcolour=" text-red-700"

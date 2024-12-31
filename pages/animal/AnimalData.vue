@@ -286,7 +286,7 @@ const zooname=route.query.zooname;
           <ul class="flex ">
             <li title="delete">
           <CustomIcon
-            v-if="roleStore.role === 'admin'"
+            v-if="roleStore.role === '2'"
             @clicked="deleteModalOpen(animal.animal_id)"
             name="heroicons:x-mark" 
             iconcolour=" text-red-700"/>
@@ -305,7 +305,7 @@ const zooname=route.query.zooname;
           </li>
            <li title="history">
           <CustomIcon
-            v-if="roleStore.role === 'admin'"
+            v-if="roleStore.role === '2'"
             @clicked="navigateTo(`/AnimalTransferHistory?animalId=${animal.animal_id}`)"
             name="material-symbols:history-2"
             iconcolour=" text-blue-700"/>

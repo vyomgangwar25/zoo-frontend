@@ -23,7 +23,7 @@ function handleRegistration() {
       username: name.value,
       email: userEmail.value,
       password: password.value,
-      role: role.value,
+      roleId: role.value,
     }),
   })
     .then(function (response) {
@@ -121,7 +121,7 @@ onMounted(() => {
             rules="required"
           >
             <option value="" disabled>Select Role</option>
-            <option v-for="(item, index) in roles" :value="item?.role">
+            <option v-for="(item, index) in roles" :value="item?.id">
               {{ item?.role }}
             </option>
           </Field>

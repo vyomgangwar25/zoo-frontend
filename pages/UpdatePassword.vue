@@ -13,7 +13,7 @@ const closeToast = () => {
 };
 
 function setNewPassword() {
-  useCustomFetch<string>("/user/updatepassword", {
+  useCustomFetch<string>("/user/updatepassword", { 
     method: "POST",
     body: JSON.stringify({
       oldpassword: oldpassword.value,
