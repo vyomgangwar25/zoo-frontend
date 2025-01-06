@@ -3,7 +3,7 @@ import { useRoleStore } from "~/store/useRoleStore";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import type { fetchzoo } from "~/types/FetchZoo";
 import type { zoodata } from "~/types/ZooData";
- 
+import Search from "~/components/Search.vue";
 const toastMessage  = ref('');
 const isToastVisible = ref(false);
 const isCheckModal=ref(true)
@@ -175,7 +175,6 @@ const deleteModalOpen = (id:Number) => {
   isDeleteModalOpen.value = true;
 };
 function deleteZoo () {
- 
     useCustomFetch<string>(`/zoo/delete/${deleteZooIdOk.value}`, {
       method: "DELETE",
     }).then(function(){
@@ -204,18 +203,46 @@ const viewAnimal = (id:Number,name:string) => {
     query: { zooId: Number(id) , zooname:name},
   });
 };
+//search api
+const searchState=ref(false);
+const search=(searchedValue:string)=>{
+   
+if(searchedValue=="")
+{
+  searchState.value=false
+  return
+}
+  useCustomFetch("/zoo/search", {
+      method: "GET",
+      params: {
+        text:searchedValue
+      },
+    }).then(function (response:any){ 
+     items.value=response;
+     searchState.value=true
+    }).catch (function(err) {
+    console.error(err);
+  })
+}
+const emitFail=()=>{
+  searchState.value=false
+  fetchzoodata();
+}
+ 
 </script>
 
 <template>
   <AlertPopup :label="toastMessage" :isVisible="isToastVisible" @close="isToastVisible=false" />
-  <div class="container mx-auto p-4">
-    <div :class=" items.length === 0? 'flex justify-center mb-4' : 'flex justify-between mb-4' " >
+  <div class="container mx-auto p-4 w-full">
+    <div :class="items.length === 0? 'flex justify-center mb-4' : 'flex justify-between mb-4' " >
       <div v-if="items.length !== 0" class="header text-2xl font-bold">
         List of Zoos stored in the database:
       </div>
-      <button
+     <!-- searchFunctionality    -->
+      <Search label="Search"   @success="search" @fail="emitFail()"/>
+      <button  
         @click="() =>isZooRegistrationModal = true"
-        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        class="bg-blue-500 text-white px-4 py-2 ml-3 rounded hover:bg-blue-600"
       >
         Add Zoo
       </button>
@@ -317,8 +344,8 @@ const viewAnimal = (id:Number,name:string) => {
       </template>
     </CustomModal>
 
-    <div v-if="items.length !== 0" class=" flex justify-center space-x-4 my-4">
-    <Pagination :totalPages="totalPages"  :initialPage="pageno" @PageChange=" handlePageChange"/>
+    <div v-if="items.length !== 0"  class=" flex justify-center space-x-4 my-4">
+        <Pagination  v-if="searchState==false" :totalPages="totalPages"  :initialPage="pageno" @PageChange=" handlePageChange"/>
     </div>
   </div>
 </template>

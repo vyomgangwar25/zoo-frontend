@@ -3,6 +3,7 @@ import { useRoleStore } from "~/store/useRoleStore";
 import { useCustomFetch } from "~/composable/useFetchOptions";
 import type { AnimalData } from "~/types/AnimalData";
 import type { fetchAnimal } from "~/types/FetchAnimal";
+import Search from "~/components/Search.vue";
  
 const toastMessage = ref("");
 const isToastVisible = ref(false);
@@ -225,11 +226,38 @@ onMounted(() => {
   fetchAnimalData();
 });
 const zooname=route.query.zooname;
+
+ 
+const searchState=ref(false);
+const search=async(searchedValue:string)=>{
+
+  if(searchedValue=="")
+    {
+      return
+    }
+  useCustomFetch(`/animal/search/${route.query.zooId}`, {
+      method: "GET",
+      params: {
+        text:searchedValue,
+      },
+    }).then(function (response:any){ 
+     items.value=response;
+     searchState.value=true;
+    
+    }).catch (function(err) {
+    console.error(err);
+  })
+
+}
+const emitFail=()=>{
+  fetchAnimalData()
+  searchState.value=false
+}
 </script>
 <template>
   <AlertPopup :label="toastMessage" :isVisible="isToastVisible"  @close="isToastVisible= false" />
   <div class="container mx-auto p-4">
-    <div class="text-2xl font-bold flex justify-center items-center mb-3">
+    <div class="text-2xl font-bold flex justify-center items-center mb-3 ml-10">
       Welcome to {{ zooname }}
     </div>
     <div>
@@ -239,10 +267,12 @@ const zooname=route.query.zooname;
       <div v-if="items.length !== 0" class="header text-2xl font-bold">
         <h1>List of Animals in the Zoo</h1>
       </div>
-      <div>
+   
+      <Search label="Search" @success="search" @fail="emitFail"/>
+      <div >
         <button
           @click="() => { isAnimalRegistrationModal = true }"
-          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-4" >
+          class="bg-blue-500 text-white px-4 py-2  ml-3 rounded hover:bg-blue-600 mr-4" >
           Add Animal
         </button>
       </div>
@@ -319,7 +349,7 @@ const zooname=route.query.zooname;
       v-if="items.length !== 0"
       class="pagination-controls flex justify-center space-x-4 my-4">
       
-      <Pagination :totalPages="totalPages"  :initialPage="pageno" @PageChange=" handlePageChange"  />
+      <Pagination v-if="searchState===false" :totalPages="totalPages"  :initialPage="pageno" @PageChange=" handlePageChange"  />
     </div>
   </div>
   <!------------------------------------------------------------Update  Modal  ------------------------------------------------------>
