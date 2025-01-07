@@ -40,7 +40,8 @@ function handleLogin() {
       const token = useCookie("SavedToken", {
         maxAge: 7200,
       });
-  
+      const refreshToken=useCookie("RefreshToken")
+      refreshToken.value=items.value.refreshToken;
       token.value = items.value.token;
       router.push("/Dashboard");
     })
