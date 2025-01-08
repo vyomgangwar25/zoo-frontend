@@ -28,6 +28,8 @@ const handleLogout = async () => {
       maxAge: 0,
     });
     cookie.value = "";
+    const refreshToken=useCookie("RefreshToken")
+    refreshToken.value="";
     roleStore.setState("", "", "", 0);
     router.push("/login");
   } catch (err) {

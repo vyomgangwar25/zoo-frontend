@@ -1,38 +1,17 @@
 import { useRoleStore } from "~/store/useRoleStore";
-import { jwtDecode } from "jwt-decode";
+import { RefreshTokenValidation } from "~/composable/useRefreshTokenValidation"; 
+
+ const {validateToken}=RefreshTokenValidation();
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const roleStore = useRoleStore();
   const token: any = useCookie("SavedToken");
+
+ 
   if (token.value) {
-    const decodeToken = jwtDecode(token.value);
-    const currentTime = Date.now() / 1000;
-    console.log("current", currentTime);
-
-    const tokenExpirationTime: any = decodeToken.exp;
-    console.log("expiration", tokenExpirationTime);
-    const timetaken = tokenExpirationTime - 100;
-    console.log(timetaken);
-
-    const tokenValidationCheck = async () => {
-      console.log("inside function...");
-      try {
-        const data = await $fetch("http://localhost:8080/user/refreshtoken", {
-          method: "POST",
-          body: JSON.stringify({ token: token.value }),
-        });
-        console.log(data);
-      } catch (error) {
-        console.error("Error validating token:", error);
-      }
-    };
-
-    if (currentTime >= timetaken) {
-      console.log("token delete");
-      await tokenValidationCheck();
-      return;
-    }
+    return await validateToken()
   }
+     
 
   roleStore.closeDropDown();
   if (token.value && (to.path == "/login" || to.path == "/registration")) {
