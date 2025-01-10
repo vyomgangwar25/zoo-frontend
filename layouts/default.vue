@@ -152,6 +152,7 @@ onMounted(() => {
         </ul>
       </div>
     </div>
-  </nav>
-  <slot />
+  </nav> 
+  <!-- this is default slot -->
+  <slot /> 
 </template>

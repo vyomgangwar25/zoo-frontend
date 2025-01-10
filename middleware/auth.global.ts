@@ -1,19 +1,17 @@
 import { useRoleStore } from "~/store/useRoleStore";
-import { RefreshTokenValidation } from "~/composable/useRefreshTokenValidation"; 
+import { RefreshTokenValidation } from "~/composable/useRefreshTokenValidation";
 
- const {validateToken}=RefreshTokenValidation();
+const { validateToken } = RefreshTokenValidation();
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const roleStore = useRoleStore();
   const token: any = useCookie("SavedToken");
 
- 
-  if (token.value) {
-    return await validateToken()
-  }
-     
-
   roleStore.closeDropDown();
+  if (token.value) {
+    return await validateToken();
+  }
+
   if (token.value && (to.path == "/login" || to.path == "/registration")) {
     return navigateTo("/Dashboard");
   } else if (
@@ -25,5 +23,3 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     return;
   }
 });
-
-

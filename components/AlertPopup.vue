@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { number } from "yup";
+ //we can also define props in seperate file and use here after import
+interface props{
+     label:string;
+     isVisible:boolean;
+     timeOut?:number
+  }
 const props = withDefaults(
-  defineProps<{
-    label: string;
-    isVisible: boolean;
-    timeOut?: number;
-  }>(),
+  defineProps<
+  // {
+  //   label: string;
+  //   isVisible: boolean;
+  //   timeOut?: number;
+  // }
+  props
+  >(),
   {
     isVisible: false,
     timeOut: 2000,

@@ -21,7 +21,7 @@ function setNewPassword() {
     }),
   })
     .then(function (response) {
-      router.push("/login");
+      router.push("/Dashboard");
     })
     .catch(function (err) {
       toastMessage.value = err.response._data;

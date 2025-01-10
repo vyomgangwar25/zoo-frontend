@@ -38,7 +38,7 @@ function handleLogin() {
         items.value.id
       );
       const token = useCookie("SavedToken", {
-        maxAge: 7200,
+        maxAge: 24*60*60,
       });
 
       const refreshToken=useCookie("RefreshToken")
@@ -62,7 +62,7 @@ function handleLogin() {
       @close="closeToast"
     />
 
-    <div class="max-w-sm w-full p-8 bg-white shadow-lg rounded-lg">
+    <div class="max-w-sm  p-8 bg-white shadow-lg rounded-lg">
       <h1 class="text-3xl font-bold text-center text-gray-700 mb-8">
         Login Form
       </h1>

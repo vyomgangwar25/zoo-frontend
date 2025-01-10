@@ -23,7 +23,7 @@ export function RefreshTokenValidation() {
         } catch (error) {
           token.value = "";
           refreshtoken.value = "";
-          console.error("Error validating token:", error);
+          console.error("Error in  validating the token:", error);
         }
       };
       if (currentTime >= timetaken) {

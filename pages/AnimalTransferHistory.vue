@@ -4,7 +4,7 @@
         Details of Animal
       </h1>
 
-  <!-- <div class="p-4 flex flex-col items-center w-full"> -->
+ 
     <div v-if="items.length > 0" class="p-6 bg-gray-200 rounded-lg ">
       <div class="bg-white shadow-lg rounded-lg p-6 flex items-center">
         <div class="flex-1">
@@ -68,7 +68,7 @@
       </table>
     </div>
   </div>
-<!-- </div> -->
+ 
 </template>
 
 <script lang="ts" setup>
