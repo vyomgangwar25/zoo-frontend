@@ -13,7 +13,7 @@ const closeToast = () => {
 };
 
 function setNewPassword() {
-  useCustomFetch<string>("/user/updatepassword", { 
+   $fetch<string>("/api/update-password", { 
     method: "POST",
     body: JSON.stringify({
       oldpassword: oldpassword.value,
@@ -24,7 +24,8 @@ function setNewPassword() {
       router.push("/Dashboard");
     })
     .catch(function (err) {
-      toastMessage.value = err.response._data;
+      
+      toastMessage.value = err.response._data.data;
       isToastVisible.value = true;
       // oldpassword.value = "", newPassword.value = "";
     });

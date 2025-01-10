@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { Form, Field, ErrorMessage } from "vee-validate";
-import { useCustomFetch } from "~/composable/useFetchOptions";
 const userEmail = ref("");
 const toastMessage = ref("");
 const isToastVisible = ref(false);
@@ -11,9 +10,11 @@ const closeToast = () => {
 };
 
 function forgetPassword() {
-  useCustomFetch<string>("/user/forgetpassword", {
+      $fetch<string>("/api/forget-password", {
     method: "POST",
-    body: userEmail.value,
+    body: JSON.stringify({
+      email: userEmail.value,
+    }),
   })
     .then(function (response: any) {
       navigateTo(`/SetPassword?token=${response}`);

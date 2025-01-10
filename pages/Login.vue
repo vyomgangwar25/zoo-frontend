@@ -20,7 +20,7 @@ const closeToast = () => {
 };
 
 function handleLogin() {
-  useCustomFetch<User>("/user/login", {
+  $fetch<User>("/api/login", {
     method: "POST",
     body: JSON.stringify({
       email: userEmail.value,
@@ -28,6 +28,7 @@ function handleLogin() {
     }),
   })
     .then(function (response) {
+      console.log(response)
       items.value = response;
        
       //const token = items.value.token;
@@ -48,7 +49,8 @@ function handleLogin() {
       router.push("/Dashboard");
     })
     .catch(function (err) {
-      toastMessage.value = err.response._data;
+      console.log(err)
+      toastMessage.value = err.response._data.data;
       isToastVisible.value = true;
     });
 }

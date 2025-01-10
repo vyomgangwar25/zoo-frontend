@@ -118,7 +118,7 @@ const createZooData = ref({
 });
 
 function zooRegistration() { 
-    useCustomFetch<string>("/zoo/create", {
+    $fetch<string>("/api/create-zoo", {
       method: "POST",
       body: JSON.stringify(createZooData.value),
     }).then(function(response){

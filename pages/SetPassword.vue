@@ -4,7 +4,7 @@ import { useCustomFetch } from "~/composable/useFetchOptions";
 
 const router = useRouter();
 const newPassword = ref("");
-
+const route=useRoute();
 const toastMessage: Ref<string> = ref("");
 const isToastVisible = ref(false);
 
@@ -13,8 +13,11 @@ const closeToast = () => {
 };
 
 function setNewPassword2() {
-  useCustomFetch<string>("/user/setnewpassword", {
+ $fetch<string>("/api/set-password", {
     method: "POST",
+    params: {
+      token:route.query.token
+    },
     body: JSON.stringify({
       newpassword: newPassword.value,
     }),
