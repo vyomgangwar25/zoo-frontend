@@ -20,7 +20,7 @@ if (import.meta.client) {
 
 const handleLogout = async () => {
   try {
-    const response: any = await useCustomFetch("/user/logout", {
+    const response: any = await $fetch("/api/logout", {
       method: "POST",
     });
 
@@ -45,7 +45,7 @@ const handleProfile = () => {
 };
 const dashboardApi = async () => {
   try {
-    const response: any = await useCustomFetch("/user/userinfo", {
+    const response: any = await $fetch("/api/userinfo", {
       method: "GET",
     });
 
@@ -62,9 +62,9 @@ const dashboardApi = async () => {
   }
 };
 onMounted(() => {
-  if (token.value) {
+  //condtion
     dashboardApi();
-  }
+ 
 });
 </script>
 

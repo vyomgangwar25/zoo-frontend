@@ -68,8 +68,11 @@ const hasDataChanged = () => {
   if (!hasDataChanged()) {
     return;
   }
-   useCustomFetch<string>(`/zoo/update/${zooid.value}`, {
+   $fetch<string>(`/api/update-zoo`, {
       method: "PUT",
+      params:{
+        zooid:zooid.value
+      },
       body: formData.value,
     }).then(function(response){
     toastMessage.value = response;
@@ -146,7 +149,7 @@ const loading=ref(false);
 function fetchzoodata (){
   loading.value=true;
    if(pageno.value>0)
-    useCustomFetch<fetchzoo>("/zoo/list", {
+    $fetch<fetchzoo>("/api/list-zoo", {
       method: "GET",
       params: {
         page: pageno.value-1, pagesize: pagesize,
@@ -175,8 +178,11 @@ const deleteModalOpen = (id:Number) => {
   isDeleteModalOpen.value = true;
 };
 function deleteZoo () {
-    useCustomFetch<string>(`/zoo/delete/${deleteZooIdOk.value}`, {
+    $fetch<string>("/api/delete-zoo" , {
       method: "DELETE",
+      params: {
+        deleteZooId: deleteZooIdOk.value
+      },
     }).then(function(){
       items.value = items.value.filter((item) => item.id !== deleteZooIdOk.value);
       if(pageno.value>1 && items.value.length ==0 )
@@ -212,7 +218,7 @@ if(searchedValue=="")
   searchState.value=false
   return
 }
-  useCustomFetch("/zoo/search", {
+  $fetch("/api/search-zoo", {
       method: "GET",
       params: {
         text:searchedValue

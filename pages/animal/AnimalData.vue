@@ -54,9 +54,12 @@ const updateAnimal = async () => {
   if (!hasDataChanged()) {
     return;
   }
-      useCustomFetch<string>(`/animal/update/${AnimalId.value}`,
+      $fetch<string>("/api/update-animal",
       {
         method: "PUT",
+        query:{
+      AnimalId:AnimalId.value
+        },
         body: JSON.stringify(updateData.value),
       }).
       then(function(response){
@@ -73,7 +76,7 @@ const updateAnimal = async () => {
 
 const isAnimalRegistrationModal = ref(false);
 function handleSubmit() {
-     useCustomFetch<string>("/animal/create", {
+     $fetch<string>("/api/create-animal", {
       method: "POST",
       body: createAnimalData.value,
     }).then(function(response){
@@ -124,8 +127,11 @@ const deleteModalOpen = (animalId: number) => {
   isactive.value = true;
 };
 function deleteAnimal (){
-  useCustomFetch(`/animal/delete/${animalIdOk.value}`, {
+  $fetch(`/api/delete-animal`, {
       method: "DELETE",
+      params:{
+        animalId:animalIdOk.value
+      },
     }).then(function(){
       items.value = items.value.filter(
       (item) => item.animal_id !== animalIdOk.value
@@ -155,7 +161,7 @@ const transferModalOpen = async (zooid: BigInteger,trasnferAnimalId: number) => 
   isTransferModelOpen.value = true;
   TransferAnimalId.value = trasnferAnimalId;
   try {
-    const response: any = await useCustomFetch(`/animal/zoolist`, {
+    const response: any =  await $fetch(`/api/animal-zoolist`, {
       method: "GET",
       query: {
         zooId: zooid,
@@ -175,7 +181,7 @@ const closeTransferModal = () => {
 //transfer api
 function transferAnimal(id: BigInteger) {
  
-     useCustomFetch<string>(`/animal/transfer`, {
+     $fetch<string>(`/api/animal-transfer`, {
       method: "PUT",
       query: {
         animalid: TransferAnimalId.value,
@@ -201,9 +207,14 @@ const loading = ref(false);
 function fetchAnimalData () {
   loading.value = true;
      
-    useCustomFetch<fetchAnimal>(`/animal/list/${zooid.value}?page=${pageno.value-1}&pagesize=${pagesize}`,
+    $fetch<fetchAnimal>("/api/list-animal",
       {
         method: "GET",
+        params:{
+          zooid:zooid.value,
+          pageno:pageno.value-1,
+          pagesize:pagesize
+        },
       }
     ).then(function(response){
      
@@ -235,10 +246,11 @@ const search=async(searchedValue:string)=>{
     {
       return
     }
-  useCustomFetch(`/animal/search/${route.query.zooId}`, {
+ $fetch(`/api/search-animal`, {
       method: "GET",
       params: {
         text:searchedValue,
+        zooid:route.query.zooId
       },
     }).then(function (response:any){ 
      items.value=response;

@@ -15,6 +15,7 @@ const closeToast = () => {
 function setNewPassword2() {
  $fetch<string>("/api/set-password", {
     method: "POST",
+    
     params: {
       token:route.query.token
     },

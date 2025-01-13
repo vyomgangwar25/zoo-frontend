@@ -61,10 +61,13 @@ const handleSubmit = async () => {
     if (!hasDataChanged()) {
       return;
     }
-    const response = await useCustomFetch<string>(
-      `/user/update/${route.query.id}`,
+    const response = await $fetch<string>(
+      `/api/profile`,
       {
         method: "PUT",
+        params:{
+           id:route.query.id
+        },
         body: formData.value,
       }
     );

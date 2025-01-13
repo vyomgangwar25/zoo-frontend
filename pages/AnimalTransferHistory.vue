@@ -82,8 +82,11 @@ const items: Ref<TransferHistory[]> = ref([]);
 const animal: Ref<Animal | undefined> = ref();
 
 function animalHistory() {
-  useCustomFetch<AnimalHistory>(`animal/history/${route.query.animalId}`, {
+  $fetch<AnimalHistory>(`/api/animal-history`, {
     method: "GET",
+    params:{
+      animalId:route.query.animalId
+    }
   })
     .then(function (response) {
      // console.log(response);
