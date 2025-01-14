@@ -1,4 +1,5 @@
 import { ref } from "vue";
+import { useCustomFetch } from "../composable/useFetchOptions";
 
 export default defineEventHandler(async (event) => {
   const session = await useSession(event, {
@@ -8,20 +9,17 @@ export default defineEventHandler(async (event) => {
   const animalId = ref(getQuery(event).AnimalId);
   //console.log(animalId.value)
 
-  const res = await $fetch<string>(
-    `http://localhost:8080/animal/update/${animalId.value}`,
-    {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${session.data.jwtToken}`,
-      },
+  const res = await useCustomFetch<string>(`/animal/update/${animalId.value}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${session.data.jwtToken}`,
+    },
 
-      body: {
-        name: body.name,
-        gender: body.gender,
-      },
-    }
-  );
+    body: {
+      name: body.name,
+      gender: body.gender,
+    },
+  });
 
   return res;
 });

@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
 
   const text: any = ref(getQuery(event).text);
 
-  const res = await $fetch<string>(`http://localhost:8080/zoo/search`, {
+  const res = await $fetch(`http://localhost:8080/zoo/search`, {
     method: "GET",
     params: {
       text: text.value,

@@ -1,4 +1,5 @@
 import { ref } from "vue";
+import { AnimalHistory } from "~/types/AnimalHistory";
 
 export default defineEventHandler(async (event) => {
   const session = await useSession(event, {
@@ -7,7 +8,7 @@ export default defineEventHandler(async (event) => {
 
   const animalId = ref(getQuery(event).animalId);
 
-  const res = await $fetch<string>(
+  const res = await $fetch<AnimalHistory>(
     `http://localhost:8080/animal/history/${animalId.value}`,
     {
       method: "GET",

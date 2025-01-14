@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { useRoleStore } from "~/store/useRoleStore";
-import { useCustomFetch } from "~/composable/useFetchOptions";
+ 
 import type { User } from "~/types/UserData";
 
 const roleStore = useRoleStore(); //access the store
 
+const flag = useCookie("flag");
 const token = ref("");
 const showDropdown = ref(false);
 const router = useRouter();
@@ -24,12 +25,8 @@ const handleLogout = async () => {
       method: "POST",
     });
 
-    const cookie = useCookie("SavedToken", {
-      maxAge: 0,
-    });
-    cookie.value = "";
-    const refreshToken=useCookie("RefreshToken")
-    refreshToken.value="";
+    flag.value = "";
+
     roleStore.setState("", "", "", 0);
     router.push("/login");
   } catch (err) {
@@ -62,9 +59,9 @@ const dashboardApi = async () => {
   }
 };
 onMounted(() => {
-  //condtion
+  if (flag.value) {
     dashboardApi();
- 
+  }
 });
 </script>
 
@@ -152,7 +149,7 @@ onMounted(() => {
         </ul>
       </div>
     </div>
-  </nav> 
+  </nav>
   <!-- this is default slot -->
-  <slot /> 
+  <slot />
 </template>

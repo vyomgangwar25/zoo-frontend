@@ -246,7 +246,7 @@ const search=async(searchedValue:string)=>{
     {
       return
     }
- $fetch(`/api/search-animal`, {
+ await $fetch(`/api/search-animal`, {
       method: "GET",
       params: {
         text:searchedValue,

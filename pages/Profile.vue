@@ -6,17 +6,15 @@ import { useRoleStore } from "~/store/useRoleStore";
 
 const route = useRoute();
 const roleStore = useRoleStore();
-const cookies = useCookie("SavedToken");
+const flag = useCookie("flag");
 const isModalOpen = ref(false);
 const router = useRouter();
 const isConfirmOpen = ref(false);
 const toastMessage: Ref<string> = ref("");
 const isToastVisible = ref(false);
 
- 
-const isCheckModal=ref(true)
+const isCheckModal = ref(true);
 
- 
 const formFields = [
   {
     label: "name",
@@ -61,23 +59,20 @@ const handleSubmit = async () => {
     if (!hasDataChanged()) {
       return;
     }
-    const response = await $fetch<string>(
-      `/api/profile`,
-      {
-        method: "PUT",
-        params:{
-           id:route.query.id
-        },
-        body: formData.value,
-      }
-    );
+    const response = await $fetch<string>(`/api/profile`, {
+      method: "PUT",
+      params: {
+        id: route.query.id,
+      },
+      body: formData.value,
+    });
     toastMessage.value = response;
     isToastVisible.value = true;
 
     if (response && formData.value.email !== roleStore.email) {
       isConfirmOpen.value = true;
       roleStore.setState("", "", "", 0);
-      cookies.value = "";
+      flag.value = "";
       return;
     }
     roleStore.setState(
@@ -103,7 +98,7 @@ const modalClose = () => {
     <AlertPopup
       :label="toastMessage"
       :isVisible="isToastVisible"
-      @close=" isToastVisible = false;"
+      @close="isToastVisible = false"
     />
     <div class="flex justify-center">
       <Icon

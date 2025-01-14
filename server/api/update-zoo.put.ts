@@ -1,4 +1,5 @@
 import { ref } from "vue";
+import { useCustomFetch } from "../composable/useFetchOptions";
 
 export default defineEventHandler(async (event) => {
   const session = await useSession(event, {
@@ -7,22 +8,19 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const zooid = ref(getQuery(event).zooid);
 
-  const res = await $fetch<string>(
-    `http://localhost:8080/zoo/update/${zooid.value}`,
-    {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${session.data.jwtToken}`,
-      },
+  const res = await useCustomFetch<string>(`/zoo/update/${zooid.value}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${session.data.jwtToken}`,
+    },
 
-      body: {
-        name: body.name,
-        location: body.location,
-        size: body.size,
-        description: body.description,
-      },
-    }
-  );
+    body: {
+      name: body.name,
+      location: body.location,
+      size: body.size,
+      description: body.description,
+    },
+  });
 
   return res;
 });

@@ -2,7 +2,6 @@
 import { Form, Field, ErrorMessage } from "vee-validate";
 import { useRoleStore } from "~/store/useRoleStore";
 import { useRouter, type Router } from "vue-router";
-import { useCustomFetch } from "~/composable/useFetchOptions";
 import type { User } from "~/types/UserData";
 
 const toastMessage = ref("");
@@ -28,9 +27,9 @@ function handleLogin() {
     }),
   })
     .then(function (response) {
-      console.log(response)
+      console.log(response);
       items.value = response;
-       
+
       //const token = items.value.token;
       roleStore.setState(
         items.value.role,
@@ -38,18 +37,15 @@ function handleLogin() {
         items.value.username,
         items.value.id
       );
-      const token = useCookie("SavedToken", {
-        maxAge: 24*60*60,
+      const flag = useCookie("flag", {
+        maxAge: 24 * 60 * 60,
       });
 
-      const refreshToken=useCookie("RefreshToken")
-
-      refreshToken.value=items.value.refreshToken;
-      token.value = items.value.token;
+      flag.value = "1";
       router.push("/Dashboard");
     })
     .catch(function (err) {
-      console.log(err)
+      console.log(err);
       toastMessage.value = err.response._data.data;
       isToastVisible.value = true;
     });
@@ -64,7 +60,7 @@ function handleLogin() {
       @close="closeToast"
     />
 
-    <div class="max-w-sm  p-8 bg-white shadow-lg rounded-lg">
+    <div class="max-w-sm p-8 bg-white shadow-lg rounded-lg">
       <h1 class="text-3xl font-bold text-center text-gray-700 mb-8">
         Login Form
       </h1>
@@ -97,7 +93,7 @@ function handleLogin() {
           />
           <ErrorMessage name="password" class="text-red-600 text-sm mt-1" />
         </div>
-        <Button name  ="Submit" />
+        <Button name="Submit" />
       </Form>
 
       <div class="flex items-center justify-center mt-4">

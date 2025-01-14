@@ -1,4 +1,5 @@
 import { ref } from "vue";
+import { fetchzoo } from "~/types/FetchZoo";
 export default defineEventHandler(async (event) => {
   const session = await useSession(event, {
         password: "80d42cfb-1cd2-462c-8f17-e3237d9027e9",
@@ -7,7 +8,7 @@ export default defineEventHandler(async (event) => {
       const page :any= ref(getQuery(event).page);
       const pagesize=ref(getQuery(event).pagesize)
        
-  const res=await $fetch<string>(`http://localhost:8080/zoo/list`,
+  const res=await $fetch<fetchzoo>(`http://localhost:8080/zoo/list`,
     {
      
         method: "GET",

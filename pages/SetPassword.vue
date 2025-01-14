@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { Form, Field, ErrorMessage } from "vee-validate";
-import { useCustomFetch } from "~/composable/useFetchOptions";
 
 const router = useRouter();
 const newPassword = ref("");
-const route=useRoute();
+const route = useRoute();
 const toastMessage: Ref<string> = ref("");
 const isToastVisible = ref(false);
 
@@ -13,11 +12,11 @@ const closeToast = () => {
 };
 
 function setNewPassword2() {
- $fetch<string>("/api/set-password", {
+  $fetch<string>("/api/set-password", {
     method: "POST",
-    
+
     params: {
-      token:route.query.token
+      token: route.query.token,
     },
     body: JSON.stringify({
       newpassword: newPassword.value,

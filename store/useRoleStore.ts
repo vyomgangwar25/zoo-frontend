@@ -8,6 +8,7 @@ export const useRoleStore = defineStore('role', {
          email:'',
          name:'',
          id:0,
+         flag:0,
          showDropDown:false
       }),
   

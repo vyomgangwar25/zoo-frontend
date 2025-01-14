@@ -1,6 +1,6 @@
 <script lang="ts" setup >
 import { useRoleStore } from "~/store/useRoleStore";
-import { useCustomFetch } from "~/composable/useFetchOptions";
+ 
 import type { fetchzoo } from "~/types/FetchZoo";
 import type { zoodata } from "~/types/ZooData";
 import Search from "~/components/Search.vue";
@@ -218,7 +218,7 @@ if(searchedValue=="")
   searchState.value=false
   return
 }
-  $fetch("/api/search-zoo", {
+  $fetch<fetchzoo>("/api/search-zoo", {
       method: "GET",
       params: {
         text:searchedValue
