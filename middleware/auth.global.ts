@@ -1,8 +1,8 @@
 import { useRoleStore } from "~/store/useRoleStore";
-
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const roleStore = useRoleStore();
   roleStore.closeDropDown();
+
   const flag: any = useCookie("flag");
   if (!flag.value) {
     navigateTo("/login");
@@ -18,7 +18,10 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         const tokenExpirationTime: any = data.exp;
         const timetaken = tokenExpirationTime - 200;
         if (currentTime >= timetaken) {
-          await $fetch("/api/extractData-session");
+          const res = await $fetch("/api/extractData-session");
+          if (res === "session cleared") 
+            flag.value = "";
+          navigateTo("/login");
           return;
         }
       }

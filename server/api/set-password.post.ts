@@ -2,12 +2,13 @@ import { useCustomFetch } from "../composable/useFetchOptions";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  const token = getQuery(event).token;
+  const key = getQuery(event).token;
+  console.log(key);
 
   const res = await useCustomFetch<string>("/user/setnewpassword", {
     method: "POST",
-    headers: {
-      Authorization2: `Bearer ${token}`,
+    params: {
+      tokenKey: key,
     },
 
     body: {

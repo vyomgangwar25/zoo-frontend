@@ -26,38 +26,28 @@ function handleRegistration() {
       roleId: role.value,
     }),
   })
-    .then(function (response) {
+    .then(function (response: any) {
       // console.log(response)
       toastMessage.value = response;
       isToastVisible.value = true;
     })
-    .catch(function (err) {
+    .catch(function (err: any) {
       toastMessage.value = err.response._data;
       isToastVisible.value = true;
     });
 }
 
 function handleRoles() {
-  $fetch<Roles[]>(`/api/fetch-role`,{
-    method: 'GET'
-  }).then(function (response2) {
+  $fetch<Roles[]>(`/api/fetch-role`, {
+    method: "GET",
+  })
+    .then(function (response2) {
       roles.value = response2;
     })
     .catch(function (err) {
       toastMessage.value = err.response2._data;
       isToastVisible.value = true;
     });
-  // useCustomFetch<Roles[]>("/user/fetchroles", {
-  //   method: "GET",
-  // })
-  //   .then(function (response2) {
-  //     //console.log(response2);
-  //     roles.value = response2;
-  //   })
-  //   .catch(function (err) {
-  //     toastMessage.value = err.response2._data;
-  //     isToastVisible.value = true;
-  //   });
 }
 onMounted(() => {
   handleRoles();
