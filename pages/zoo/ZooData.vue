@@ -1,6 +1,5 @@
 <script lang="ts" setup >
 import { useRoleStore } from "~/store/useRoleStore";
- 
 import type { fetchzoo } from "~/types/FetchZoo";
 import type { zoodata } from "~/types/ZooData";
 import Search from "~/components/Search.vue";

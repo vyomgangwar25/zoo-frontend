@@ -1,11 +1,8 @@
 import { ref } from "vue";
+import userSession from "../util/user-session";
 export default defineEventHandler(async (event) => {
-  const session = await useSession(event, {
-    password: "80d42cfb-1cd2-462c-8f17-e3237d9027e9",
-  });
-
+  const session = await userSession(event);
   const zooid = ref(getQuery(event).zooId);
-  // console.log(zooid);
 
   const res = await $fetch<string>(`http://localhost:8080/animal/zoolist`, {
     method: "GET",

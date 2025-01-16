@@ -72,7 +72,6 @@
 </template>
 
 <script lang="ts" setup>
-import { useCustomFetch } from "~/composable/useFetchOptions";
 import type { Animal } from "~/types/Animal";
 import type { AnimalHistory } from "~/types/AnimalHistory";
 import type { TransferHistory } from "~/types/TransferHistoryList";

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useRoleStore } from "~/store/useRoleStore";
-import { useCustomFetch } from "~/composable/useFetchOptions";
 import type { AnimalData } from "~/types/AnimalData";
 import type { fetchAnimal } from "~/types/FetchAnimal";
 import Search from "~/components/Search.vue";

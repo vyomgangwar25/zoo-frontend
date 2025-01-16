@@ -45,7 +45,7 @@ const dashboardApi = async () => {
     const response: any = await $fetch("/api/userinfo", {
       method: "GET",
     });
-
+      console.log(response)
     items.value = response;
     roleStore.setState(
       items.value.role,

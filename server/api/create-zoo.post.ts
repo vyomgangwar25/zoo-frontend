@@ -1,13 +1,10 @@
 import { useCustomFetch } from "../composable/useFetchOptions";
+import userSession from "../util/user-session";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  // console.log(body, "HELLO");
 
-  const session = await useSession(event, {
-    password: "80d42cfb-1cd2-462c-8f17-e3237d9027e9",
-  });
-
+  const session = await userSession(event);
   const res = await useCustomFetch<string>("/zoo/create", {
     method: "POST",
     headers: {

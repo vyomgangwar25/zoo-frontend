@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { Form, Field, ErrorMessage } from "vee-validate";
-import { useRoute, type Router } from "vue-router";
-import { useCustomFetch } from "~/composable/useFetchOptions";
-const router: Router = useRouter();
+import { type Router } from "vue-router";
+ const router: Router = useRouter();
 const oldpassword = ref("");
 const newPassword = ref("");
 const toastMessage: Ref<string> = ref("");
