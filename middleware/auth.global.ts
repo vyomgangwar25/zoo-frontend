@@ -4,6 +4,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   roleStore.closeDropDown();
 
   const flag: any = useCookie("flag");
+  const cookie: any = useCookie("h3");
   if (!flag.value) {
     navigateTo("/login");
   }
@@ -16,13 +17,15 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       if (data) {
         const currentTime = Math.floor(Date.now() / 1000);
         const tokenExpirationTime: any = data.exp;
-        const timetaken = tokenExpirationTime - 200;
+        const timetaken = tokenExpirationTime;
         if (currentTime >= timetaken) {
           const res = await $fetch("/api/extractData-session");
-          if (res === "session cleared") 
+          if (res == false) {
             flag.value = "";
-          navigateTo("/login");
-          return;
+            cookie.value = "";
+
+            return navigateTo("/login");
+          }
         }
       }
     }

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useRoleStore } from "~/store/useRoleStore";
- 
+
 import type { User } from "~/types/UserData";
 
 const roleStore = useRoleStore(); //access the store
@@ -45,7 +45,7 @@ const dashboardApi = async () => {
     const response: any = await $fetch("/api/userinfo", {
       method: "GET",
     });
-      console.log(response)
+    console.log(response);
     items.value = response;
     roleStore.setState(
       items.value.role,

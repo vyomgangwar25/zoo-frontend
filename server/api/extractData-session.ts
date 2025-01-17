@@ -15,11 +15,11 @@ export default defineEventHandler(async (event) => {
   } catch (error) {
     console.error("Error in  validating the token:", error);
     await session.clear();
-    return "session cleared";
+    return false;
   }
 
   await session.update({
     jwtToken: newToken.value,
   });
-  return "ghg";
+  return "abc";
 });
