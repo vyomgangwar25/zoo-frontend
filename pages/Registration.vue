@@ -23,11 +23,10 @@ function handleRegistration() {
       username: name.value,
       email: userEmail.value,
       password: password.value,
-      roleId: role.value,
+      roleId: 1,
     }),
   })
     .then(function (response: any) {
-      // console.log(response)
       toastMessage.value = response;
       isToastVisible.value = true;
     })
@@ -107,7 +106,7 @@ onMounted(() => {
           <ErrorMessage name="password" class="text-red-600 text-sm mt-1" />
         </div>
 
-        <div>
+        <!-- <div>
           <label for="role" class="block text-sm font-medium text-gray-700"
             >Role</label
           >
@@ -125,7 +124,7 @@ onMounted(() => {
             </option>
           </Field>
           <ErrorMessage name="role" class="text-red-600 text-sm mt-1" />
-        </div>
+        </div> -->
 
         <Button name="Registration" />
 
