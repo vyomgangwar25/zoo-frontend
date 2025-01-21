@@ -1,6 +1,6 @@
 <script lang="ts" setup>
- import { Form, Field } from "vee-validate";
- import { useRoleStore } from "~/store/useRoleStore";
+import { Form, Field } from "vee-validate";
+import { useRoleStore } from "~/store/useRoleStore";
 
 const route = useRoute();
 const roleStore = useRoleStore();
@@ -93,101 +93,55 @@ const modalClose = () => {
 
 <template>
   <div>
-    <AlertPopup
-      :label="toastMessage"
-      :isVisible="isToastVisible"
-      @close="isToastVisible = false"
-    />
+    <AlertPopup :label="toastMessage" :isVisible="isToastVisible" @close="isToastVisible = false" />
     <div class="flex justify-center">
-      <Icon
-        name="heroicons:user-circle"
-        class="text-white text-9xl ml-5 cursor-pointer bg-gray-400"
-      />
+      <Icon name="heroicons:user-circle" class="text-white text-9xl ml-5 cursor-pointer bg-gray-400" />
     </div>
 
     <Form>
       <div class="mb-4">
         <div class="flex justify-center">
           <div class="flex items-center justify-center mb-4">
-            <CustomIcon
-              name="material-symbols:person-rounded"
-              iconcolour=" text-gray-700"
-            />
-            <Field
-              name="name"
-              type="name"
+            <CustomIcon name="material-symbols:person-rounded" iconcolour=" text-gray-700" />
+            <Field name="name" type="name"
               class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
-              v-model="roleStore.name"
-              rules="required"
-              :disabled="true"
-            />
+              v-model="roleStore.name" rules="required" :disabled="true" />
           </div>
         </div>
         <div class="flex justify-center">
           <div class="flex items-center justify-center mb-4">
-            <CustomIcon
-              name="heroicons:envelope-20-solid"
-              iconcolour=" text-gray-700"
-            />
-            <Field
-              name="email"
-              type="email"
+            <CustomIcon name="heroicons:envelope-20-solid" iconcolour=" text-gray-700" />
+            <Field name="email" type="email"
               class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
-              v-model="roleStore.email"
-              rules="required|email"
-              :disabled="true"
-            />
+              v-model="roleStore.email" rules="required|email" :disabled="true" />
           </div>
         </div>
 
         <div class="flex justify-center">
           <div class="flex items-center justify-center mb-4">
-            <CustomIcon
-              name="heroicons:information-circle-solid"
-              iconcolour=" text-gray-700"
-            />
-            <Field
-              name="role"
-              type="text"
+            <CustomIcon name="heroicons:information-circle-solid" iconcolour=" text-gray-700" />
+            <Field name="role" type="text"
               class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
-              v-model="roleStore.role"
-              rules="required"
-              :disabled="true"
-            />
+              v-model="roleStore.role" rules="required" :disabled="true" />
           </div>
         </div>
       </div>
     </Form>
     <div class="flex justify-center">
       <div class="flex items-center justify-center mb-4">
-        <button
-          type="submit"
-          @click="modalOpen"
-          class="bg-blue-500 text-white rounded p-2"
-        >
+        <button type="submit" @click="modalOpen" class="bg-blue-500 text-white rounded p-2">
           Update
         </button>
       </div>
     </div>
-    <CustomModal
-      :isactive="isModalOpen"
-      @success="handleSubmit"
-      @close="(event) => (isModalOpen = event)"
-      :modalType="'form'"
-      :formField="formFields"
-      :formData="formData"
-    >
+    <CustomModal :isactive="isModalOpen" @success="handleSubmit" @close="(event) => (isModalOpen = event)"
+      :modalType="'form'" :formField="formFields" :formData="formData">
       <template #form-modal-content-heading> Update User Data </template>
       <template #form-success-button> Update </template>
     </CustomModal>
 
-    <CustomModal
-      :isactive="isConfirmOpen"
-      @success="modalClose"
-      @close="modalClose"
-      :modalType="'confirmation'"
-      :isCheckModal="isCheckModal"
-    >
+    <CustomModal :isactive="isConfirmOpen" @success="modalClose" @close="modalClose" :modalType="'confirmation'"
+      :isCheckModal="isCheckModal">
       <template #delete-modal-content-heading>
         you are going to logout because you update the email
       </template>

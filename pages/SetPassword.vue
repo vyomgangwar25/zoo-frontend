@@ -34,11 +34,7 @@ function setNewPassword2() {
 </script>
 
 <template>
-  <AlertPopup
-    :label="toastMessage"
-    :isVisible="isToastVisible"
-    @close="closeToast"
-  />
+  <AlertPopup :label="toastMessage" :isVisible="isToastVisible" @close="closeToast" />
   <div>
     <div class="flex items-center justify-center min-h-screen bg-blue-100">
       <div class="max-w-md w-full p-8 bg-white shadow-lg rounded-lg">
@@ -47,22 +43,11 @@ function setNewPassword2() {
         </h1>
         <Form @submit="setNewPassword2">
           <div>
-            <label
-              for="New Password"
-              class="block text-sm font-medium text-gray-700"
-              >New Password</label
-            >
-            <Field
-              name="newPassword"
-              type="password"
+            <label for="New Password" class="block text-sm font-medium text-gray-700">New Password</label>
+            <Field name="newPassword" type="password"
               class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
-              v-model="newPassword"
-              rules="required|min:6"
-            />
-            <ErrorMessage
-              name="newPassword"
-              class="text-red-600 text-sm mt-1"
-            />
+              v-model="newPassword" rules="required|min:6" />
+            <ErrorMessage name="newPassword" class="text-red-600 text-sm mt-1" />
           </div>
           <div class="py-2">
             <Button name="Submit" />

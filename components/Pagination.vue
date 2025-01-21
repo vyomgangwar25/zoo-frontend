@@ -1,56 +1,41 @@
 <template>
   <div class="space-x-2">
-    <button
-      class="btn px-4 py-2 rounded"
-      :class="
-        pageno > 1
-          ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer'
-          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-      "
-      @click="DecreaseButton"
-    >
+    <button class="btn px-4 py-2 rounded" :class="pageno > 1
+        ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer'
+        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+      " @click="DecreaseButton">
       Previous
     </button>
-    <button
-      class="btn bg-white-100 text-black px-4 py-2 rounded border-2 hover:bg-white-500"
-      v-for="number in props.totalPages"
-      :class="
-        pageno === number
+    <button class="btn bg-white-100 text-black px-4 py-2 rounded border-2 hover:bg-white-500"
+      v-for="number in props.totalPages" :class="pageno === number
           ? 'btn bg-red-500 text-white px-4 py-2 hover:bg-red-600 '
           : ''
-      "
-      @click="setSelectNo(number)"
-    >
+        " @click="setSelectNo(number)">
       {{ number }}
     </button>
-    <button
-      class="btn px-4 py-2 rounded"
-      :class="
-        pageno < props.totalPages
-          ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer'
-          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-      "
-      @click="IncreaseButton"
-    >
+    <button class="btn px-4 py-2 rounded" :class="pageno < props.totalPages
+        ? 'bg-blue-500 text-white hover:bg-blue-600 cursor-pointer'
+        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+      " @click="IncreaseButton">
       Next
     </button>
   </div>
 </template>
 
-<script lang="ts"  setup>
+<script lang="ts" setup>
 const emit = defineEmits(["PageChange"]);
 
 const selectedpage = ref(1);
 const diasblePgaeNo = ref(1);
 
-const props =  defineProps<{
+const props = defineProps<{
   totalPages: number,
   initialPage: number,
 }>();
 
 const pageno = ref(props.initialPage);
 
-const setSelectNo = (number:number) => {
+const setSelectNo = (number: number) => {
   selectedpage.value = number;
 
   if (diasblePgaeNo.value === number) {

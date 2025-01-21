@@ -134,14 +134,14 @@ onMounted(() => {
                   >
                     Update Password
                   </li>
-                  <li
+                  <li  v-if="roleStore.role == '2'"
                     class="block px-4 py-2 hover:bg-gray-200 cursor-pointer"
                     @click="handleUser"
                   >
                     Users
                   </li>
                   <li
-                    v-if="roleStore.role == '1'"
+                   
                     class="block px-4 py-2 hover:bg-gray-200 cursor-pointer"
                     @click="handleProfile"
                   >

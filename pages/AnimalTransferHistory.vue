@@ -1,11 +1,10 @@
 <template>
   <div class="container mx-auto p-4">
     <h1 v-if="items.length" class="font-bold text-2xl flex justify-center mb-4">
-        Details of Animal
-      </h1>
+      Details of Animal
+    </h1>
 
- 
-    <div v-if="items.length > 0" class="p-6 bg-gray-200 rounded-lg ">
+    <div v-if="items.length > 0" class="p-6 bg-gray-200 rounded-lg">
       <div class="bg-white shadow-lg rounded-lg p-6 flex items-center">
         <div class="flex-1">
           <span class="font-medium">Name:</span> {{ animal?.name }}
@@ -19,11 +18,7 @@
         </div>
 
         <div class="w-24 h-24 ml-6">
-          <img
-            src="public/img2.jpg"
-            class="w-full h-full object-cover rounded-lg"
-            alt="Animal Image"
-          />
+          <img src="public/img2.jpg" class="w-full h-full object-cover rounded-lg" alt="Animal Image" />
         </div>
       </div>
     </div>
@@ -32,7 +27,7 @@
       <h1 class="font-bold text-2xl text-gray-600 mt-4">No history found</h1>
     </div>
 
-    <div v-else class="p-6  ">
+    <div v-else class="p-6">
       <h1 class="font-bold text-2xl flex justify-center mt-6">
         Animal Transfer History
       </h1>
@@ -50,10 +45,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="(item, index) in items"
-            class="hover:bg-gray-100"
-          >
+          <tr v-for="(item, index) in items" class="hover:bg-gray-100">
             <td class="border border-gray-300 px-4 py-2">{{ index + 1 }}</td>
             <td class="border border-gray-300 px-4 py-2">
               {{ item.animalName }}
@@ -68,7 +60,6 @@
       </table>
     </div>
   </div>
- 
 </template>
 
 <script lang="ts" setup>
@@ -83,12 +74,12 @@ const animal: Ref<Animal | undefined> = ref();
 function animalHistory() {
   $fetch<AnimalHistory>(`/api/animal-history`, {
     method: "GET",
-    params:{
-      animalId:route.query.animalId
-    }
+    params: {
+      animalId: route.query.animalId,
+    },
   })
     .then(function (response) {
-     // console.log(response);
+
       items.value = response.transferHistoryList;
       animal.value = response.animalData;
     })

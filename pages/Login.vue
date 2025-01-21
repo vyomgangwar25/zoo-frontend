@@ -54,11 +54,7 @@ function handleLogin() {
 
 <template>
   <div class="flex items-center justify-center min-h-screen bg-blue-100">
-    <AlertPopup
-      :label="toastMessage"
-      :isVisible="isToastVisible"
-      @close="closeToast"
-    />
+    <AlertPopup :label="toastMessage" :isVisible="isToastVisible" @close="closeToast" />
 
     <div class="max-w-sm p-8 bg-white shadow-lg rounded-lg">
       <h1 class="text-3xl font-bold text-center text-gray-700 mb-8">
@@ -67,50 +63,38 @@ function handleLogin() {
 
       <Form @submit="handleLogin">
         <div class="mb-4">
-          <label for="email" class="block text-sm font-medium text-gray-700"
-            >Email</label
-          >
-          <Field
-            name="email"
-            type="email"
+          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+          <Field name="email" type="email"
             class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
-            v-model="userEmail"
-            rules="required|email"
-          />
+            v-model="userEmail" rules="required|email" />
           <ErrorMessage name="email" class="text-red-600 text-sm mt-1" />
         </div>
 
         <div class="mb-4">
-          <label for="password" class="block text-sm font-medium text-gray-700"
-            >Password</label
-          >
-          <Field
-            name="password"
-            type="password"
+          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+          <Field name="password" type="password"
             class="px-4 py-2 text-base border-b-2 border-slate-500 focus:outline-none bg-white text-slate-800 w-full"
-            v-model="userPassword"
-            rules="required|min:6"
-          />
+            v-model="userPassword" rules="required|min:6" />
           <ErrorMessage name="password" class="text-red-600 text-sm mt-1" />
         </div>
         <Button name="Submit" />
       </Form>
 
+      <!-- Sign in with google -->
+      <!-- http://localhost:8080/oauth2/authorization/google -->
       <div class="flex items-center justify-center mt-4">
-        <NuxtLink
-          to="/ForgetPassword"
-          class="text-blue-500 underline hover:text-blue-700 capitalize"
-          >Forget Password?</NuxtLink
-        >
+        <NuxtLink to="">Sign in with Google</NuxtLink>
+      </div>
+
+      <div class="flex items-center justify-center mt-4">
+        <NuxtLink to="/ForgetPassword" class="text-blue-500 underline hover:text-blue-700 capitalize">Forget Password?
+        </NuxtLink>
       </div>
 
       <div class="flex items-center justify-center mt-2">
         Not Registered?
-        <NuxtLink
-          to="/registration"
-          class="text-blue-500 underline hover:text-blue-700 capitalize ml-1"
-          >Create an account</NuxtLink
-        >
+        <NuxtLink to="/registration" class="text-blue-500 underline hover:text-blue-700 capitalize ml-1">Create an
+          account</NuxtLink>
       </div>
     </div>
   </div>
