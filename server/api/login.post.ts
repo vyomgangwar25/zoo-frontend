@@ -31,6 +31,6 @@ export default defineEventHandler(async (event) => {
     jwtToken: res.token,
     refreshToken: res.refreshToken,
   });
-
+ 
   return res;
 });

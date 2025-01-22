@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   ssr: false,
   modules: ["@nuxtjs/tailwindcss", "@nuxt/icon", "@pinia/nuxt"],
   devServer: {
-    host: "127.0.0.1",
+    host: "zoo.com", //"127.0.0.1"
     port: 3000,
   },
 });

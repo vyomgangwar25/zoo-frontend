@@ -5,7 +5,6 @@ export default defineEventHandler(async (event) => {
   const session = await userSession(event);
   const page: any = ref(getQuery(event).page);
   const pagesize = ref(getQuery(event).pagesize);
-
   const res = await $fetch<fetchzoo>(`http://localhost:8080/zoo/list`, {
     method: "GET",
     params: {

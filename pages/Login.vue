@@ -81,10 +81,11 @@ function handleLogin() {
       </Form>
 
       <!-- Sign in with google -->
-      <!-- http://localhost:8080/oauth2/authorization/google -->
+
       <div class="flex items-center justify-center mt-4">
-        <NuxtLink to="">Sign in with Google</NuxtLink>
+        <NuxtLink to=" http://localhost:8080/oauth2/authorization/google">Sign in with Google</NuxtLink>
       </div>
+
 
       <div class="flex items-center justify-center mt-4">
         <NuxtLink to="/ForgetPassword" class="text-blue-500 underline hover:text-blue-700 capitalize">Forget Password?
