@@ -6,15 +6,15 @@
 
 <script lang="ts" setup>
 const handleUserInfo = async () => {
-  const response = await $fetch(`http://localhost:8080/user/user-info`, {
+  const response = await $fetch(`http://localhost:8080/signin/userInfo`, {
     method: "GET",
-    // credentials: "include"
+    
   })
   console.log(response)
 
 }
 onMounted(()=>{
-  handleUserInfo()
+  // handleUserInfo()
 })
 </script>
 
