@@ -30,9 +30,7 @@
             At ZOO, you can meet a variety of fascinating animals, including:
           </p>
 
-          <ul
-            class="list-disc list-inside text-lg leading-relaxed text-gray-700 mb-4"
-          >
+          <ul class="list-disc list-inside text-lg leading-relaxed text-gray-700 mb-4">
             <li class="mb-2">Majestic lions and tigers</li>
             <li class="mb-2">Playful monkeys and apes</li>
             <li class="mb-2">Colorful birds from around the world</li>
@@ -67,7 +65,9 @@
 <script lang="ts" setup>
 import { useRoleStore } from "~/store/useRoleStore";
 const roleStore = useRoleStore();
-
+const route: any = useRoute();
+const flag = useCookie("flag");
+flag.value = "1"
 const getTimeOfDay = () => {
   const hours = new Date().getHours();
   if (hours < 12) {
@@ -78,4 +78,16 @@ const getTimeOfDay = () => {
   }
   return "Evening";
 };
+
+
+
+if (route.query.role) {  //use this conditon because when i go to another page the param value is undefined
+  roleStore.setState(
+    route.query.role,
+    route.query.email,
+    route.query.name,
+    route.query.id,
+  );
+}
+
 </script>

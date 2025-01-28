@@ -90,7 +90,7 @@ function handleLogin() {
       <div class="flex items-center justify-center mt-4">
         <NuxtLink to="/ForgetPassword" class="text-blue-500 underline hover:text-blue-700 capitalize">Forget Password?
         </NuxtLink>
-        df
+
       </div>
 
       <div class="flex items-center justify-center mt-2">
