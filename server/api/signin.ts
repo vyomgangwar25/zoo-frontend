@@ -11,9 +11,7 @@ export default defineEventHandler(async (event) => {
   const jwtToken = ref(getQuery(event).token);
   const refreshToken = ref(getQuery(event).refreshToken);
 
-  console.log(role.value);
-  console.log(name.value);
-  console.log(email.value);
+ 
 
   console.log("hello world");
   await session.update({
@@ -21,14 +19,14 @@ export default defineEventHandler(async (event) => {
     refreshToken: refreshToken.value,
   });
 
-  return navigateTo({
-    name: "Dashboard",
-    params: {
-      email: email.value,
-      id: id.value,
-      role: role.value,
-      name: name.value,
-    },
-  });
-  //   return sendRedirect(event, `/dashboard?email=${email.value}&id=${id.value} &role=${role.value} &name=${name.value}`, 302);
+  // return navigateTo({
+  //   name: "Dashboard",
+  //   params: {
+  //     email: email.value,
+  //     id: id.value,
+  //     role: role.value,
+  //     name: name.value,
+  //   },
+  // });
+    return sendRedirect(event, `/dashboard?email=${email.value}&id=${id.value} &role=${role.value} &name=${name.value}`, 302);
 });

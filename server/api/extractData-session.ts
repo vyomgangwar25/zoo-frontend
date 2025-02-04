@@ -11,6 +11,10 @@ export default defineEventHandler(async (event) => {
       method: "POST",
       body: JSON.stringify({ token: refreshtoken }),
     });
+    // if (data.response.statusCode === '500') {
+    //   console.log("status")
+    //   return false;
+    // }
     newToken.value = data;
   } catch (error) {
     console.error("Error in  validating the token:", error);
