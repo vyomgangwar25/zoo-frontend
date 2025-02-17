@@ -49,7 +49,7 @@ function handleRoles() {
     });
 }
 onMounted(() => {
-  handleRoles();
+ 
 });
 </script>
 <template>

@@ -82,9 +82,9 @@ function handleLogin() {
 
       <!-- Sign in with google -->
 
-      <div class="flex items-center justify-center mt-4">
-        <NuxtLink to=" http://localhost:8080/oauth2/authorization/google">Sign in with Google</NuxtLink>
-      </div>
+      <!-- <div class="flex items-center justify-center mt-4">
+        <NuxtLink to="http://localhost:8080/oauth2/authorization/google">Sign in with Google</NuxtLink>
+      </div> -->
 
 
       <div class="flex items-center justify-center mt-4">
